@@ -57,7 +57,7 @@ final class Preload(
       (ctx.userId ?? playbanApi.currentBan).mon(_.lobby segment "playban") zip
       (ctx.blind ?? ctx.me ?? roundProxy.urgentGames) flatMap {
         // format: off
-        case (((((((((((((data, povs), posts), tours), events), simuls), feat), entries), lead), tWinners), puzzle), streams), playban), blindGames) =>
+        case (((((((((((((data, povs), posts), tours), _), _), feat), entries), lead), tWinners), _), _), playban), _) =>
         // format: on
         (ctx.me ?? currentGameMyTurn(povs, lightUserApi.sync))
           .mon(_.lobby segment "currentGame") zip
