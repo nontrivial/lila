@@ -38,7 +38,6 @@ case class Entry(
     case "study-like"   => studyLikeHandler.readTry(data).get
     case "plan-start"   => planStartHandler.readTry(data).get
     case "plan-renew"   => planRenewHandler.readTry(data).get
-    case "blog-post"    => blogPostHandler.readTry(data).get
     case "stream-start" => streamStartHandler.readTry(data).get
     case _              => sys error s"Unhandled atom type: $typ"
   }) match {
@@ -74,7 +73,6 @@ object Entry {
       case d: StudyLike   => "study-like"   -> toBson(d)(studyLikeHandler)
       case d: PlanStart   => "plan-start"   -> toBson(d)(planStartHandler)
       case d: PlanRenew   => "plan-renew"   -> toBson(d)(planRenewHandler)
-      case d: BlogPost    => "blog-post"    -> toBson(d)(blogPostHandler)
       case d: StreamStart => "stream-start" -> toBson(d)(streamStartHandler)
     }
   } match {
@@ -94,7 +92,6 @@ object Entry {
     implicit val studyLikeHandler   = Macros.handler[StudyLike]
     implicit val planStartHandler   = Macros.handler[PlanStart]
     implicit val planRenewHandler   = Macros.handler[PlanRenew]
-    implicit val blogPostHandler    = Macros.handler[BlogPost]
     implicit val streamStartHandler = Macros.handler[StreamStart]
   }
 
@@ -110,7 +107,6 @@ object Entry {
     implicit val studyLikeWrite   = Json.writes[StudyLike]
     implicit val planStartWrite   = Json.writes[PlanStart]
     implicit val planRenewWrite   = Json.writes[PlanRenew]
-    implicit val blogPostWrite    = Json.writes[BlogPost]
     implicit val streamStartWrite = Json.writes[StreamStart]
     implicit val atomWrite = Writes[Atom] {
       case d: Follow      => followWrite writes d
@@ -124,7 +120,6 @@ object Entry {
       case d: StudyLike   => studyLikeWrite writes d
       case d: PlanStart   => planStartWrite writes d
       case d: PlanRenew   => planRenewWrite writes d
-      case d: BlogPost    => blogPostWrite writes d
       case d: StreamStart => streamStartWrite writes d
     }
   }

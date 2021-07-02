@@ -28,8 +28,7 @@ final class Preload(
     playbanApi: lila.playban.PlaybanApi,
     lightUserApi: LightUserApi,
     roundProxy: lila.round.GameProxyRepo,
-    simulIsFeaturable: SimulIsFeaturable,
-    lastPostCache: lila.blog.LastPostCache
+    simulIsFeaturable: SimulIsFeaturable
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
   import Preload._

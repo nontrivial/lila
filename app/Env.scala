@@ -52,7 +52,6 @@ final class Env(
     val puzzle: lila.puzzle.Env,
     val coordinate: lila.coordinate.Env,
     val tv: lila.tv.Env,
-    val blog: lila.blog.Env,
     val history: lila.history.Env,
     val video: lila.video.Env,
     val playban: lila.playban.Env,
@@ -249,7 +248,6 @@ final class EnvBoot(
   lazy val puzzle: lila.puzzle.Env           = wire[lila.puzzle.Env]
   lazy val coordinate: lila.coordinate.Env   = wire[lila.coordinate.Env]
   lazy val tv: lila.tv.Env                   = wire[lila.tv.Env]
-  lazy val blog: lila.blog.Env               = wire[lila.blog.Env]
   lazy val history: lila.history.Env         = wire[lila.history.Env]
   lazy val video: lila.video.Env             = wire[lila.video.Env]
   lazy val playban: lila.playban.Env         = wire[lila.playban.Env]
