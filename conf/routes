@@ -732,27 +732,6 @@ POST  /mobile/register/:platform/:deviceId controllers.Push.mobileRegister(platf
 POST  /mobile/unregister               controllers.Push.mobileUnregister
 POST  /push/subscribe                  controllers.Push.webSubscribe
 
-# Pages
-GET   /terms-of-service                controllers.Page.tos
-GET   /$bookmark<privacy|thanks|about|ads|changelog> controllers.Page.menuBookmark(bookmark: String)
-GET   /contact                         controllers.Main.contact
-GET   /faq                             controllers.Main.faq
-GET   /source                          controllers.Page.source
-GET   /qa                              controllers.Main.movedPermanently(to: String = "/faq")
-GET   /help                            controllers.Main.movedPermanently(to: String = "/contact")
-GET   /support                         controllers.Main.movedPermanently(to: String = "/contact")
-GET   /qa/:id/:slug                    controllers.Main.legacyQaQuestion(id: Int, slug: String)
-GET   /how-to-cheat                    controllers.Page.loneBookmark(bookmark = "how-to-cheat")
-GET   /page/:bookmark                  controllers.Page.loneBookmark(bookmark: String)
-
-# Variants
-GET   /variant                         controllers.Page.variantHome
-GET   /variant/:key                    controllers.Page.variant(key)
-
-# Help
-GET   /help/contribute                 controllers.Page.help
-GET   /help/master                     controllers.Page.master
-
 # DGT
 GET   /dgt                             controllers.DgtCtrl.index
 GET   /dgt/play                        controllers.DgtCtrl.play

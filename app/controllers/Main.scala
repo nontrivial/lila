@@ -12,11 +12,7 @@ import lila.hub.actorApi.captcha.ValidCaptcha
 import makeTimeout.large
 import views._
 
-final class Main(
-    env: Env,
-    prismicC: Prismic,
-    assetsC: ExternalAssets
-) extends LilaController(env) {
+final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env) {
 
   private lazy val blindForm = Form(
     tuple(
