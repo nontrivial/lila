@@ -69,20 +69,13 @@ final class Preload(
             Homepage(
               data,
               entries,
-              posts,
               tours,
-              events,
-              simuls,
               feat,
               lead,
               tWinners,
-              puzzle,
-              streams.excludeUsers(events.flatMap(_.hostedBy)),
-              lastPostCache.apply,
               playban,
               currentGame,
               simulIsFeaturable,
-              blindGames,
               lobbySocket.counters
             )
           }
