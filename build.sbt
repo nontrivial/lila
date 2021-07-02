@@ -33,7 +33,7 @@ lazy val modules = Seq(
   gameSearch, timeline, forum, forumSearch, team, teamSearch,
   analyse, mod, round, pool, lobby, setup,
   importer, tournament, simul, relation, report, pref,
-  evaluation, chat, puzzle, tv, coordinate, blog,
+  evaluation, chat, puzzle, tv, coordinate,
   history, video, shutup, push, appeal, mailer,
   playban, insight, perfStat, irc, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
@@ -104,11 +104,6 @@ lazy val streamer = module("streamer",
 lazy val coordinate = smallModule("coordinate",
   Seq(common, db, user),
   Seq(autoconfig) ++ reactivemongo.bundle ++ macwire.bundle
-)
-
-lazy val blog = module("blog",
-  Seq(common, memo, timeline),
-  Seq(prismic, specs2) ++ reactivemongo.bundle
 )
 
 lazy val evaluation = module("evaluation",
