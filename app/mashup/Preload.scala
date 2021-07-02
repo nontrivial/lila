@@ -112,20 +112,13 @@ object Preload {
   case class Homepage(
       data: JsObject,
       userTimeline: Vector[Entry],
-      forumRecent: List[MiniForumPost],
       tours: List[Tournament],
-      events: List[Event],
-      simuls: List[Simul],
       featured: Option[Game],
       leaderboard: List[User.LightPerf],
       tournamentWinners: List[Winner],
-      puzzle: Option[lila.puzzle.DailyPuzzle.WithHtml],
-      streams: LiveStreams.WithTitles,
-      lastPost: List[lila.blog.MiniPost],
       playban: Option[TempBan],
       currentGame: Option[Preload.CurrentGame],
       isFeaturable: Simul => Boolean,
-      blindGames: List[Pov],
       counters: lila.lobby.LobbyCounters
   )
 
