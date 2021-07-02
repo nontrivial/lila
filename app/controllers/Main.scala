@@ -50,30 +50,6 @@ final class Main(env: Env, assetsC: ExternalAssets) extends LilaController(env) 
       }
     }
 
-  def webmasters =
-    Open { implicit ctx =>
-      pageHit
-      fuccess {
-        html.site.page.webmasters
-      }
-    }
-
-  def lag =
-    Open { implicit ctx =>
-      pageHit
-      fuccess {
-        html.site.lag()
-      }
-    }
-
-  def mobile =
-    Open { implicit ctx =>
-      pageHit
-      OptionOk(prismicC getBookmark "mobile-apk") { case (doc, resolver) =>
-        html.mobile(doc, resolver)
-      }
-    }
-
   def dailyPuzzleSlackApp =
     Open { implicit ctx =>
       pageHit
@@ -180,18 +156,6 @@ Allow: /
       Redirect(
         "https://docs.google.com/forms/d/e/1FAIpQLSelXSHdiFw_PmZetxY8AaIJSM-Ahb5QnJcfQMDaiPJSf24lDQ/viewform"
       )
-    }
-
-  def contact =
-    Open { implicit ctx =>
-      pageHit
-      Ok(html.site.contact()).fuccess
-    }
-
-  def faq =
-    Open { implicit ctx =>
-      pageHit
-      Ok(html.site.faq()).fuccess
     }
 
   def movedPermanently(to: String) =
