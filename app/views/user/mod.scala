@@ -13,7 +13,6 @@ import lila.playban.RageSit
 import lila.security.Granter
 import lila.security.{ Permission, UserLogins }
 import lila.user.{ Holder, User }
-import lila.appeal.Appeal
 
 object mod {
   private def mzSection(key: String) =
@@ -293,51 +292,6 @@ object mod {
       a(href := routes.Clas.show(managed.clas.id.value))(managed.clas.name)
     )
 
-  def modLog(history: List[lila.mod.Modlog], appeal: Option[lila.appeal.Appeal])(implicit lang: Lang) =
-    mzSection("mod_log")(
-      div(cls := "mod_log mod_log--history")(
-        strong(cls := "text", dataIcon := "")(
-          "Moderation history",
-          history.isEmpty option ": nothing to show"
-        ),
-        history.nonEmpty ?? frag(
-          ul(
-            history.map { e =>
-              li(
-                userIdLink(e.mod.some, withTitle = false),
-                " ",
-                b(e.showAction),
-                " ",
-                e.gameId.fold[Frag](~e.details) { gameId =>
-                  a(href := s"${routes.Round.watcher(gameId, "white").url}?pov=${~e.user}")(~e.details)
-                },
-                " ",
-                momentFromNowServer(e.date)
-              )
-            }
-          ),
-          br
-        )
-      ),
-      appeal map { a =>
-        frag(
-          div(cls := "mod_log mod_log--appeal")(
-            st.a(href := routes.Appeal.show(a.id))(
-              strong(cls := "text", dataIcon := "")(
-                "Appeal status: ",
-                a.status.toString
-              )
-            ),
-            br,
-            a.msgs.map(_.text).map(shorten(_, 140)).map(p(_)),
-            a.msgs.size > 1 option st.a(href := routes.Appeal.show(a.id))(
-              frag("and ", pluralize("more message", a.msgs.size - 1))
-            )
-          )
-        )
-      }
-    )
-
   def reportLog(u: User)(reports: lila.report.Report.ByAndAbout)(implicit lang: Lang): Frag =
     mzSection("reports")(
       div(cls := "mz_reports mz_reports--out")(
@@ -538,7 +492,7 @@ object mod {
     if (nb > 0) td(cls := "i", dataSort := nb)(content)
     else td
 
-  def otherUsers(mod: Holder, u: User, data: UserLogins.TableData, appeals: List[Appeal])(implicit
+  def otherUsers(mod: Holder, u: User, data: UserLogins.TableData)(implicit
       ctx: Context,
       renderIp: RenderIp
   ): Tag = {
@@ -565,7 +519,6 @@ object mod {
             sortNumberTh(closed)(cls := "i", title := "Closed"),
             sortNumberTh(reportban)(cls := "i", title := "Reportban"),
             sortNumberTh(notesText)(cls := "i", title := "Notes"),
-            sortNumberTh(iconTag(""))(cls := "i", title := "Appeals"),
             sortNumberTh("Created"),
             sortNumberTh("Active"),
             isGranted(_.CloseAccount) option th
@@ -575,7 +528,6 @@ object mod {
           othersWithEmail.others.map { case other @ UserLogins.OtherUser(o, _, _) =>
             val userNotes =
               notes.filter(n => n.to == o.id && (ctx.me.exists(n.isFrom) || isGranted(_.Admin)))
-            val userAppeal = appeals.find(_.isAbout(o.id))
             tr(
               dataTags := s"${other.ips.map(renderIp).mkString(" ")} ${other.fps.mkString(" ")}",
               cls := (o == u) option "same"
@@ -613,21 +565,6 @@ object mod {
                   )
                 )
               } getOrElse td(dataSort := 0),
-              userAppeal match {
-                case None => td(dataSort := 0)
-                case Some(appeal) =>
-                  td(dataSort := 1)(
-                    a(
-                      href := isGranted(_.Appeals).option(routes.Appeal.show(o.username).url),
-                      cls := List(
-                        "text"         -> true,
-                        "appeal-muted" -> appeal.isMuted
-                      ),
-                      dataIcon := "",
-                      title := s"${pluralize("appeal message", appeal.msgs.size)}${appeal.isMuted ?? " [MUTED]"}"
-                    )(appeal.msgs.size)
-                  )
-              },
               td(dataSort := o.createdAt.getMillis)(momentFromNowServer(o.createdAt)),
               td(dataSort := o.seenAt.map(_.getMillis.toString))(o.seenAt.map(momentFromNowServer)),
               isGranted(_.CloseAccount) option td(

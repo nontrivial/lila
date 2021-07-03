@@ -430,52 +430,6 @@ POST  /auth/magic-link/send            controllers.Auth.magicLinkApply
 GET   /auth/magic-link/sent/:email     controllers.Auth.magicLinkSent(email: String)
 GET   /auth/magic-link/login/:token    controllers.Auth.magicLinkLogin(token: String)
 
-# Mod
-POST  /mod/:username/alt/:v            controllers.Mod.alt(username: String, v: Boolean)
-POST  /mod/:username/engine/:v         controllers.Mod.engine(username: String, v: Boolean)
-POST  /mod/:username/booster/:v        controllers.Mod.booster(username: String, v: Boolean)
-POST  /mod/:username/troll/:v          controllers.Mod.troll(username: String, v: Boolean)
-POST  /mod/:username/delete-pms-and-chats controllers.Mod.deletePmsAndChats(username: String)
-POST  /mod/:username/warn              controllers.Mod.warn(username: String, subject: String)
-POST  /mod/:username/kid               controllers.Mod.kid(username: String)
-POST  /mod/:username/disable-2fa       controllers.Mod.disableTwoFactor(username: String)
-POST  /mod/:username/close             controllers.Mod.closeAccount(username: String)
-POST  /mod/:username/reopen            controllers.Mod.reopenAccount(username: String)
-POST  /mod/:username/title             controllers.Mod.setTitle(username: String)
-POST  /mod/:username/inquiry           controllers.Mod.spontaneousInquiry(username: String)
-GET   /mod/:username/communication     controllers.Mod.communicationPublic(username: String)
-GET   /mod/:username/communication/private controllers.Mod.communicationPrivate(username: String)
-POST  /mod/:username/rankban/:v        controllers.Mod.rankban(username: String, v: Boolean)
-POST  /mod/:username/reportban/:v      controllers.Mod.reportban(username: String, v: Boolean)
-POST  /mod/:username/impersonate       controllers.Mod.impersonate(username: String)
-GET   /mod/:username/games             controllers.GameMod.index(username: String)
-POST  /mod/:username/games             controllers.GameMod.post(username: String)
-GET   /mod/table                       controllers.Mod.table
-POST  /mod/:username/refreshUserAssess controllers.Mod.refreshUserAssess(username: String)
-POST  /mod/:username/email             controllers.Mod.setEmail(username: String)
-POST  /mod/:username/notify-slack      controllers.Mod.notifySlack(username: String)
-GET   /mod/leaderboard                 controllers.Mod.gamify
-GET   /mod/leaderboard/:period         controllers.Mod.gamifyPeriod(period: String)
-GET   /mod/activity                    controllers.Mod.activity
-GET   /mod/activity/:who/:period       controllers.Mod.activityOf(who: String, period: String)
-GET   /mod/queues/:period              controllers.Mod.queues(period: String)
-GET   /mod/search                      controllers.Mod.search
-GET   /mod/chat-user/:username         controllers.Mod.chatUser(username: String)
-GET   /mod/:username/permissions       controllers.Mod.permissions(username: String)
-POST  /mod/:username/permissions       controllers.Mod.savePermissions(username: String)
-GET   /mod/public-chat                 controllers.Mod.publicChat
-POST  /mod/public-chat/timeout         controllers.Mod.publicChatTimeout
-GET   /mod/email-confirm               controllers.Mod.emailConfirm
-GET   /mod/chat-panic                  controllers.Mod.chatPanic
-POST  /mod/chat-panic                  controllers.Mod.chatPanicPost
-GET   /mod/print/:fh                   controllers.Mod.print(fh: String)
-POST  /mod/print/ban/:v/:fh            controllers.Mod.printBan(v: Boolean, fh: String)
-GET   /mod/ip/:ip                      controllers.Mod.singleIp(ip: String)
-POST  /mod/ip/ban/:v/:ip               controllers.Mod.singleIpBan(v: Boolean, ip: String)
-GET   /mod/presets/:group              controllers.Mod.presets(group: String)
-POST  /mod/presets/:group              controllers.Mod.presetsUpdate(group: String)
-GET   /api/stream/mod                  controllers.Mod.eventStream
-
 # Irwin
 GET   /irwin                           controllers.Irwin.dashboard
 POST  /irwin/report                    controllers.Irwin.saveReport
@@ -555,20 +509,7 @@ GET   /import/master/$id<\w{8}>/:color controllers.Importer.masterGame(id: Strin
 # Edit
 GET   /editor.json                     controllers.Editor.data
 GET   /editor/*urlFen                  controllers.Editor.load(urlFen: String)
-GET   /editor                          controllers.Editor.index
-
-# Report
-GET   /report                          controllers.Report.form
-POST  /report                          controllers.Report.create
-POST  /report/flag                     controllers.Report.flag
-GET   /report/thanks                   controllers.Report.thanks(reported: String)
-GET   /report/list                     controllers.Report.list
-GET   /report/list/:room               controllers.Report.listWithFilter(room: String)
-POST  /report/:id/inquiry              controllers.Report.inquiry(id: String)
-POST  /report/:id/process              controllers.Report.process(id: String)
-POST  /report/:id/xfiles               controllers.Report.xfiles(id: String)
-POST  /report/:id/snooze/:dur          controllers.Report.snooze(id: String, dur: String)
-GET   /report/:username/cheat-inquiry  controllers.Report.currentCheatInquiry(username: String)
+GET   /editor                          controllers.Editor.inde
 
 # Stats
 GET    /stat/rating/distribution/:perf controllers.Stat.ratingDistribution(perf: String)

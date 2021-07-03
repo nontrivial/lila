@@ -27,9 +27,7 @@ import lila.security.Granter
 final class User(
     env: Env,
     roundC: => Round,
-    gameC: => Game,
-    modC: => Mod,
-    puzzleC: => Puzzle
+    gameC: => Game
 ) extends LilaController(env) {
 
   private def relationApi    = env.relation.api
@@ -337,17 +335,6 @@ final class User(
       )
     }
 
-  def mod(username: String) =
-    Secure(_.UserModView) { implicit ctx => holder =>
-      modZoneOrRedirect(holder, username)
-    }
-
-  protected[controllers] def modZoneOrRedirect(holder: Holder, username: String)(implicit
-      ctx: Context
-  ): Fu[Result] =
-    if (HTTPRequest isEventSource ctx.req) renderModZone(holder, username)
-    else fuccess(modC.redirect(username))
-
   private def modZoneSegment(fu: Fu[Frag], name: String, user: UserModel): Source[Frag, _] =
     Source futureSource {
       fu.monSuccess(_.mod zoneSegment name)
@@ -380,10 +367,6 @@ final class User(
 
         val nbOthers = getInt("nbOthers") | 100
 
-        val modLog = for {
-          history <- env.mod.logApi.userHistory(user.id)
-          appeal  <- isGranted(_.Appeals) ?? env.appeal.api.get(user)
-        } yield view.modLog(history, appeal)
 
         val plan = isGranted(_.Admin) ?? env.plan.api.recentChargesOf(user).map(view.plan(user)).dmap(~_)
 
@@ -406,9 +389,8 @@ final class User(
         val userLoginsFu = env.security.userLogins(user, nbOthers)
         val others = for {
           userLogins <- userLoginsFu
-          appeals    <- env.appeal.api.byUserIds(user.id :: userLogins.otherUserIds)
           data       <- loginsTableData(user, userLogins, nbOthers)
-        } yield html.user.mod.otherUsers(holder, user, data, appeals)
+        } yield html.user.mod.otherUsers(holder, user, data)
 
         val identification = userLoginsFu map { logins =>
           Granter.is(_.ViewPrintNoIP)(holder) ??
@@ -431,7 +413,6 @@ final class User(
         Ok.chunked {
           Source.single(html.user.mod.menu) merge
             modZoneSegment(actions, "actions", user) merge
-            modZoneSegment(modLog, "modLog", user) merge
             modZoneSegment(plan, "plan", user) merge
             modZoneSegment(student, "student", user) merge
             modZoneSegment(reportLog, "reportLog", user) merge

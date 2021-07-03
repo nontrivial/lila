@@ -31,13 +31,13 @@ lazy val modules = Seq(
   common, db, rating, user, security, hub, socket,
   msg, notifyModule, i18n, game, bookmark, search,
   gameSearch, timeline, forum, forumSearch, team, teamSearch,
-  analyse, mod, round, pool, lobby, setup,
-  importer, tournament, simul, relation, report, pref,
+  analyse, round, pool, lobby, setup,
+  importer, tournament, simul, relation, pref,
   evaluation, chat, puzzle, tv, coordinate,
-  history, video, shutup, push, appeal, mailer,
+  history, video, shutup, push, mailer,
   playban, insight, perfStat, irc, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
-  event, coach, practice, evalCache, irwin,
+  event, practice, evalCache, irwin,
   activity, relay, streamer, bot, clas, swiss, storm, racer
 )
 
@@ -60,7 +60,7 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails learn activity coordinates study class contact patron coach broadcast streamer tfa settings preferences team perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
+      dbs = "site arena emails learn activity coordinates study class contact patron broadcast streamer tfa settings preferences team perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
@@ -89,11 +89,6 @@ lazy val quote = smallModule("quote",
 lazy val video = smallModule("video",
   Seq(common, memo, hub, db, user),
   Seq(autoconfig) ++ reactivemongo.bundle ++ macwire.bundle
-)
-
-lazy val coach = module("coach",
-  Seq(common, hub, db, user, security, notifyModule),
-  reactivemongo.bundle
 )
 
 lazy val streamer = module("streamer",
@@ -386,11 +381,6 @@ lazy val bookmark = module("bookmark",
 
 lazy val report = module("report",
   Seq(common, db, user, game, security, playban),
-  reactivemongo.bundle
-)
-
-lazy val appeal = module("appeal",
-  Seq(common, db, user),
   reactivemongo.bundle
 )
 

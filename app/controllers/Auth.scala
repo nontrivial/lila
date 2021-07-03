@@ -52,16 +52,6 @@ final class Auth(
       ) map authenticateCookie(sessionId)
     } recoverWith authRecovery
 
-  private def authenticateAppealUser(u: UserModel, redirect: String => Result)(implicit
-      ctx: Context
-  ): Fu[Result] =
-    api.appeal.saveAuthentication(u.id) flatMap { sessionId =>
-      negotiate(
-        html = redirect(routes.Appeal.landing.url).fuccess map authenticateCookie(sessionId),
-        api = _ => NotFound.fuccess
-      )
-    } recoverWith authRecovery
-
   private def authenticateCookie(sessionId: String)(result: Result)(implicit req: RequestHeader) =
     result.withCookies(
       env.lilaCookie.withSession {
@@ -127,7 +117,6 @@ final class Auth(
                             case Some(u) if u.disabled =>
                               negotiate(
                                 html = env.mod.logApi.closedByMod(u) flatMap {
-                                  case true => authenticateAppealUser(u, redirectTo)
                                   case _    => redirectTo(routes.Account.reopen.url).fuccess
                                 },
                                 api = _ => Unauthorized(jsonError("This account is closed.")).fuccess

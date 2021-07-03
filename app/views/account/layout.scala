@@ -37,9 +37,6 @@ object layout {
           a(activeCls("username"), href := routes.Account.username)(
             trans.changeUsername()
           ),
-          isGranted(_.Coach) option a(activeCls("coach"), href := routes.Coach.edit)(
-            trans.coach.lichessCoach()
-          ),
           div(cls := "sep"),
           a(activeCls("password"), href := routes.Account.passwd)(
             trans.changePassword()

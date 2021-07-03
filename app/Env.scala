@@ -46,7 +46,6 @@ final class Env(
     val simul: lila.simul.Env,
     val relation: lila.relation.Env,
     val report: lila.report.Env,
-    val appeal: lila.appeal.Env,
     val pref: lila.pref.Env,
     val chat: lila.chat.Env,
     val puzzle: lila.puzzle.Env,
@@ -159,10 +158,8 @@ final class Env(
       _       <- security.store.closeAllSessionsOf(u.id)
       _       <- push.webSubscriptionApi.unsubscribeByUser(u)
       _       <- streamer.api.demote(u.id)
-      _       <- coach.api.remove(u.id)
       reports <- report.api.processAndGetBySuspect(lila.report.Suspect(u))
       _       <- selfClose ?? mod.logApi.selfCloseAccount(u.id, reports)
-      _       <- appeal.api.onAccountClose(u)
       _ <- u.marks.troll ?? relation.api.fetchFollowing(u.id).flatMap {
         activity.write.unfollowAll(u, _)
       }
@@ -242,7 +239,6 @@ final class EnvBoot(
   lazy val simul: lila.simul.Env             = wire[lila.simul.Env]
   lazy val relation: lila.relation.Env       = wire[lila.relation.Env]
   lazy val report: lila.report.Env           = wire[lila.report.Env]
-  lazy val appeal: lila.appeal.Env           = wire[lila.appeal.Env]
   lazy val pref: lila.pref.Env               = wire[lila.pref.Env]
   lazy val chat: lila.chat.Env               = wire[lila.chat.Env]
   lazy val puzzle: lila.puzzle.Env           = wire[lila.puzzle.Env]
