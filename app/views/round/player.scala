@@ -15,7 +15,6 @@ object player {
       pov: Pov,
       data: play.api.libs.json.JsObject,
       tour: Option[lila.tournament.GameView],
-      simul: Option[lila.simul.Simul],
       cross: Option[lila.game.Crosstable.WithMatchup],
       playing: List[Pov],
       chatOption: Option[lila.chat.Chat.GameOrEvent],
@@ -65,19 +64,19 @@ object player {
     )(
       main(cls := "round")(
         st.aside(cls := "round__side")(
-          bits.side(pov, data, tour.map(_.tourAndTeamVs), simul, bookmarked = bookmarked),
+          bits.side(pov, data, tour.map(_.tourAndTeamVs), bookmarked = bookmarked),
           chatOption.map(_ => chat.frag)
         ),
         bits.roundAppPreload(pov, controls = true),
         div(cls := "round__underboard")(
           bits.crosstable(cross, pov.game),
-          (playing.nonEmpty || simul.exists(_ isHost ctx.me)) option
+          (playing.nonEmpty) option
             div(
               cls := List(
                 "round__now-playing" -> true,
                 "blindfold"          -> ctx.pref.isBlindfold
               )
-            )(bits.others(playing, simul))
+            )(bits.others(playing))
         ),
         div(cls := "round__underchat")(bits underchat pov.game)
       )

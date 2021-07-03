@@ -17,19 +17,17 @@ object side {
       pov: lila.game.Pov,
       initialFen: Option[chess.format.FEN],
       tour: Option[lila.tournament.TourAndTeamVs],
-      simul: Option[lila.simul.Simul],
       userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context): Option[Frag] =
     ctx.noBlind option frag(
-      meta(pov, initialFen, tour, simul, userTv, bookmarked)
+      meta(pov, initialFen, tour, userTv, bookmarked)
     )
 
   def meta(
       pov: lila.game.Pov,
       initialFen: Option[chess.format.FEN],
       tour: Option[lila.tournament.TourAndTeamVs],
-      simul: Option[lila.simul.Simul],
       userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context): Option[Frag] =
@@ -117,14 +115,6 @@ object side {
           )
         } orElse game.tournamentId.map { tourId =>
           st.section(cls := "game__tournament-link")(tournamentLink(tourId))
-        } orElse game.swissId.map { swissId =>
-          st.section(cls := "game__tournament-link")(
-            views.html.swiss.bits.link(lila.swiss.Swiss.Id(swissId))
-          )
-        } orElse simul.map { sim =>
-          st.section(cls := "game__simul-link")(
-            a(href := routes.Simul.show(sim.id))(sim.fullName)
-          )
         }
       )
     }

@@ -65,22 +65,10 @@ object bits {
       )
     )
 
-  def others(playing: List[Pov], simul: Option[lila.simul.Simul])(implicit ctx: Context) =
+  def others(playing: List[Pov])(implicit ctx: Context) =
     frag(
       h3(
-        simul.map { s =>
-          span(cls := "simul")(
-            a(href := routes.Simul.show(s.id))("SIMUL"),
-            span(cls := "win")(s.wins, " W"),
-            " / ",
-            span(cls := "draw")(s.draws, " D"),
-            " / ",
-            span(cls := "loss")(s.losses, " L"),
-            " / ",
-            s.ongoing,
-            " ongoing"
-          )
-        } getOrElse trans.currentGames(),
+        trans.currentGames(),
         "round-toggle-autoswitch" pipe { id =>
           span(cls := "move-on switcher", st.title := trans.automaticallyProceedToNextGameAfterMoving.txt())(
             label(`for` := id)(trans.autoSwitch()),
@@ -115,7 +103,6 @@ object bits {
       pov: Pov,
       data: play.api.libs.json.JsObject,
       tour: Option[lila.tournament.TourAndTeamVs],
-      simul: Option[lila.simul.Simul],
       userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context) =
@@ -123,7 +110,6 @@ object bits {
       pov,
       (data \ "game" \ "initialFen").asOpt[String].map(chess.format.FEN.apply),
       tour,
-      simul = simul,
       userTv = userTv,
       bookmarked = bookmarked
     )

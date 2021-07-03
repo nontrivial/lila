@@ -52,10 +52,6 @@ object timeline {
             userLink(u1),
             userLink(u2)
           )
-        case TeamJoin(userId, teamId) =>
-          trans.xJoinedTeamY(userLink(userId), teamLink(teamId, withIcon = false))
-        case TeamCreate(userId, teamId) =>
-          trans.xCreatedTeamY(userLink(userId), teamLink(teamId, withIcon = false))
         case ForumPost(userId, _, topicName, postId) =>
           trans.xPostedInForumY(
             userLink(userId),
@@ -68,16 +64,6 @@ object timeline {
           trans.xCompetesInY(
             userLink(userId),
             a(href := routes.Tournament.show(tourId))(tourName)
-          )
-        case SimulCreate(userId, simulId, simulName) =>
-          trans.xHostsY(
-            userLink(userId),
-            a(href := routes.Simul.show(simulId))(simulName)
-          )
-        case SimulJoin(userId, simulId, simulName) =>
-          trans.xJoinsY(
-            userLink(userId),
-            a(href := routes.Simul.show(simulId))(simulName)
           )
         case GameEnd(playerId, opponent, win, perfKey) =>
           for {
@@ -99,11 +85,6 @@ object timeline {
             }),
             userLink(opponentId),
             perf.trans
-          )
-        case StudyLike(userId, studyId, studyName) =>
-          trans.xLikesY(
-            userLink(userId),
-            a(href := routes.Study.show(studyId))(studyName)
           )
         case PlanStart(userId) =>
           a(href := routes.Plan.index)(

@@ -25,7 +25,6 @@ object freeJs {
     "puzzle",
     "round",
     "serviceWorker",
-    "simul",
     "site",
     "speech",
     "tournament.calendar",

@@ -32,10 +32,6 @@ object features {
               a(href := routes.Tournament.home)("tournaments")
             ),
             tr(unlimited)(
-              "Play and create ",
-              a(href := routes.Simul.home)("simultaneous exhibitions")
-            ),
-            tr(unlimited)(
               "Correspondence chess with conditional premoves"
             ),
             tr(check)(

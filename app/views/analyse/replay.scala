@@ -25,7 +25,6 @@ object replay {
       pgn: String,
       analysis: Option[lila.analyse.Analysis],
       analysisStarted: Boolean,
-      simul: Option[lila.simul.Simul],
       cross: Option[lila.game.Crosstable.WithMatchup],
       userTv: Option[lila.user.User],
       chatOption: Option[lila.chat.UserChat.Mine],
@@ -116,7 +115,6 @@ object replay {
                 pov,
                 initialFen,
                 none,
-                simul = simul,
                 userTv = userTv,
                 bookmarked = bookmarked
               )

@@ -91,7 +91,6 @@ final class LilaComponents(ctx: ApplicationLoader.Context) extends BuiltInCompon
   lazy val env: lila.app.Env      = boot.env
 
   lazy val account: Account               = wire[Account]
-  lazy val analyse: Analyse               = wire[Analyse]
   lazy val api: Api                       = wire[Api]
   lazy val auth: Auth                     = wire[Auth]
   lazy val playApi: PlayApi               = wire[PlayApi]
@@ -127,13 +126,11 @@ final class LilaComponents(ctx: ApplicationLoader.Context) extends BuiltInCompon
   lazy val round: Round                   = wire[Round]
   lazy val search: Search                 = wire[Search]
   lazy val setup: Setup                   = wire[Setup]
-  lazy val simul: Simul                   = wire[Simul]
   lazy val stat: Stat                     = wire[Stat]
   lazy val study: Study                   = wire[Study]
   lazy val timeline: Timeline             = wire[Timeline]
   lazy val tournament: Tournament         = wire[Tournament]
   lazy val tournamentCrud: TournamentCrud = wire[TournamentCrud]
-  lazy val tv: Tv                         = wire[Tv]
   lazy val user: User                     = wire[User]
   lazy val userTournament: UserTournament = wire[UserTournament]
   lazy val video: Video                   = wire[Video]

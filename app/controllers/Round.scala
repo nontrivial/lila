@@ -17,7 +17,6 @@ final class Round(
     env: Env,
     gameC: => Game,
     challengeC: => Challenge,
-    analyseC: => Analyse,
     tournamentC: => Tournament,
     userC: => User
 ) extends LilaController(env)
@@ -34,21 +33,18 @@ final class Round(
             pov.game.playableByAi ?? env.fishnet.player(pov.game)
             env.tournament.api.gameView.player(pov) flatMap { tour =>
               gameC.preloadUsers(pov.game) zip
-                (pov.game.simulId ?? env.simul.repo.find) zip
                 getPlayerChat(pov.game, tour.map(_.tour)) zip
                 (ctx.noBlind ?? env.game.crosstableApi
                   .withMatchup(pov.game)) zip
                 (pov.game.isSwitchable ?? otherPovs(pov.game)) zip
                 env.bookmark.api.exists(pov.game, ctx.me) zip
                 env.api.roundApi.player(pov, tour, lila.api.Mobile.Api.currentVersion) map {
-                  case ((((((_, simul), chatOption), crosstable), playing), bookmarked), data) =>
-                    simul foreach env.simul.api.onPlayerConnection(pov.game, ctx.me)
+                  case ((((((_), chatOption), crosstable), playing), bookmarked), data) =>
                     Ok(
                       html.round.player(
                         pov,
                         data,
                         tour = tour,
-                        simul = simul,
                         cross = crosstable,
                         playing = playing,
                         chatOption = chatOption,
@@ -86,7 +82,7 @@ final class Round(
     ctx.me ?? { user =>
       env.round.proxyRepo urgentGames user map {
         _ filter { pov =>
-          pov.gameId != game.id && pov.game.isSwitchable && pov.game.isSimul == game.isSimul
+          pov.gameId != game.id && pov.game.isSwitchable
         }
       }
     }
@@ -117,10 +113,8 @@ final class Round(
         } flatMap {
           case Some(next) => renderPlayer(next)
           case None =>
-            fuccess(Redirect(currentGame.simulId match {
-              case Some(simulId) => routes.Simul.show(simulId)
-              case None          => routes.Round.watcher(gameId, "white")
-            }))
+            fuccess(Redirect(routes.Round.watcher(gameId, "white")
+            ))
         }
       }
     }
@@ -162,14 +156,12 @@ final class Round(
       case _ =>
         negotiate(
           html = {
-            if (pov.game.replayable) analyseC.replay(pov, userTv = userTv)
-            else if (HTTPRequest.isHuman(ctx.req))
+            if (HTTPRequest.isHuman(ctx.req))
               env.tournament.api.gameView.watcher(pov.game) zip
-                (pov.game.simulId ?? env.simul.repo.find) zip
                 getWatcherChat(pov.game) zip
                 (ctx.noBlind ?? env.game.crosstableApi.withMatchup(pov.game)) zip
                 env.bookmark.api.exists(pov.game, ctx.me) flatMap {
-                  case ((((tour, simul), chat), crosstable), bookmarked) =>
+                  case ((((tour), chat), crosstable), bookmarked) =>
                     env.api.roundApi.watcher(
                       pov,
                       tour,
@@ -183,7 +175,6 @@ final class Round(
                           pov,
                           data,
                           tour.map(_.tourAndTeamVs),
-                          simul,
                           crosstable,
                           userTv = userTv,
                           chatOption = chat,
@@ -240,15 +231,13 @@ final class Round(
             )
           )
           .some
-      (game.tournamentId, game.simulId) match {
-        case (Some(tid), _) =>
+      (game.tournamentId) match {
+        case (Some(tid)) =>
           {
             ctx.isAuth && tour.fold(true)(tournamentC.canHaveChat(_, none))
           } ?? env.chat.api.userChat.cached
             .findMine(Chat.Id(tid), ctx.me)
             .dmap(toEventChat(s"tournament/$tid"))
-        case (_, Some(sid)) =>
-          env.chat.api.userChat.cached.findMine(Chat.Id(sid), ctx.me).dmap(toEventChat(s"simul/$sid"))
         case _ =>
           game.hasChat ?? {
             env.chat.api.playerChat.findIf(Chat.Id(game.id), !game.justCreated) map { chat =>
@@ -271,12 +260,11 @@ final class Round(
     Open { implicit ctx =>
       OptionFuResult(proxyPov(gameId, color)) { pov =>
         env.tournament.api.gameView.withTeamVs(pov.game) zip
-          (pov.game.simulId ?? env.simul.repo.find) zip
           env.game.gameRepo.initialFen(pov.game) zip
           env.game.crosstableApi.withMatchup(pov.game) zip
           env.bookmark.api.exists(pov.game, ctx.me) map {
-            case ((((tour, simul), initialFen), crosstable), bookmarked) =>
-              Ok(html.game.bits.sides(pov, initialFen, tour, crosstable, simul, bookmarked = bookmarked))
+            case ((((tour), initialFen), crosstable), bookmarked) =>
+              Ok(html.game.bits.sides(pov, initialFen, tour, crosstable, bookmarked = bookmarked))
           }
       }
     }

@@ -6,8 +6,6 @@ import scala.concurrent.ExecutionContext
 import lila.chat.UserLine
 import lila.common.config.NetDomain
 import lila.hub.actorApi.shutup.PublicSource
-import lila.simul.Simul
-import lila.simul.SimulApi
 import lila.tournament.Tournament
 import lila.tournament.TournamentRepo
 import lila.user.User
@@ -21,7 +19,6 @@ import lila.user.User
 final private class LinkCheck(
     domain: NetDomain,
     tournamentRepo: TournamentRepo,
-    simulApi: SimulApi,
 )(implicit ec: ExecutionContext) {
 
   import LinkCheck._
@@ -31,7 +28,6 @@ final private class LinkCheck(
     else
       line.text match {
         case tournamentLinkR(id) => withSource(source, tourLink)(id, line)
-        case simulLinkR(id)      => withSource(source, simulLink)(id, line)
         case _                   => fuTrue
       }
 
@@ -41,7 +37,6 @@ final private class LinkCheck(
   )(id: String, line: UserLine): Fu[Boolean] = {
     source match {
       case PublicSource.Tournament(id) => tournamentRepo byId id map2 FullSource.TournamentSource
-      case PublicSource.Simul(id)      => simulApi find id map2 FullSource.SimulSource
       case _                           => fuccess(none)
     }
   } flatMap {
@@ -64,55 +59,23 @@ final private class LinkCheck(
       }
     }
 
-  private def simulLink(simulId: Tournament.ID, source: FullSource) =
-    simulApi teamOf simulId map {
-      _ exists source.teamId.has
-    }
-
-  private def swissLink(swissId: String, source: FullSource) =
-    swissApi teamOf Swiss.Id(swissId) map {
-      _ exists source.teamId.has
-    }
-
   private def studyLink(studyId: String, source: FullSource) = fuFalse
 
   private def teamLink(teamId: String, source: FullSource) = fuFalse
 
   private val multipleLinks   = s"(?i)$domain.+$domain".r.unanchored
   private val tournamentLinkR = s"(?i)$domain/tournament/(\\w+)".r.unanchored
-  private val simulLinkR      = s"(?i)$domain/simul/(\\w+)".r.unanchored
-  private val swissLinkR      = s"(?i)$domain/swiss/(\\w+)".r.unanchored
-  private val studyLinkR      = s"(?i)$domain/study/(\\w+)".r.unanchored
-  private val teamLinkR       = s"(?i)$domain/team/([\\w-]+)".r.unanchored
 }
 
 private object LinkCheck {
 
   sealed trait FullSource {
     def owners: Set[User.ID]
-    def teamId: Option[Team.ID]
   }
 
   object FullSource {
     case class TournamentSource(value: Tournament) extends FullSource {
       def owners = Set(value.createdBy)
-      def teamId = value.conditions.teamMember.map(_.teamId)
-    }
-    case class SimulSource(value: Simul) extends FullSource {
-      def owners = Set(value.hostId)
-      def teamId = value.team
-    }
-    case class SwissSource(value: Swiss) extends FullSource {
-      def owners = Set(value.createdBy)
-      def teamId = value.teamId.some
-    }
-    case class TeamSource(value: Team) extends FullSource {
-      def owners = value.leaders
-      def teamId = value.id.some
-    }
-    case class StudySource(value: Study) extends FullSource {
-      def owners = value.members.idSet
-      def teamId = none
     }
   }
 }

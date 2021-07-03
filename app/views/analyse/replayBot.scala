@@ -11,7 +11,6 @@ object replayBot {
       pov: Pov,
       initialFen: Option[chess.format.FEN],
       pgn: String,
-      simul: Option[lila.simul.Simul],
       cross: Option[lila.game.Crosstable.WithMatchup]
   )(implicit ctx: Context) = {
 
@@ -22,7 +21,7 @@ object replayBot {
     ) {
       main(cls := "analyse")(
         st.aside(cls := "analyse__side")(
-          views.html.game.side(pov, initialFen, none, simul = simul, bookmarked = false)
+          views.html.game.side(pov, initialFen, none, bookmarked = false)
         ),
         div(cls := "analyse__board main-board")(chessgroundBoard),
         div(cls := "analyse__tools")(div(cls := "ceval")),

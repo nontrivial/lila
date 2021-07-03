@@ -28,17 +28,11 @@ case class Entry(
 
   lazy val decode: Option[Atom] = Try(typ match {
     case "follow"       => followHandler.readTry(data).get
-    case "team-join"    => teamJoinHandler.readTry(data).get
-    case "team-create"  => teamCreateHandler.readTry(data).get
     case "forum-post"   => forumPostHandler.readTry(data).get
     case "tour-join"    => tourJoinHandler.readTry(data).get
     case "game-end"     => gameEndHandler.readTry(data).get
-    case "simul-create" => simulCreateHandler.readTry(data).get
-    case "simul-join"   => simulJoinHandler.readTry(data).get
-    case "study-like"   => studyLikeHandler.readTry(data).get
     case "plan-start"   => planStartHandler.readTry(data).get
     case "plan-renew"   => planRenewHandler.readTry(data).get
-    case "stream-start" => streamStartHandler.readTry(data).get
     case _              => sys error s"Unhandled atom type: $typ"
   }) match {
     case Success(atom)       => Some(atom)

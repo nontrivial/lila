@@ -31,8 +31,8 @@ lazy val modules = Seq(
   common, db, rating, user, security, hub, socket,
   msg, notifyModule, i18n, game, bookmark, search,
   gameSearch, timeline, forum, forumSearch,
-  analyse, round, pool, lobby, setup,
-  importer, tournament, simul, relation, pref,
+  round, pool, lobby, setup,
+  importer, tournament, relation, pref,
   evaluation, chat, coordinate,
   history, shutup, push, mailer,
   playban, perfStat, irc, quote, challenge,
@@ -138,11 +138,6 @@ lazy val event = module("event",
   Seq(scalatags) ++ reactivemongo.bundle
 )
 
-lazy val mod = module("mod",
-  Seq(common, db, user, hub, security, tournament, simul, game, analyse, evaluation, report, notifyModule, history, perfStat, irc),
-  reactivemongo.bundle
-)
-
 lazy val user = smallModule("user",
   Seq(common, memo, db, hub, rating, socket),
   Seq(hasher, specs2, autoconfig, scalaUri) ++ playWs.bundle ++ reactivemongo.bundle ++ macwire.bundle
@@ -191,11 +186,6 @@ lazy val importer = module("importer",
 lazy val tournament = module("tournament",
   Seq(common, hub, socket, game, round, security, chat, memo, quote, history, notifyModule, i18n, room),
   Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val simul = module("simul",
-  Seq(common, hub, socket, game, round, chat, memo, quote, room),
-  Seq(lettuce) ++ reactivemongo.bundle
 )
 
 lazy val fishnet = module("fishnet",

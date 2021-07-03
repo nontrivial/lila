@@ -14,7 +14,6 @@ import lila.user.{ Trophies, TrophyApi, User }
 case class UserInfo(
     user: User,
     ranks: lila.rating.UserRankMap,
-    hasSimul: Boolean,
     ratingChart: Option[String],
     nbs: UserInfo.NbGames,
     nbFollowers: Int,
@@ -114,7 +113,6 @@ object UserInfo {
       postApi: PostApi,
       ratingChartApi: lila.history.RatingChartApi,
       userCached: lila.user.Cached,
-      isHostingSimul: lila.round.IsSimulHost,
       insightShare: lila.insight.Share,
       playbanApi: lila.playban.PlaybanApi
   )(implicit ec: scala.concurrent.ExecutionContext) {
@@ -128,16 +126,14 @@ object UserInfo {
         revolutionApi.active(user).mon(_.user segment "revolutions") zip
         (user.count.rated >= 10).??(insightShare.grant(user, ctx.me)) zip
         playbanApi.completionRate(user.id).mon(_.user segment "completion") zip
-        (nbs.playing > 0) ?? isHostingSimul(user.id).mon(_.user segment "simul") zip
         userCached.rankingsOf(user.id) map {
           // format: off
-          case (((((((((((((ratingChart, nbFollowers), nbPosts)), trophies), shields), revols)))), insightVisible), completionRate), hasSimul), ranks) =>
+          case (((((((((((((ratingChart, nbFollowers), nbPosts)), trophies), shields), revols)))), insightVisible), completionRate)), ranks) =>
           // format: on
           new UserInfo(
             user = user,
             ranks = ranks,
             nbs = nbs,
-            hasSimul = hasSimul,
             ratingChart = ratingChart,
             nbFollowers = nbFollowers,
             nbPosts = nbPosts,
