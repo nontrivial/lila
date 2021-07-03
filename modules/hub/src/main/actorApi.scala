@@ -84,7 +84,6 @@ package shutup {
   sealed abstract class PublicSource(val parentName: String)
   object PublicSource {
     case class Tournament(id: String)  extends PublicSource("tournament")
-    case class Simul(id: String)       extends PublicSource("simul")
   }
 }
 
