@@ -282,10 +282,6 @@ object RoundSocket {
             raw.get(3) { case Array(roomId, author, msg) =>
               PlayerChatSay(Game.Id(roomId), readColor(author).toRight(author), msg).some
             }
-          case "chat/say/w" =>
-            raw.get(3) { case Array(roomId, userId, msg) =>
-              WatcherChatSay(Game.Id(roomId), userId, msg).some
-            }
           case "r/berserk" =>
             raw.get(2) { case Array(gameId, userId) =>
               Berserk(Game.Id(gameId), userId).some
