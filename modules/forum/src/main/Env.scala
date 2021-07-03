@@ -21,7 +21,6 @@ final private class ForumConfig(
 final class Env(
     appConfig: Configuration,
     db: lila.db.Db,
-    modLog: Any,
     spam: lila.security.Spam,
     promotion: lila.security.PromotionApi,
     captcher: lila.hub.actors.Captcher,
