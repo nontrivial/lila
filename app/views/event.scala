@@ -227,7 +227,6 @@ object event {
       moreJs = jsModule("flatpickr")
     ) {
       main(cls := "page-menu")(
-        mod.menu("event"),
         body
       )
     }

@@ -22,8 +22,7 @@ object side {
       bookmarked: Boolean
   )(implicit ctx: Context): Option[Frag] =
     ctx.noBlind option frag(
-      meta(pov, initialFen, tour, simul, userTv, bookmarked),
-      pov.game.userIds.filter(isStreaming) map views.html.streamer.bits.contextual
+      meta(pov, initialFen, tour, simul, userTv, bookmarked)
     )
 
   def meta(

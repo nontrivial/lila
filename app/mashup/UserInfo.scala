@@ -44,7 +44,6 @@ object UserInfo {
 
   sealed abstract class Angle(val key: String)
   object Angle {
-    case object Activity                          extends Angle("activity")
     case class Games(searchForm: Option[Form[_]]) extends Angle("games")
     case object Other                             extends Angle("other")
   }

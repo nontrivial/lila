@@ -266,8 +266,6 @@ object layout {
           style := zoomable option s"--zoom:${ctx.zoom}"
         )(
           blindModeForm,
-          ctx.pageData.inquiry map { views.html.mod.inquiry(_) },
-          ctx.me ifTrue ctx.userContext.impersonatedBy.isDefined map { views.html.mod.impersonate(_) },
           netConfig.stageBanner option views.html.base.bits.stage,
           lila.security.EmailConfirm.cookie
             .get(ctx.req)

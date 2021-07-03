@@ -34,7 +34,6 @@ final class Env(
     val forum: lila.forum.Env,
     val forumSearch: lila.forumSearch.Env,
     val team: lila.team.Env,
-    val teamSearch: lila.teamSearch.Env,
     val analyse: lila.analyse.Env,
     val notifyM: lila.notify.Env,
     val round: lila.round.Env,
@@ -65,12 +64,9 @@ final class Env(
     val learn: lila.learn.Env,
     val plan: lila.plan.Env,
     val event: lila.event.Env,
-    val clas: lila.clas.Env,
     val pool: lila.pool.Env,
     val practice: lila.practice.Env,
-    val activity: lila.activity.Env,
     val relay: lila.relay.Env,
-    val streamer: lila.streamer.Env,
     val oAuth: lila.oauth.Env,
     val bot: lila.bot.Env,
     val evalCache: lila.evalCache.Env,
@@ -153,10 +149,6 @@ final class Env(
       _       <- lobby.seekApi.removeByUser(u)
       _       <- security.store.closeAllSessionsOf(u.id)
       _       <- push.webSubscriptionApi.unsubscribeByUser(u)
-      _       <- streamer.api.demote(u.id)
-      _ <- u.marks.troll ?? relation.api.fetchFollowing(u.id).flatMap {
-        activity.write.unfollowAll(u, _)
-      }
     } yield Bus.publish(lila.hub.actorApi.security.CloseAccount(u.id), "accountClose")
 
   Bus.subscribeFun("garbageCollect") { case lila.hub.actorApi.security.GarbageCollect(userId) =>
@@ -220,7 +212,6 @@ final class EnvBoot(
   lazy val forum: lila.forum.Env             = wire[lila.forum.Env]
   lazy val forumSearch: lila.forumSearch.Env = wire[lila.forumSearch.Env]
   lazy val team: lila.team.Env               = wire[lila.team.Env]
-  lazy val teamSearch: lila.teamSearch.Env   = wire[lila.teamSearch.Env]
   lazy val analyse: lila.analyse.Env         = wire[lila.analyse.Env]
   lazy val notifyM: lila.notify.Env          = wire[lila.notify.Env]
   lazy val round: lila.round.Env             = wire[lila.round.Env]
@@ -251,12 +242,9 @@ final class EnvBoot(
   lazy val learn: lila.learn.Env             = wire[lila.learn.Env]
   lazy val plan: lila.plan.Env               = wire[lila.plan.Env]
   lazy val event: lila.event.Env             = wire[lila.event.Env]
-  lazy val clas: lila.clas.Env               = wire[lila.clas.Env]
   lazy val pool: lila.pool.Env               = wire[lila.pool.Env]
   lazy val practice: lila.practice.Env       = wire[lila.practice.Env]
-  lazy val activity: lila.activity.Env       = wire[lila.activity.Env]
   lazy val relay: lila.relay.Env             = wire[lila.relay.Env]
-  lazy val streamer: lila.streamer.Env       = wire[lila.streamer.Env]
   lazy val oAuth: lila.oauth.Env             = wire[lila.oauth.Env]
   lazy val bot: lila.bot.Env                 = wire[lila.bot.Env]
   lazy val evalCache: lila.evalCache.Env     = wire[lila.evalCache.Env]

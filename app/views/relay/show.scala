@@ -65,8 +65,7 @@ object show {
         .some
     )(
       frag(
-        main(cls := "analyse"),
-        views.html.study.bits.streamers(streamers)
+        main(cls := "analyse")
       )
     )
 }

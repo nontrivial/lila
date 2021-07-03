@@ -114,9 +114,6 @@ object timeline {
             trans.patron.xIsPatronForNbMonths
               .plural(months, userLink(userId), months)
           )
-        case StreamStart(id, name) =>
-          views.html.streamer.bits
-            .redirectLink(id)(cls := "text", dataIcon := "")(trans.xStartedStreaming(name))
       },
       " ",
       momentFromNowWithPreload(e.date)

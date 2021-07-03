@@ -100,9 +100,6 @@ object show {
               )
             }
           ),
-          stream.map { s =>
-            views.html.streamer.bits.contextual(s.streamer.userId)
-          },
           chatOption.isDefined option views.html.chat.frag
         ),
         div(cls := "simul__main box")(spinner)

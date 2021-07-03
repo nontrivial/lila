@@ -30,7 +30,7 @@ libraryDependencies ++= akka.bundle ++ playWs.bundle ++ Seq(
 lazy val modules = Seq(
   common, db, rating, user, security, hub, socket,
   msg, notifyModule, i18n, game, bookmark, search,
-  gameSearch, timeline, forum, forumSearch, team, teamSearch,
+  gameSearch, timeline, forum, forumSearch,
   analyse, round, pool, lobby, setup,
   importer, tournament, simul, relation, pref,
   evaluation, chat, puzzle, tv, coordinate,
@@ -38,7 +38,7 @@ lazy val modules = Seq(
   playban, insight, perfStat, irc, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
   event, practice, evalCache,
-  activity, relay, bot, clas, swiss, storm, racer
+  relay, bot, swiss, storm, racer
 )
 
 lazy val moduleRefs = modules map projectToRef
@@ -60,7 +60,7 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails learn activity coordinates study class contact patron broadcast tfa settings preferences team perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
+      dbs = "site arena emails learn coordinates study contact patron broadcast tfa settings preferences perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
@@ -204,11 +204,6 @@ lazy val pool = module("pool",
   reactivemongo.bundle
 )
 
-lazy val activity = module("activity",
-  Seq(common, game, analyse, user, forum, study, pool, puzzle, tournament, swiss, practice, team),
-  reactivemongo.bundle
-)
-
 lazy val lobby = module("lobby",
   Seq(common, db, memo, hub, socket, game, user, round, timeline, relation, playban, security, pool),
   Seq(lettuce) ++ reactivemongo.bundle
@@ -347,21 +342,6 @@ lazy val forum = module("forum",
 lazy val forumSearch = module("forumSearch",
   Seq(common, hub, forum, search),
   reactivemongo.bundle
-)
-
-lazy val team = module("team",
-  Seq(common, memo, db, user, forum, security, hub, notifyModule),
-  reactivemongo.bundle
-)
-
-lazy val teamSearch = module("teamSearch",
-  Seq(common, hub, team, search),
-  reactivemongo.bundle
-)
-
-lazy val clas = module("clas",
-  Seq(common, memo, db, user, security, msg, history, puzzle),
-  reactivemongo.bundle ++ Seq(bloomFilter)
 )
 
 lazy val bookmark = module("bookmark",

@@ -75,19 +75,15 @@ final class User(
   private def renderShow(u: UserModel, status: Results.Status = Results.Ok)(implicit ctx: Context) =
     if (HTTPRequest.isSynchronousHttp(ctx.req)) {
       for {
-        as     <- env.activity.read.recent(u)
         nbs    <- env.userNbGames(u, ctx, withCrosstable = false)
         info   <- env.userInfo(u, nbs, ctx)
         social <- env.socialInfo(u, ctx)
       } yield status {
         lila.mon.chronoSync(_.user segment "renderSync") {
-          html.user.show.page.activity(u, as, info, social)
+          html.user.show.page.activity(u, info, social)
         }
       }
-    } else
-      env.activity.read.recent(u) map { as =>
-        status(html.activity(u, as))
-      }
+    }
 
   def download(username: String) = OpenBody { implicit ctx =>
     OptionOk(env.user.repo named username) { user =>
@@ -355,85 +351,6 @@ final class User(
           UserLogins.TableData(userLogins, othersWithEmail, notes, bans, max)
       }
   }
-
-  protected[controllers] def renderModZone(holder: Holder, username: String)(implicit
-      ctx: Context
-  ): Fu[Result] = {
-    env.user.repo withEmails username orFail s"No such user $username" map {
-      case UserModel.WithEmails(user, emails) =>
-        import html.user.{ mod => view }
-        import lila.app.ui.ScalatagsExtensions.LilaFragZero
-        implicit val renderIp = env.mod.ipRender(holder)
-
-        val nbOthers = getInt("nbOthers") | 100
-
-
-        val plan = isGranted(_.Admin) ?? env.plan.api.recentChargesOf(user).map(view.plan(user)).dmap(~_)
-
-        val student = env.clas.api.student.findManaged(user).map2(view.student).dmap(~_)
-
-        val reportLog = isGranted(_.SeeReport) ?? env.report.api
-          .byAndAbout(user, 20)
-          .flatMap { rs =>
-            env.user.lightUserApi.preloadMany(rs.userIds) inject rs
-          }
-          .map(view.reportLog(user))
-
-        val prefs = env.pref.api.getPref(user) map view.prefs(user)
-
-        val rageSit = env.playban.api.getRageSit(user.id).map(view.showRageSit)
-
-        val actions = env.user.repo.isErased(user) map { erased =>
-          html.user.mod.actions(user, emails, erased, env.mod.presets.pmPresets.get())
-        }
-        val userLoginsFu = env.security.userLogins(user, nbOthers)
-        val others = for {
-          userLogins <- userLoginsFu
-          data       <- loginsTableData(user, userLogins, nbOthers)
-        } yield html.user.mod.otherUsers(holder, user, data)
-
-        val identification = userLoginsFu map { logins =>
-          Granter.is(_.ViewPrintNoIP)(holder) ??
-            html.user.mod.identification(holder, user, logins)
-        }
-        val irwin = isGranted(_.MarkEngine) ?? env.irwin.api.reports.withPovs(user).map {
-          _ ?? { reps =>
-            html.irwin.report(reps)
-          }
-        }
-        val assess = isGranted(_.MarkEngine) ?? env.mod.assessApi.getPlayerAggregateAssessmentWithGames(
-          user.id
-        ) flatMap {
-          _ ?? { as =>
-            env.user.lightUserApi
-              .preloadMany(as.games.flatMap(_.userIds)) inject html.user.mod.assessments(user, as)
-          }
-        }
-        implicit val extractor = EventSource.EventDataExtractor[Frag](_.render)
-        Ok.chunked {
-          Source.single(html.user.mod.menu) merge
-            modZoneSegment(actions, "actions", user) merge
-            modZoneSegment(plan, "plan", user) merge
-            modZoneSegment(student, "student", user) merge
-            modZoneSegment(reportLog, "reportLog", user) merge
-            modZoneSegment(prefs, "prefs", user) merge
-            modZoneSegment(rageSit, "rageSit", user) merge
-            modZoneSegment(others, "others", user) merge
-            modZoneSegment(identification, "identification", user) merge
-            modZoneSegment(irwin, "irwin", user) merge
-            modZoneSegment(assess, "assess", user) via
-            EventSource.flow
-        }.as(ContentTypes.EVENT_STREAM) pipe noProxyBuffer
-    }
-  }
-
-  protected[controllers] def renderModZoneActions(username: String)(implicit ctx: Context) =
-    env.user.repo withEmails username orFail s"No such user $username" flatMap {
-      case UserModel.WithEmails(user, emails) =>
-        env.user.repo.isErased(user) map { erased =>
-          Ok(html.user.mod.actions(user, emails, erased, env.mod.presets.pmPresets.get()))
-        }
-    }
 
   def writeNote(username: String) =
     AuthBody { implicit ctx => me =>

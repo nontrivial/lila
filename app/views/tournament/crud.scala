@@ -25,7 +25,6 @@ object crud {
       )
     ) {
       main(cls := "page-menu")(
-        views.html.mod.menu("tour"),
         body
       )
     }

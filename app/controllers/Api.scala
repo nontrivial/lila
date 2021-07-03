@@ -361,21 +361,6 @@ final class Api(
     key = "user_activity.api.ip"
   )
 
-  def activity(name: String) =
-    ApiRequest { implicit req =>
-      implicit val lang = reqLang
-      UserActivityRateLimitPerIP(HTTPRequest ipAddress req, cost = 1) {
-        lila.mon.api.activity.increment(1)
-        env.user.repo named name flatMap {
-          _ ?? { user =>
-            env.activity.read.recent(user) flatMap {
-              _.map { env.activity.jsonView(_, user) }.sequenceFu
-            }
-          }
-        } map toApiResult
-      }(fuccess(Limited))
-    }
-
   private val ApiMoveStreamGlobalConcurrencyLimitPerIP =
     new lila.memo.ConcurrencyLimit[IpAddress](
       name = "API concurrency per IP",

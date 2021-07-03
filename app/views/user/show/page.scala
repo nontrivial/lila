@@ -16,12 +16,11 @@ object page {
 
   def activity(
       u: User,
-      activities: Vector[lila.activity.ActivityView],
       info: UserInfo,
       social: lila.app.mashup.UserInfo.Social
   )(implicit ctx: Context) =
     views.html.base.layout(
-      title = s"${u.username} : ${trans.activity.activity.txt()}",
+      title = s"${u.username} :",
       openGraph = lila.app.ui
         .OpenGraph(
           image = assetUrl("logo/lichess-tile-wide.png").some,
@@ -40,10 +39,6 @@ object page {
     ) {
       main(cls := "page-menu", dataUsername := u.username)(
         st.aside(cls := "page-menu__menu")(side(u, info.ranks, none)),
-        div(cls := "page-menu__content box user-show")(
-          views.html.user.show.header(u, info, Angle.Activity, social),
-          div(cls := "angle-content")(views.html.activity(u, activities))
-        )
       )
     }
 

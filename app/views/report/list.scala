@@ -99,7 +99,6 @@ object list {
       moreCss = cssTag("mod.report")
     ) {
       main(cls := "page-menu")(
-        views.html.mod.menu("report"),
         div(id := "report_list", cls := "page-menu__content box")(
           div(cls := "header")(
             i(cls := "icon"),

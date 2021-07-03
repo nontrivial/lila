@@ -17,7 +17,6 @@ object dev {
       moreCss = cssTag("mod.misc")
     )(
       main(cls := "page-menu")(
-        mod.menu("setting"),
         div(id := "settings", cls := "page-menu__content box box-pad")(
           h1(title),
           p("Tread lightly."),
@@ -54,7 +53,6 @@ object dev {
       moreCss = cssTag("mod.misc")
     ) {
       main(cls := "page-menu")(
-        views.html.mod.menu("cli"),
         div(id := "dev-cli", cls := "page-menu__content box box-pad")(
           h1(title),
           p(

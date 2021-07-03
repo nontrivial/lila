@@ -112,9 +112,6 @@ object side {
           )
         }
       ),
-      streamers.nonEmpty option div(cls := "context-streamers")(
-        streamers map views.html.streamer.bits.contextual
-      ),
       chat option views.html.chat.frag
     )
 
