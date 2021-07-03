@@ -173,14 +173,6 @@ final private[forum] class TopicApi(
       }.sequenceFu
     }
 
-  def delete(categ: Categ, topic: Topic): Funit =
-    env.postRepo.idsByTopicId(topic.id) flatMap { postIds =>
-      (env.postRepo removeByTopic topic.id zip env.topicRepo.coll.delete.one($id(topic.id))) >>
-        (env.categApi denormalize categ) >>-
-        (indexer ! RemovePosts(postIds)) >>-
-        env.recent.invalidate()
-    }
-
   def denormalize(topic: Topic): Funit =
     for {
       nbPosts       <- env.postRepo countByTopic topic

@@ -38,7 +38,7 @@ lazy val modules = Seq(
   playban, insight, perfStat, irc, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
   event, practice, evalCache,
-  activity, relay, streamer, bot, clas, swiss, storm, racer
+  activity, relay, bot, clas, swiss, storm, racer
 )
 
 lazy val moduleRefs = modules map projectToRef
@@ -60,7 +60,7 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails learn activity coordinates study class contact patron broadcast streamer tfa settings preferences team perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
+      dbs = "site arena emails learn activity coordinates study class contact patron broadcast tfa settings preferences team perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
@@ -89,11 +89,6 @@ lazy val quote = smallModule("quote",
 lazy val video = smallModule("video",
   Seq(common, memo, hub, db, user),
   Seq(autoconfig) ++ reactivemongo.bundle ++ macwire.bundle
-)
-
-lazy val streamer = module("streamer",
-  Seq(common, hub, db, user, notifyModule),
-  reactivemongo.bundle
 )
 
 lazy val coordinate = smallModule("coordinate",

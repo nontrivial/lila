@@ -194,27 +194,6 @@ final class PostApi(
       maxPerPage = maxPerPage
     )
 
-  def delete(categSlug: String, postId: String, mod: User): Funit =
-    env.postRepo.unsafe.byCategAndId(categSlug, postId) flatMap {
-      _ ?? { post =>
-        viewOf(post) flatMap {
-          _ ?? { view =>
-            for {
-              first <- env.postRepo.isFirstPost(view.topic.id, view.post.id)
-              _ <-
-                if (first) env.topicApi.delete(view.categ, view.topic)
-                else
-                  env.postRepo.coll.delete.one($id(view.post.id)) >>
-                    (env.topicApi denormalize view.topic) >>
-                    (env.categApi denormalize view.categ) >>-
-                    env.recent.invalidate() >>-
-                    (indexer ! RemovePost(post.id))
-            } yield ()
-          }
-        }
-      }
-    }
-
   def allUserIds(topicId: Topic.ID) = env.postRepo allUserIdsByTopicId topicId
 
   def nbByUser(userId: String) = env.postRepo.coll.countSel($doc("userId" -> userId))

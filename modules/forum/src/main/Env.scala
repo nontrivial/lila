@@ -6,7 +6,6 @@ import play.api.Configuration
 
 import lila.common.config._
 import lila.hub.actorApi.team.CreateTeam
-import lila.mod.ModlogApi
 import lila.notify.NotifyApi
 import lila.relation.RelationApi
 import lila.pref.PrefApi
@@ -22,7 +21,7 @@ final private class ForumConfig(
 final class Env(
     appConfig: Configuration,
     db: lila.db.Db,
-    modLog: ModlogApi,
+    modLog: Any,
     spam: lila.security.Spam,
     promotion: lila.security.PromotionApi,
     captcher: lila.hub.actors.Captcher,
