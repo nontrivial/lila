@@ -122,8 +122,6 @@ final class RoundSocket(
       }
     case Protocol.In.PlayerChatSay(id, Left(userId), msg) =>
       messenger.owner(id, userId, msg).unit
-    case Protocol.In.WatcherChatSay(id, userId, msg) =>
-      messenger.watcher(id, userId, msg).unit
     case RP.In.ChatTimeout(roomId, modId, suspect, reason, text) =>
       messenger.timeout(Chat.Id(s"$roomId/w"), modId, suspect, reason, text).unit
     case Protocol.In.Berserk(gameId, userId) => tournamentActor ! Berserk(gameId.value, userId)
@@ -247,7 +245,6 @@ object RoundSocket {
       case class PlayerMove(fullId: FullId, uci: Uci, blur: Boolean, lag: MoveMetrics) extends P.In
       case class PlayerChatSay(gameId: Game.Id, userIdOrColor: Either[User.ID, Color], msg: String)
           extends P.In
-      case class WatcherChatSay(gameId: Game.Id, userId: User.ID, msg: String)                    extends P.In
       case class Bye(fullId: FullId)                                                              extends P.In
       case class HoldAlert(fullId: FullId, ip: IpAddress, mean: Int, sd: Int)                     extends P.In
       case class Flag(gameId: Game.Id, color: Color, fromPlayerId: Option[PlayerId])              extends P.In
