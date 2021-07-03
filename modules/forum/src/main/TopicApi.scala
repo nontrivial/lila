@@ -17,7 +17,7 @@ final private[forum] class TopicApi(
     env: Env,
     indexer: lila.hub.actors.ForumSearch,
     maxPerPage: lila.common.config.MaxPerPage,
-    modLog: lila.mod.ModlogApi,
+    modLog: Any,
     spam: lila.security.Spam,
     promotion: lila.security.PromotionApi,
     timeline: lila.hub.actors.Timeline,

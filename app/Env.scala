@@ -36,7 +36,6 @@ final class Env(
     val team: lila.team.Env,
     val teamSearch: lila.teamSearch.Env,
     val analyse: lila.analyse.Env,
-    val mod: lila.mod.Env,
     val notifyM: lila.notify.Env,
     val round: lila.round.Env,
     val lobby: lila.lobby.Env,
@@ -45,7 +44,6 @@ final class Env(
     val tournament: lila.tournament.Env,
     val simul: lila.simul.Env,
     val relation: lila.relation.Env,
-    val report: lila.report.Env,
     val pref: lila.pref.Env,
     val chat: lila.chat.Env,
     val puzzle: lila.puzzle.Env,
@@ -67,11 +65,9 @@ final class Env(
     val learn: lila.learn.Env,
     val plan: lila.plan.Env,
     val event: lila.event.Env,
-    val coach: lila.coach.Env,
     val clas: lila.clas.Env,
     val pool: lila.pool.Env,
     val practice: lila.practice.Env,
-    val irwin: lila.irwin.Env,
     val activity: lila.activity.Env,
     val relay: lila.relay.Env,
     val streamer: lila.streamer.Env,
@@ -158,12 +154,9 @@ final class Env(
       _       <- security.store.closeAllSessionsOf(u.id)
       _       <- push.webSubscriptionApi.unsubscribeByUser(u)
       _       <- streamer.api.demote(u.id)
-      reports <- report.api.processAndGetBySuspect(lila.report.Suspect(u))
-      _       <- selfClose ?? mod.logApi.selfCloseAccount(u.id, reports)
       _ <- u.marks.troll ?? relation.api.fetchFollowing(u.id).flatMap {
         activity.write.unfollowAll(u, _)
       }
-      _ <- !selfClose ?? mod.logApi.closeAccount(by.id, u.id)
     } yield Bus.publish(lila.hub.actorApi.security.CloseAccount(u.id), "accountClose")
 
   Bus.subscribeFun("garbageCollect") { case lila.hub.actorApi.security.GarbageCollect(userId) =>
@@ -229,7 +222,6 @@ final class EnvBoot(
   lazy val team: lila.team.Env               = wire[lila.team.Env]
   lazy val teamSearch: lila.teamSearch.Env   = wire[lila.teamSearch.Env]
   lazy val analyse: lila.analyse.Env         = wire[lila.analyse.Env]
-  lazy val mod: lila.mod.Env                 = wire[lila.mod.Env]
   lazy val notifyM: lila.notify.Env          = wire[lila.notify.Env]
   lazy val round: lila.round.Env             = wire[lila.round.Env]
   lazy val lobby: lila.lobby.Env             = wire[lila.lobby.Env]
@@ -238,7 +230,6 @@ final class EnvBoot(
   lazy val tournament: lila.tournament.Env   = wire[lila.tournament.Env]
   lazy val simul: lila.simul.Env             = wire[lila.simul.Env]
   lazy val relation: lila.relation.Env       = wire[lila.relation.Env]
-  lazy val report: lila.report.Env           = wire[lila.report.Env]
   lazy val pref: lila.pref.Env               = wire[lila.pref.Env]
   lazy val chat: lila.chat.Env               = wire[lila.chat.Env]
   lazy val puzzle: lila.puzzle.Env           = wire[lila.puzzle.Env]
@@ -260,11 +251,9 @@ final class EnvBoot(
   lazy val learn: lila.learn.Env             = wire[lila.learn.Env]
   lazy val plan: lila.plan.Env               = wire[lila.plan.Env]
   lazy val event: lila.event.Env             = wire[lila.event.Env]
-  lazy val coach: lila.coach.Env             = wire[lila.coach.Env]
   lazy val clas: lila.clas.Env               = wire[lila.clas.Env]
   lazy val pool: lila.pool.Env               = wire[lila.pool.Env]
   lazy val practice: lila.practice.Env       = wire[lila.practice.Env]
-  lazy val irwin: lila.irwin.Env             = wire[lila.irwin.Env]
   lazy val activity: lila.activity.Env       = wire[lila.activity.Env]
   lazy val relay: lila.relay.Env             = wire[lila.relay.Env]
   lazy val streamer: lila.streamer.Env       = wire[lila.streamer.Env]
