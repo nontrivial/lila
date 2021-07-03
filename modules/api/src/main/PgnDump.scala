@@ -9,7 +9,6 @@ import lila.game.PgnDump.WithFlags
 final class PgnDump(
     val dumper: lila.game.PgnDump,
     annotator: Annotator,
-    simulApi: lila.simul.SimulApi,
     getTournamentName: lila.tournament.GetTourName
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
@@ -18,17 +17,11 @@ final class PgnDump(
   def apply(
       game: Game,
       initialFen: Option[FEN],
-      analysis: Option[Analysis],
       flags: WithFlags,
       realPlayers: Option[RealPlayers] = None
   ): Fu[Pgn] =
     dumper(game, initialFen, flags) flatMap { pgn =>
-      if (flags.tags) (game.simulId ?? simulApi.idToName) map { simulName =>
-        simulName
-          .orElse(game.tournamentId flatMap getTournamentName.get)
-          .fold(pgn)(pgn.withEvent)
-      }
-      else fuccess(pgn)
+      fuccess(pgn)
     } map { pgn =>
       val evaled = analysis.ifTrue(flags.evals).fold(pgn)(addEvals(pgn, _))
       if (flags.literate) annotator(evaled, game, analysis)

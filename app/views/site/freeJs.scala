@@ -14,7 +14,6 @@ object freeJs {
     "analyse",
     "challenge",
     "chat",
-    "cli",
     "dasher",
     "editor",
     "insight",

@@ -15,7 +15,6 @@ final private[api] class UserApi(
     gameCache: lila.game.Cached,
     userRepo: lila.user.UserRepo,
     prefApi: lila.pref.PrefApi,
-    liveStreamApi: lila.streamer.LiveStreamApi,
     gameProxyRepo: lila.round.GameProxyRepo,
     net: NetConfig
 )(implicit ec: scala.concurrent.ExecutionContext) {
@@ -24,8 +23,7 @@ final private[api] class UserApi(
     Json.obj("paginator" -> PaginatorJson(pag mapResults one))
 
   def one(u: User): JsObject =
-    addPlayingStreaming(jsonView(u), u.id) ++
-      Json.obj("url" -> makeUrl(s"@/${u.username}")) // for app BC
+    Json.obj("url" -> makeUrl(s"@/${u.username}")) // for app BC
 
   def extended(username: String, as: Option[User]): Fu[Option[JsObject]] =
     userRepo named username flatMap {
@@ -85,8 +83,7 @@ final private[api] class UserApi(
                   "import"   -> nbImported,
                   "me"       -> nbGamesWithMe
                 )
-              )
-              .add("streaming", liveStreamApi.isStreaming(u.id)) ++
+              ) ++
               as.isDefined.??(
                 Json.obj(
                   "followable" -> followable,
@@ -98,9 +95,6 @@ final private[api] class UserApi(
           }.noNull
         }
     }
-
-  private def addPlayingStreaming(js: JsObject, id: User.ID) =
-    js.add("streaming", liveStreamApi.isStreaming(id))
 
   private def makeUrl(path: String): String = s"${net.baseUrl}/$path"
 }

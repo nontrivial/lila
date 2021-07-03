@@ -20,7 +20,6 @@ import lila.user.User
 import lila.round.GameProxyRepo
 
 final class GameApiV2(
-    pgnDump: PgnDump,
     gameRepo: lila.game.GameRepo,
     tournamentRepo: lila.tournament.TournamentRepo,
     pairingRepo: lila.tournament.PairingRepo,
@@ -48,14 +47,6 @@ final class GameApiV2(
           export <- config.format match {
             case Format.JSON =>
               toJson(game, initialFen, analysis, config.flags, realPlayers = realPlayers) dmap Json.stringify
-            case Format.PGN =>
-              pgnDump(
-                game,
-                initialFen,
-                analysis,
-                config.flags,
-                realPlayers = realPlayers
-              ) dmap pgnDump.toPgnString
           }
         } yield export
     }
@@ -67,8 +58,6 @@ final class GameApiV2(
       fileR.replaceAllIn(
         "lichess_pgn_%s_%s_vs_%s.%s.%s".format(
           Tag.UTCDate.format.print(game.createdAt),
-          pgnDump.dumper.player(game.whitePlayer, wu),
-          pgnDump.dumper.player(game.blackPlayer, bu),
           game.id,
           format.toString.toLowerCase
         ),
@@ -165,7 +154,6 @@ final class GameApiV2(
           }
           .mapAsync(4) { case ((game, fen, analysis), pairing, teams) =>
             config.format match {
-              case Format.PGN => pgnDump.formatter(config.flags)(game, fen, analysis, none)
               case Format.JSON =>
                 def addBerserk(color: chess.Color)(json: JsObject) =
                   if (pairing berserkOf color)
@@ -202,13 +190,11 @@ final class GameApiV2(
 
   private def formatterFor(config: Config) =
     config.format match {
-      case Format.PGN  => pgnDump.formatter(config.flags)
       case Format.JSON => jsonFormatter(config.flags)
     }
 
   private def emptyMsgFor(config: Config) =
     config.format match {
-      case Format.PGN  => "\n"
       case Format.JSON => "{}\n"
     }
 
@@ -232,11 +218,6 @@ final class GameApiV2(
   ): Fu[JsObject] =
     for {
       lightUsers <- gameLightUsers(g) dmap { case (wu, bu) => List(wu, bu) }
-      pgn <-
-        withFlags.pgnInJson ?? pgnDump
-          .apply(g, initialFen, analysisOption, withFlags, realPlayers = realPlayers)
-          .dmap(pgnDump.toPgnString)
-          .dmap(some)
     } yield Json
       .obj(
         "id"         -> g.id,
@@ -266,7 +247,6 @@ final class GameApiV2(
       .add("moves" -> withFlags.moves.option {
         withFlags keepDelayIf g.playable applyDelay g.pgnMoves mkString " "
       })
-      .add("pgn" -> pgn)
       .add("daysPerTurn" -> g.daysPerTurn)
       .add("analysis" -> analysisOption.ifTrue(withFlags.evals).map(analysisJson.moves(_, withGlyph = false)))
       .add("tournament" -> g.tournamentId)
@@ -286,9 +266,8 @@ object GameApiV2 {
 
   sealed trait Format
   object Format {
-    case object PGN  extends Format
     case object JSON extends Format
-    def byRequest(req: play.api.mvc.RequestHeader) = if (HTTPRequest acceptsNdJson req) JSON else PGN
+    def byRequest(req: play.api.mvc.RequestHeader) = if (HTTPRequest acceptsNdJson req) JSON
   }
 
   sealed trait Config {

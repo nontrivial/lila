@@ -46,43 +46,4 @@ object dev {
     )
   }
 
-  def cli(form: Form[_], res: Option[String])(implicit ctx: Context) = {
-    val title = "Command Line Interface"
-    views.html.base.layout(
-      title = title,
-      moreCss = cssTag("mod.misc")
-    ) {
-      main(cls := "page-menu")(
-        div(id := "dev-cli", cls := "page-menu__content box box-pad")(
-          h1(title),
-          p(
-            "Run arbitrary lila commands.",
-            br,
-            "Only use if you know exactly what you're doing."
-          ),
-          res map { pre(_) },
-          postForm(action := routes.Dev.cliPost)(
-            form3.input(form("command"))(autofocus)
-          ),
-          h2("Command examples:"),
-          pre("""uptime
-announce 10 minutes Lichess will restart!
-announce cancel
-change asset version
-puzzle disable 70000
-team disable foobar
-team enable foobar
-fishnet client create {username}
-gdpr erase {username} forever
-patron lifetime {username}
-patron month {username}
-patron remove {username}
-tournament feature {id}
-tournament unfeature {id}
-eval-cache drop standard 8/8/1k6/8/2K5/1P6/8/8 w - - 0 1
-""")
-        )
-      )
-    }
-  }
 }

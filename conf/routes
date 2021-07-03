@@ -245,13 +245,6 @@ GET   /event/manager/clone/$id<\w{8}>  controllers.Event.cloneE(id: String)
 GET   /event/manager/new               controllers.Event.form
 POST  /event/manager                   controllers.Event.create
 
-# Dev
-GET   /dev/cli                         controllers.Dev.cli
-POST  /dev/cli                         controllers.Dev.cliPost
-POST  /cli                             controllers.Dev.command
-GET   /dev/settings                    controllers.Dev.settings
-POST  /dev/settings/:id                controllers.Dev.settingsPost(id: String)
-
 # Push
 POST  /mobile/register/:platform/:deviceId controllers.Push.mobileRegister(platform: String, deviceId: String)
 POST  /mobile/unregister               controllers.Push.mobileUnregister

@@ -23,7 +23,6 @@ final private[api] class RoundApi(
     bookmarkApi: lila.bookmark.BookmarkApi,
     gameRepo: lila.game.GameRepo,
     tourApi: lila.tournament.TournamentApi,
-    simulApi: lila.simul.SimulApi,
     getLightUser: lila.common.LightUser.GetterSync
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
@@ -43,14 +42,12 @@ final private[api] class RoundApi(
           initialFen = initialFen,
           nvui = ctx.blind
         ) zip
-          (pov.game.simulId ?? simulApi.find) zip
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
           forecastApi.loadForDisplay(pov) zip
           bookmarkApi.exists(pov.game, ctx.me) map {
-            case (((((json, simul)), note), forecast), bookmarked) =>
+            case (((((json)), note), forecast), bookmarked) =>
               (
                 withTournament(pov, tour) _ compose
-                  withSimul(simul) compose
                   withSteps(pov, initialFen) compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
@@ -80,12 +77,10 @@ final private[api] class RoundApi(
           initialFen = initialFen,
           withFlags = WithFlags(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip
-          (pov.game.simulId ?? simulApi.find) zip
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
-          bookmarkApi.exists(pov.game, ctx.me) map { case ((((json, simul)), note), bookmarked) =>
+          bookmarkApi.exists(pov.game, ctx.me) map { case ((((json)), note), bookmarked) =>
             (
               withTournament(pov, tour) _ compose
-                withSimul(simul) compose
                 withNote(note) compose
                 withBookmark(bookmarked) compose
                 withSteps(pov, initialFen)
@@ -117,16 +112,14 @@ final private[api] class RoundApi(
           withFlags = withFlags.copy(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip
           tourApi.gameView.analysis(pov.game) zip
-          (pov.game.simulId ?? simulApi.find) zip
           ctx.userId.ifTrue(ctx.isMobileApi).?? {
             noteApi.get(pov.gameId, _)
           } zip
           (owner.??(forecastApi loadForDisplay pov)) zip
           bookmarkApi.exists(pov.game, ctx.me) map {
-            case ((((((json, tour), simul)), note), fco), bookmarked) =>
+            case ((((((json, tour))), note), fco), bookmarked) =>
               (
                 withTournament(pov, tour) _ compose
-                  withSimul(simul) compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
                   withTree(pov, analysis, initialFen, withFlags) compose
@@ -264,24 +257,6 @@ final private[api] class RoundApi(
             lila.tournament.JsonView.top(_, getLightUser)
           }
         )
-        .add(
-          "team",
-          v.teamVs.map(_.teams(pov.color)) map { id =>
-            Json.obj("name" -> getTeamName(id))
-          }
-        )
     })
 
-  private def withSimul(simulOption: Option[Simul])(json: JsObject) =
-    json.add(
-      "simul",
-      simulOption.map { simul =>
-        Json.obj(
-          "id"        -> simul.id,
-          "hostId"    -> simul.hostId,
-          "name"      -> simul.name,
-          "nbPlaying" -> simul.playingPairings.size
-        )
-      }
-    )
 }

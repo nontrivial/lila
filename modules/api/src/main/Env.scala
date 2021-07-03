@@ -18,13 +18,8 @@ final class Env(
     net: NetConfig,
     securityEnv: lila.security.Env,
     mailerEnv: lila.mailer.Env,
-    forumSearchEnv: lila.forumSearch.Env,
-    forumEnv: lila.forum.Env,
-    puzzleEnv: lila.puzzle.Env,
     explorerEnv: lila.explorer.Env,
     fishnetEnv: lila.fishnet.Env,
-    studyEnv: lila.study.Env,
-    studySearchEnv: lila.studySearch.Env,
     evalCacheEnv: lila.evalCache.Env,
     planEnv: lila.plan.Env,
     gameEnv: lila.game.Env,
@@ -37,10 +32,7 @@ final class Env(
     relationEnv: lila.relation.Env,
     analyseEnv: lila.analyse.Env,
     lobbyEnv: lila.lobby.Env,
-    simulEnv: lila.simul.Env,
     tourEnv: lila.tournament.Env,
-    swissEnv: lila.swiss.Env,
-    onlineApiUsers: lila.bot.OnlineApiUsers,
     challengeEnv: lila.challenge.Env,
     socketEnv: lila.socket.Env,
     msgEnv: lila.msg.Env,
@@ -78,8 +70,6 @@ final class Env(
   lazy val personalDataExport = wire[PersonalDataExport]
 
   lazy val referrerRedirect = wire[ReferrerRedirect]
-
-  lazy val cli = wire[Cli]
 
   private lazy val influxEvent = new InfluxEvent(
     ws = ws,
