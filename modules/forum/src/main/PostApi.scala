@@ -12,7 +12,6 @@ import lila.db.dsl._
 import lila.db.paginator._
 import lila.hub.actorApi.timeline.{ ForumPost, Propagate }
 import lila.hub.LightTeam.TeamID
-import lila.mod.ModlogApi
 import lila.security.{ Granter => MasterGranter }
 import lila.user.User
 

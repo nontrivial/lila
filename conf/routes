@@ -430,23 +430,6 @@ POST  /auth/magic-link/send            controllers.Auth.magicLinkApply
 GET   /auth/magic-link/sent/:email     controllers.Auth.magicLinkSent(email: String)
 GET   /auth/magic-link/login/:token    controllers.Auth.magicLinkLogin(token: String)
 
-# Forum
-GET   /forum                           controllers.ForumCateg.index
-GET   /forum/search                    controllers.ForumPost.search(text: String ?= "", page: Int ?= 1)
-GET   /forum/:slug                     controllers.ForumCateg.show(slug: String, page: Int ?= 1)
-GET   /forum/:categSlug/form           controllers.ForumTopic.form(categSlug: String)
-POST  /forum/:categSlug/new            controllers.ForumTopic.create(categSlug: String)
-GET   /forum/participants/:topicId     controllers.ForumTopic.participants(topicId: String)
-GET   /forum/:categSlug/:slug          controllers.ForumTopic.show(categSlug: String, slug: String, page: Int ?= 1)
-POST  /forum/:categSlug/:slug/close    controllers.ForumTopic.close(categSlug: String, slug: String)
-POST  /forum/:categSlug/:slug/hide     controllers.ForumTopic.hide(categSlug: String, slug: String)
-POST  /forum/:categSlug/:slug/sticky   controllers.ForumTopic.sticky(categSlug: String, slug: String)
-POST  /forum/:categSlug/:slug/new      controllers.ForumPost.create(categSlug: String, slug: String, page: Int ?= 1)
-POST  /forum/:categSlug/delete/:id     controllers.ForumPost.delete(categSlug: String, id: String)
-POST  /forum/post/:id                  controllers.ForumPost.edit(id: String)
-POST  /forum/post/:id/react/:reaction/:v controllers.ForumPost.react(id: String, reaction: String, v: Boolean)
-GET   /forum/redirect/post/:id         controllers.ForumPost.redirect(id: String)
-
 # Msg compat
 POST  /inbox/new                       controllers.Msg.compatCreate
 # Msg

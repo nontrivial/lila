@@ -181,26 +181,6 @@ final private[forum] class TopicApi(
         env.recent.invalidate()
     }
 
-  def toggleClose(categ: Categ, topic: Topic, mod: Holder): Funit =
-    env.topicRepo.close(topic.id, topic.open) >> {
-      MasterGranter.is(_.ModerateForum)(mod) ??
-        modLog.toggleCloseTopic(mod.id, categ.name, topic.name, topic.open)
-    }
-
-  def toggleHide(categ: Categ, topic: Topic, mod: Holder): Funit =
-    env.topicRepo.hide(topic.id, topic.visibleOnHome) >> {
-      MasterGranter.is(_.ModerateForum)(mod) ?? {
-        env.postRepo.hideByTopic(topic.id, topic.visibleOnHome) >>
-          modLog.toggleHideTopic(mod.id, categ.name, topic.name, topic.visibleOnHome)
-      } >>- env.recent.invalidate()
-    }
-
-  def toggleSticky(categ: Categ, topic: Topic, mod: Holder): Funit =
-    env.topicRepo.sticky(topic.id, !topic.isSticky) >> {
-      MasterGranter.is(_.ModerateForum)(mod) ??
-        modLog.toggleStickyTopic(mod.id, categ.name, topic.name, !topic.isSticky)
-    }
-
   def denormalize(topic: Topic): Funit =
     for {
       nbPosts       <- env.postRepo countByTopic topic
