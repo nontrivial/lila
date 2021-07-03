@@ -20,7 +20,7 @@ final class PostApi(
     env: Env,
     indexer: lila.hub.actors.ForumSearch,
     maxPerPage: lila.common.config.MaxPerPage,
-    modLog: ModlogApi,
+    modLog: Any,
     spam: lila.security.Spam,
     promotion: lila.security.PromotionApi,
     timeline: lila.hub.actors.Timeline,
@@ -210,12 +210,6 @@ final class PostApi(
                     (env.categApi denormalize view.categ) >>-
                     env.recent.invalidate() >>-
                     (indexer ! RemovePost(post.id))
-              _ <- MasterGranter(_.ModerateForum)(mod) ?? modLog.deletePost(
-                mod.id,
-                post.userId,
-                post.author,
-                text = "%s / %s / %s".format(view.categ.name, view.topic.name, post.text)
-              )
             } yield ()
           }
         }

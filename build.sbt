@@ -37,7 +37,7 @@ lazy val modules = Seq(
   history, video, shutup, push, mailer,
   playban, insight, perfStat, irc, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
-  event, practice, evalCache, irwin,
+  event, practice, evalCache,
   activity, relay, streamer, bot, clas, swiss, storm, racer
 )
 
@@ -252,11 +252,6 @@ lazy val simul = module("simul",
 lazy val fishnet = module("fishnet",
   Seq(common, game, analyse, db, evalCache),
   Seq(lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val irwin = module("irwin",
-  Seq(common, db, user, game, tournament, mod),
-  reactivemongo.bundle
 )
 
 lazy val oauth = smallModule("oauth",

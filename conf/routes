@@ -430,11 +430,6 @@ POST  /auth/magic-link/send            controllers.Auth.magicLinkApply
 GET   /auth/magic-link/sent/:email     controllers.Auth.magicLinkSent(email: String)
 GET   /auth/magic-link/login/:token    controllers.Auth.magicLinkLogin(token: String)
 
-# Irwin
-GET   /irwin                           controllers.Irwin.dashboard
-POST  /irwin/report                    controllers.Irwin.saveReport
-GET   /api/stream/irwin                controllers.Irwin.eventStream
-
 # Forum
 GET   /forum                           controllers.ForumCateg.index
 GET   /forum/search                    controllers.ForumPost.search(text: String ?= "", page: Int ?= 1)
