@@ -14,9 +14,7 @@ object show {
       sim: lila.simul.Simul,
       socketVersion: lila.socket.Socket.SocketVersion,
       data: play.api.libs.json.JsObject,
-      chatOption: Option[lila.chat.UserChat.Mine],
-      stream: Option[lila.streamer.Stream],
-      team: Option[lila.team.Team]
+      chatOption: Option[lila.chat.UserChat.Mine]
   )(implicit ctx: Context) =
     views.html.base.layout(
       moreCss = cssTag("simul.show"),
@@ -87,12 +85,6 @@ object show {
               }
             ),
             trans.by(userIdLink(sim.hostId.some)),
-            team map { t =>
-              frag(
-                br,
-                trans.mustBeInTeam(a(href := routes.Team.show(t.id))(t.name))
-              )
-            },
             sim.estimatedStartAt map { d =>
               frag(
                 br,

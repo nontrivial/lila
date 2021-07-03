@@ -317,51 +317,6 @@ final class Account(
       }
     }
 
-  def kid =
-    Auth { implicit ctx => me =>
-      env.clas.api.student.isManaged(me) flatMap { managed =>
-        env.security.forms toggleKid me map { form =>
-          Ok(html.account.kid(me, form, managed))
-        }
-      }
-    }
-  def apiKid =
-    Scoped(_.Preference.Read) { _ => me =>
-      JsonOk(Json.obj("kid" -> me.kid)).fuccess
-    }
-
-  def kidPost =
-    AuthBody { implicit ctx => me =>
-      NotManaged {
-        implicit val req = ctx.body
-        env.security.forms toggleKid me flatMap { form =>
-          form
-            .bindFromRequest()
-            .fold(
-              err =>
-                negotiate(
-                  html = BadRequest(html.account.kid(me, err, managed = false)).fuccess,
-                  api = _ => BadRequest(errorsAsJson(err)).fuccess
-                ),
-              _ =>
-                env.user.repo.setKid(me, getBool("v")) >>
-                  negotiate(
-                    html = Redirect(routes.Account.kid).flashSuccess.fuccess,
-                    api = _ => jsonOkResult.fuccess
-                  )
-            )
-        }
-      }
-    }
-
-  def apiKidPost =
-    Scoped(_.Preference.Write) { req => me =>
-      getBoolOpt("v", req) match {
-        case None    => BadRequest(jsonError("Missing v parameter")).fuccess
-        case Some(v) => env.user.repo.setKid(me, v) inject jsonOkResult
-      }
-    }
-
   private def currentSessionId(implicit ctx: Context) =
     ~env.security.api.reqSessionId(ctx.req)
 

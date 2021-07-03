@@ -15,7 +15,6 @@ import lila.db.dsl._
 import lila.game.JsonView._
 import lila.game.PgnDump.WithFlags
 import lila.game.{ Game, PerfPicker, Query }
-import lila.team.GameTeams
 import lila.tournament.Tournament
 import lila.user.User
 import lila.round.GameProxyRepo
@@ -26,7 +25,6 @@ final class GameApiV2(
     tournamentRepo: lila.tournament.TournamentRepo,
     pairingRepo: lila.tournament.PairingRepo,
     playerRepo: lila.tournament.PlayerRepo,
-    swissApi: lila.swiss.SwissApi,
     analysisRepo: lila.analyse.AnalysisRepo,
     getLightUser: LightUser.Getter,
     realPlayerApi: RealPlayerApi,
@@ -87,20 +85,6 @@ final class GameApiV2(
         Tag.UTCDate.format.print(tour.startsAt),
         tour.id,
         lila.common.String.slugify(tour.name),
-        format
-      ),
-      "_"
-    )
-
-  def filename(swiss: lila.swiss.Swiss, format: Format): String =
-    filename(swiss, format.toString.toLowerCase)
-
-  def filename(swiss: lila.swiss.Swiss, format: String): String =
-    fileR.replaceAllIn(
-      "lichess_swiss_%s_%s_%s.%s".format(
-        Tag.UTCDate.format.print(swiss.startsAt),
-        swiss.id,
-        lila.common.String.slugify(swiss.name),
         format
       ),
       "_"
@@ -181,7 +165,7 @@ final class GameApiV2(
           }
           .mapAsync(4) { case ((game, fen, analysis), pairing, teams) =>
             config.format match {
-              case Format.PGN => pgnDump.formatter(config.flags)(game, fen, analysis, teams, none)
+              case Format.PGN => pgnDump.formatter(config.flags)(game, fen, analysis, none)
               case Format.JSON =>
                 def addBerserk(color: chess.Color)(json: JsObject) =
                   if (pairing berserkOf color)
@@ -189,7 +173,7 @@ final class GameApiV2(
                       "players" -> Json.obj(color.name -> Json.obj("berserk" -> true))
                     )
                   else json
-                toJson(game, fen, analysis, config.flags, teams) dmap
+                toJson(game, fen, analysis, config.flags) dmap
                   addBerserk(chess.White) dmap
                   addBerserk(chess.Black) dmap { json =>
                     s"${Json.stringify(json)}\n"
@@ -198,27 +182,6 @@ final class GameApiV2(
           }
       }
     }
-
-  def exportBySwiss(config: BySwissConfig): Source[String, _] =
-    swissApi
-      .gameIdSource(
-        swissId = config.swissId,
-        batchSize = config.perSecond.value
-      )
-      .grouped(config.perSecond.value)
-      .throttle(1, 1 second)
-      .mapAsync(1)(gameRepo.gamesFromSecondary)
-      .mapConcat(identity)
-      .mapAsync(4)(enrich(config.flags))
-      .mapAsync(4) { case (game, fen, analysis) =>
-        config.format match {
-          case Format.PGN => pgnDump.formatter(config.flags)(game, fen, analysis, none, none)
-          case Format.JSON =>
-            toJson(game, fen, analysis, config.flags, None) dmap { json =>
-              s"${Json.stringify(json)}\n"
-            }
-        }
-      }
 
   private val upgradeOngoingGame =
     Flow[Game].mapAsync(4)(gameProxy.upgradeIfPresent)
@@ -254,10 +217,9 @@ final class GameApiV2(
         game: Game,
         initialFen: Option[FEN],
         analysis: Option[Analysis],
-        teams: Option[GameTeams],
         realPlayers: Option[RealPlayers]
     ) =>
-      toJson(game, initialFen, analysis, flags, teams, realPlayers) dmap { json =>
+      toJson(game, initialFen, analysis, flags, realPlayers) dmap { json =>
         s"${Json.stringify(json)}\n"
       }
 
@@ -266,7 +228,6 @@ final class GameApiV2(
       initialFen: Option[FEN],
       analysisOption: Option[Analysis],
       withFlags: WithFlags,
-      teams: Option[GameTeams] = None,
       realPlayers: Option[RealPlayers] = None
   ): Fu[JsObject] =
     for {
@@ -296,7 +257,6 @@ final class GameApiV2(
             .add("provisional" -> p.provisional)
             .add("aiLevel" -> p.aiLevel)
             .add("analysis" -> analysisOption.flatMap(analysisJson.player(g pov p.color)))
-            .add("team" -> teams.map(_(p.color)))
         // .add("moveCentis" -> withFlags.moveTimes ?? g.moveTimes(p.color).map(_.map(_.centis)))
         })
       )
@@ -376,13 +336,6 @@ object GameApiV2 {
 
   case class ByTournamentConfig(
       tournamentId: Tournament.ID,
-      format: Format,
-      flags: WithFlags,
-      perSecond: MaxPerSecond
-  ) extends Config
-
-  case class BySwissConfig(
-      swissId: lila.swiss.Swiss.Id,
       format: Format,
       flags: WithFlags,
       perSecond: MaxPerSecond

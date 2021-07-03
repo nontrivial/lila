@@ -535,10 +535,8 @@ abstract private[controllers] class LilaController(val env: Env)
         if (isPage) {
           env.user.lightUserApi preloadUser me
           val enabledId = me.enabled option me.id
-          enabledId.??(env.team.api.nbRequests) zip
             enabledId.??(env.challenge.api.countInFor.get) zip
-            enabledId.??(id => env.notifyM.api.unreadCount(Notifies(id)).dmap(_.value)) zip
-            env.mod.inquiryApi.forMod(me)
+            enabledId.??(id => env.notifyM.api.unreadCount(Notifies(id)).dmap(_.value))
         } else
           fuccess {
             (((0, 0), 0), none)
@@ -551,8 +549,6 @@ abstract private[controllers] class LilaController(val env: Env)
           pref,
           blindMode = blindMode(ctx),
           hasFingerprint = hasFingerPrint,
-          hasClas = isGranted(_.Teacher, me) || env.clas.studentCache.isStudent(me.id),
-          inquiry = inquiry,
           nonce = nonce
         )
       }

@@ -8,15 +8,9 @@ import lila.common.config.NetDomain
 import lila.hub.actorApi.shutup.PublicSource
 import lila.simul.Simul
 import lila.simul.SimulApi
-import lila.swiss.Swiss
-import lila.swiss.SwissApi
-import lila.team.Team
-import lila.team.TeamRepo
 import lila.tournament.Tournament
 import lila.tournament.TournamentRepo
 import lila.user.User
-import lila.study.Study
-import lila.study.StudyRepo
 
 /* Determine if a link to a lichess resource
  * can be posted from another lichess resource.
@@ -26,11 +20,8 @@ import lila.study.StudyRepo
  * */
 final private class LinkCheck(
     domain: NetDomain,
-    teamRepo: TeamRepo,
     tournamentRepo: TournamentRepo,
     simulApi: SimulApi,
-    swissApi: SwissApi,
-    studyRepo: StudyRepo
 )(implicit ec: ExecutionContext) {
 
   import LinkCheck._
@@ -41,9 +32,6 @@ final private class LinkCheck(
       line.text match {
         case tournamentLinkR(id) => withSource(source, tourLink)(id, line)
         case simulLinkR(id)      => withSource(source, simulLink)(id, line)
-        case swissLinkR(id)      => withSource(source, swissLink)(id, line)
-        case studyLinkR(id)      => withSource(source, studyLink)(id, line)
-        case teamLinkR(id)       => withSource(source, teamLink)(id, line)
         case _                   => fuTrue
       }
 
@@ -54,9 +42,6 @@ final private class LinkCheck(
     source match {
       case PublicSource.Tournament(id) => tournamentRepo byId id map2 FullSource.TournamentSource
       case PublicSource.Simul(id)      => simulApi find id map2 FullSource.SimulSource
-      case PublicSource.Swiss(id)      => swissApi byId Swiss.Id(id) map2 FullSource.SwissSource
-      case PublicSource.Team(id)       => teamRepo byId id map2 FullSource.TeamSource
-      case PublicSource.Study(id)      => studyRepo byId Study.Id(id) map2 FullSource.StudySource
       case _                           => fuccess(none)
     }
   } flatMap {

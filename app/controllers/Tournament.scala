@@ -183,26 +183,6 @@ final class Tournament(
       }
     }
 
-  def teamInfo(tourId: String, teamId: TeamID) =
-    Open { implicit ctx =>
-      repo byId tourId flatMap {
-        _ ?? { tour =>
-          env.team.teamRepo mini teamId flatMap {
-            _ ?? { team =>
-              if (HTTPRequest isXhr ctx.req)
-                jsonView.teamInfo(tour, teamId) map { _ ?? JsonOk }
-              else
-                api.teamBattleTeamInfo(tour, teamId) map {
-                  _ ?? { info =>
-                    Ok(views.html.tournament.teamBattle.teamInfo(tour, team, info))
-                  }
-                }
-            }
-          }
-        }
-      }
-    }
-
   def join(id: String) =
     AuthBody(parse.json) { implicit ctx => implicit me =>
       NoLameOrBot {

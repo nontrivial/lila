@@ -19,13 +19,9 @@ case class UserInfo(
     nbs: UserInfo.NbGames,
     nbFollowers: Int,
     nbPosts: Int,
-    nbStudies: Int,
     trophies: Trophies,
     shields: List[lila.tournament.TournamentShield.Award],
     revolutions: List[lila.tournament.Revolution.Award],
-    teamIds: List[String],
-    isStreamer: Boolean,
-    isCoach: Boolean,
     insightVisible: Boolean,
     completionRate: Option[Double]
 ) {
@@ -116,13 +112,9 @@ object UserInfo {
       shieldApi: lila.tournament.TournamentShieldApi,
       revolutionApi: lila.tournament.RevolutionApi,
       postApi: PostApi,
-      studyRepo: lila.study.StudyRepo,
       ratingChartApi: lila.history.RatingChartApi,
       userCached: lila.user.Cached,
       isHostingSimul: lila.round.IsSimulHost,
-      streamerApi: lila.streamer.StreamerApi,
-      teamCached: lila.team.Cached,
-      coachApi: lila.coach.CoachApi,
       insightShare: lila.insight.Share,
       playbanApi: lila.playban.PlaybanApi
   )(implicit ec: scala.concurrent.ExecutionContext) {
@@ -131,22 +123,15 @@ object UserInfo {
         relationApi.countFollowers(user.id).mon(_.user segment "nbFollowers") zip
         !(user.is(User.lichessId) || user.isBot) ??
         postApi.nbByUser(user.id).mon(_.user segment "nbPosts") zip
-        studyRepo.countByOwner(user.id).nevermind.mon(_.user segment "nbStudies") zip
         trophyApi.findByUser(user).mon(_.user segment "trophy") zip
         shieldApi.active(user).mon(_.user segment "shields") zip
         revolutionApi.active(user).mon(_.user segment "revolutions") zip
-        teamCached
-          .teamIdsList(user.id)
-          .map(_.take(lila.team.Team.maxJoinCeiling))
-          .mon(_.user segment "teamIds") zip
-        coachApi.isListedCoach(user).mon(_.user segment "coach") zip
-        streamerApi.isActualStreamer(user).mon(_.user segment "streamer") zip
         (user.count.rated >= 10).??(insightShare.grant(user, ctx.me)) zip
         playbanApi.completionRate(user.id).mon(_.user segment "completion") zip
         (nbs.playing > 0) ?? isHostingSimul(user.id).mon(_.user segment "simul") zip
         userCached.rankingsOf(user.id) map {
           // format: off
-          case (((((((((((((ratingChart, nbFollowers), nbPosts), nbStudies), trophies), shields), revols), teamIds), isCoach), isStreamer), insightVisible), completionRate), hasSimul), ranks) =>
+          case (((((((((((((ratingChart, nbFollowers), nbPosts)), trophies), shields), revols)))), insightVisible), completionRate), hasSimul), ranks) =>
           // format: on
           new UserInfo(
             user = user,
@@ -156,7 +141,6 @@ object UserInfo {
             ratingChart = ratingChart,
             nbFollowers = nbFollowers,
             nbPosts = nbPosts,
-            nbStudies = nbStudies,
             trophies = trophies ::: trophyApi.roleBasedTrophies(
               user,
               Granter(_.PublicMod)(user),
@@ -165,9 +149,6 @@ object UserInfo {
             ),
             shields = shields,
             revolutions = revols,
-            teamIds = teamIds,
-            isStreamer = isStreamer,
-            isCoach = isCoach,
             insightVisible = insightVisible,
             completionRate = completionRate
           )

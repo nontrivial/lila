@@ -19,7 +19,6 @@ import views._
 
 final class Study(
     env: Env,
-    userAnalysisC: => UserAnalysis,
     apiC: => Api
 ) extends LilaController(env) {
 

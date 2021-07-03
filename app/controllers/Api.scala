@@ -281,45 +281,6 @@ final class Api(
       }
     }
 
-  def swissGames(id: String) =
-    Action.async { req =>
-      env.swiss.api byId lila.swiss.Swiss.Id(id) flatMap {
-        _ ?? { swiss =>
-          val config = GameApiV2.BySwissConfig(
-            swissId = swiss.id,
-            format = GameApiV2.Format byRequest req,
-            flags = gameC.requestPgnFlags(req, extended = false),
-            perSecond = MaxPerSecond(20)
-          )
-          GlobalConcurrencyLimitPerIP(HTTPRequest ipAddress req)(
-            env.api.gameApiV2.exportBySwiss(config)
-          ) { source =>
-            val filename = env.api.gameApiV2.filename(swiss, config.format)
-            Ok.chunked(source)
-              .pipe(asAttachmentStream(filename))
-              .as(gameC gameContentType config)
-          }.fuccess
-        }
-      }
-    }
-
-  def swissResults(id: String) = Action.async { implicit req =>
-    val csv = HTTPRequest.acceptsCsv(req) || get("as", req).has("csv")
-    env.swiss.api byId lila.swiss.Swiss.Id(id) map {
-      _ ?? { swiss =>
-        val source = env.swiss.api
-          .resultStream(swiss, MaxPerSecond(50), getInt("nb", req) | Int.MaxValue)
-          .mapAsync(8) { p =>
-            env.user.lightUserApi.asyncFallback(p.player.userId) map p.withUser
-          }
-        val result =
-          if (csv) csvStream(lila.swiss.SwissCsv(source))
-          else jsonStream(source.map(env.swiss.json.playerResult))
-        result.pipe(asAttachment(env.api.gameApiV2.filename(swiss, if (csv) "csv" else "ndjson")))
-      }
-    }
-  }
-
   def gamesByUsersStream =
     AnonOrScopedBody(parse.tolerantText)()(
       anon = gamesByUsers(300),

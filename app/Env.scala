@@ -33,7 +33,6 @@ final class Env(
     val timeline: lila.timeline.Env,
     val forum: lila.forum.Env,
     val forumSearch: lila.forumSearch.Env,
-    val team: lila.team.Env,
     val analyse: lila.analyse.Env,
     val notifyM: lila.notify.Env,
     val round: lila.round.Env,
@@ -141,10 +140,8 @@ final class Env(
       _       <- user.repo.disable(u, keepEmail = badApple || playbanned)
       _       <- relation.api.unfollowAll(u.id)
       _       <- user.rankingApi.remove(u.id)
-      teamIds <- team.api.quitAll(u.id)
       _       <- challenge.api.removeByUserId(u.id)
       _       <- tournament.api.withdrawAll(u)
-      _       <- swiss.api.withdrawAll(u, teamIds)
       _       <- plan.api.cancel(u).nevermind
       _       <- lobby.seekApi.removeByUser(u)
       _       <- security.store.closeAllSessionsOf(u.id)
@@ -211,7 +208,6 @@ final class EnvBoot(
   lazy val timeline: lila.timeline.Env       = wire[lila.timeline.Env]
   lazy val forum: lila.forum.Env             = wire[lila.forum.Env]
   lazy val forumSearch: lila.forumSearch.Env = wire[lila.forumSearch.Env]
-  lazy val team: lila.team.Env               = wire[lila.team.Env]
   lazy val analyse: lila.analyse.Env         = wire[lila.analyse.Env]
   lazy val notifyM: lila.notify.Env          = wire[lila.notify.Env]
   lazy val round: lila.round.Env             = wire[lila.round.Env]

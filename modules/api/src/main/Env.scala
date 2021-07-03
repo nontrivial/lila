@@ -20,7 +20,6 @@ final class Env(
     mailerEnv: lila.mailer.Env,
     forumSearchEnv: lila.forumSearch.Env,
     forumEnv: lila.forum.Env,
-    teamEnv: lila.team.Env,
     puzzleEnv: lila.puzzle.Env,
     explorerEnv: lila.explorer.Env,
     fishnetEnv: lila.fishnet.Env,

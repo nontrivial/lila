@@ -33,12 +33,11 @@ lazy val modules = Seq(
   gameSearch, timeline, forum, forumSearch,
   analyse, round, pool, lobby, setup,
   importer, tournament, simul, relation, pref,
-  evaluation, chat, puzzle, tv, coordinate,
-  history, video, shutup, push, mailer,
-  playban, insight, perfStat, irc, quote, challenge,
-  study, studySearch, fishnet, explorer, learn, plan,
-  event, practice, evalCache,
-  relay, bot, swiss, storm, racer
+  evaluation, chat, coordinate,
+  history, shutup, push, mailer,
+  playban, perfStat, irc, quote, challenge,
+  fishnet, explorer, learn, plan,
+  event, evalCache
 )
 
 lazy val moduleRefs = modules map projectToRef
@@ -60,35 +59,15 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails learn coordinates study contact patron broadcast tfa settings preferences perfStat search tourname faq lag swiss puzzle puzzleTheme challenge storm".split(' ').toList,
+      dbs = "site arena emails learn coordinates contact patron broadcast tfa settings preferences perfStat search tourname lag challenge".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
 )
 
-lazy val puzzle = module("puzzle",
-  Seq(common, memo, hub, history, db, user, rating, pref, tree, game),
-  reactivemongo.bundle
-)
-
-lazy val storm = module("storm",
-  Seq(common, memo, hub, puzzle, db, user, pref, tree),
-  reactivemongo.bundle
-)
-
-lazy val racer = module("racer",
-  Seq(common, memo, hub, puzzle, storm, db, user, pref, tree, room),
-  reactivemongo.bundle
-)
-
 lazy val quote = smallModule("quote",
   Seq(),
   Seq(play.json)
-)
-
-lazy val video = smallModule("video",
-  Seq(common, memo, hub, db, user),
-  Seq(autoconfig) ++ reactivemongo.bundle ++ macwire.bundle
 )
 
 lazy val coordinate = smallModule("coordinate",
@@ -179,16 +158,6 @@ lazy val gameSearch = module("gameSearch",
   reactivemongo.bundle
 )
 
-lazy val tv = module("tv",
-  Seq(common, db, hub, socket, game, round, user),
-  Seq(hasher) ++ reactivemongo.bundle
-)
-
-lazy val bot = module("bot",
-  Seq(common, db, hub, game, user, challenge, chat, socket),
-  reactivemongo.bundle
-)
-
 lazy val analyse = module("analyse",
   Seq(common, hub, game, user, notifyModule, evalCache),
   reactivemongo.bundle
@@ -219,19 +188,9 @@ lazy val importer = module("importer",
   reactivemongo.bundle
 )
 
-lazy val insight = module("insight",
-  Seq(common, game, user, analyse, relation, pref, socket, round, security),
-  Seq(scalatags) ++ reactivemongo.bundle
-)
-
 lazy val tournament = module("tournament",
   Seq(common, hub, socket, game, round, security, chat, memo, quote, history, notifyModule, i18n, room),
   Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val swiss = module("swiss",
-  Seq(common, hub, socket, game, round, security, chat, memo, quote, i18n, room),
-  Seq(scalatags, lettuce) ++ reactivemongo.bundle
 )
 
 lazy val simul = module("simul",
@@ -264,21 +223,6 @@ lazy val challenge = module("challenge",
   Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
 )
 
-lazy val study = module("study",
-  Seq(common, db, hub, socket, game, round, importer, notifyModule, relation, evalCache, explorer, i18n, room),
-  Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val relay = module("relay",
-  Seq(common, study),
-  Seq(scalaUri) ++ reactivemongo.bundle
-)
-
-lazy val studySearch = module("studySearch",
-  Seq(common, hub, study, search),
-  reactivemongo.bundle
-)
-
 lazy val learn = smallModule("learn",
   Seq(common, db, user),
   Seq(autoconfig) ++ reactivemongo.bundle
@@ -286,11 +230,6 @@ lazy val learn = smallModule("learn",
 
 lazy val evalCache = module("evalCache",
   Seq(common, db, user, security, socket, tree),
-  reactivemongo.bundle
-)
-
-lazy val practice = module("practice",
-  Seq(common, db, memo, user, study),
   reactivemongo.bundle
 )
 
