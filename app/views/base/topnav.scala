@@ -34,7 +34,6 @@ object topnav {
         linkTitle(routes.User.list.path, trans.community()),
         div(role := "group")(
           a(href := routes.User.list)(trans.players()),
-          ctx.noKid option a(href := routes.ForumCateg.index)(trans.forum()),
           ctx.me.exists(!_.kid) option a(href := routes.Plan.index)(trans.patron.donate())
         )
       )

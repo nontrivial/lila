@@ -128,12 +128,6 @@ object home {
           )
         },
         ctx.noBot option bits.underboards(tours, leaderboard, tournamentWinners),
-        ctx.noKid option div(cls := "lobby__forum lobby__box")(
-          a(cls := "lobby__box__top", href := routes.ForumCateg.index)(
-            h2(cls := "title text", dataIcon := "")(trans.latestForumPosts()),
-            span(cls := "more")(trans.more(), " »")
-          )
-        )
       )
     }
   }

@@ -58,15 +58,6 @@ object header {
           )(
             splitNumber(trans.nbTournamentPoints.pluralSame(u.toints))
           ),
-          a(href := routes.Study.byOwnerDefault(u.username), cls := "nm-item")(
-            splitNumber(trans.`nbStudies`.pluralSame(info.nbStudies))
-          ),
-          a(
-            cls := "nm-item",
-            href := ctx.noKid option routes.ForumPost.search("user:" + u.username, 1).url
-          )(
-            splitNumber(trans.nbForumPosts.pluralSame(info.nbPosts))
-          ),
           (ctx.isAuth && ctx.noKid && !ctx.is(u)) option
             a(cls := "nm-item note-zone-toggle")(splitNumber(s"${social.notes.size} Notes"))
         ),

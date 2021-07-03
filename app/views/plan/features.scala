@@ -99,9 +99,6 @@ object features {
               a(href := routes.Video.index)("Chess video library")
             ),
             tr(check)(
-              "Forum, teams, messaging, friends, challenges"
-            ),
-            tr(check)(
               "Available in ",
               a(href := "https://crowdin.com/project/lichess")("80+ languages")
             ),

@@ -305,32 +305,6 @@ object layout {
 <label for="tn-tg" class="hbg"><span class="hbg__in"></span></label>"""
     )
 
-    private def reports(implicit ctx: Context) =
-      if (isGranted(_.SeeReport)) {
-        blockingReportScores match {
-          case (score, mid, high) =>
-            a(
-              cls := List(
-                "link data-count report-score link-center" -> true,
-                "report-score--high"                       -> (score > high),
-                "report-score--low"                        -> (score <= mid)
-              ),
-              title := "Moderation",
-              href := routes.Report.list,
-              dataCount := score,
-              dataIcon := ""
-            )
-        }
-      }.some
-      else
-        (isGranted(_.PublicChatView)) option
-          a(
-            cls := "link",
-            title := "Moderation",
-            href := routes.Mod.publicChat,
-            dataIcon := ""
-          )
-
     private def teamRequests(implicit ctx: Context) =
       ctx.teamNbRequests > 0 option
         a(
@@ -358,7 +332,6 @@ object layout {
         ),
         div(cls := "site-buttons")(
           !ctx.isAppealUser option clinput,
-          reports,
           teamRequests,
           if (ctx.isAppealUser)
             postForm(action := routes.Auth.logout)(

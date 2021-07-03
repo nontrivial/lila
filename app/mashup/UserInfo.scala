@@ -5,7 +5,6 @@ import play.api.data.Form
 
 import lila.api.Context
 import lila.bookmark.BookmarkApi
-import lila.forum.PostApi
 import lila.game.Crosstable
 import lila.relation.RelationApi
 import lila.security.Granter
@@ -110,7 +109,6 @@ object UserInfo {
       trophyApi: TrophyApi,
       shieldApi: lila.tournament.TournamentShieldApi,
       revolutionApi: lila.tournament.RevolutionApi,
-      postApi: PostApi,
       ratingChartApi: lila.history.RatingChartApi,
       userCached: lila.user.Cached,
       insightShare: lila.insight.Share,
@@ -120,7 +118,6 @@ object UserInfo {
       (ctx.noBlind ?? ratingChartApi(user)).mon(_.user segment "ratingChart") zip
         relationApi.countFollowers(user.id).mon(_.user segment "nbFollowers") zip
         !(user.is(User.lichessId) || user.isBot) ??
-        postApi.nbByUser(user.id).mon(_.user segment "nbPosts") zip
         trophyApi.findByUser(user).mon(_.user segment "trophy") zip
         shieldApi.active(user).mon(_.user segment "shields") zip
         revolutionApi.active(user).mon(_.user segment "revolutions") zip
@@ -128,7 +125,7 @@ object UserInfo {
         playbanApi.completionRate(user.id).mon(_.user segment "completion") zip
         userCached.rankingsOf(user.id) map {
           // format: off
-          case (((((((((((((ratingChart, nbFollowers), nbPosts)), trophies), shields), revols)))), insightVisible), completionRate)), ranks) =>
+          case (((((((((((((ratingChart, nbFollowers))), trophies), shields), revols)))), insightVisible), completionRate)), ranks) =>
           // format: on
           new UserInfo(
             user = user,
@@ -136,7 +133,6 @@ object UserInfo {
             nbs = nbs,
             ratingChart = ratingChart,
             nbFollowers = nbFollowers,
-            nbPosts = nbPosts,
             trophies = trophies ::: trophyApi.roleBasedTrophies(
               user,
               Granter(_.PublicMod)(user),

@@ -55,10 +55,6 @@ object timeline {
         case ForumPost(userId, _, topicName, postId) =>
           trans.xPostedInForumY(
             userLink(userId),
-            a(
-              href := routes.ForumPost.redirect(postId),
-              title := topicName
-            )(shorten(topicName, 30))
           )
         case TourJoin(userId, tourId, tourName) =>
           trans.xCompetesInY(

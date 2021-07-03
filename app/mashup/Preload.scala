@@ -3,7 +3,6 @@ package mashup
 
 import lila.api.Context
 import lila.event.Event
-import lila.forum.MiniForumPost
 import lila.game.{ Game, Pov }
 import lila.playban.TempBan
 import lila.timeline.Entry
@@ -27,12 +26,10 @@ final class Preload(
   import Preload._
 
   def apply(
-      posts: Fu[List[MiniForumPost]],
       tours: Fu[List[Tournament]],
       events: Fu[List[Event]]
   )(implicit ctx: Context): Fu[Homepage] =
     lobbyApi(ctx).mon(_.lobby segment "lobbyApi") zip
-      posts.mon(_.lobby segment "posts") zip
       tours.mon(_.lobby segment "tours") zip
       events.mon(_.lobby segment "events") zip
       (ctx.userId ?? timelineApi.userEntries).mon(_.lobby segment "timeline") zip
@@ -41,13 +38,13 @@ final class Preload(
       (ctx.userId ?? playbanApi.currentBan).mon(_.lobby segment "playban") zip
       (ctx.blind ?? ctx.me ?? roundProxy.urgentGames) flatMap {
         // format: off
-        case (((((((((((((data, povs), posts), tours))), feat), entries), lead), tWinners))), playban), _) =>
+        case (((((((((((((data, povs)), tours))), feat), entries), lead), tWinners))), playban), _) =>
         // format: on
         (ctx.me ?? currentGameMyTurn(povs, lightUserApi.sync))
           .mon(_.lobby segment "currentGame") zip
           lightUserApi
             .preloadMany {
-              tWinners.map(_.userId) ::: posts.flatMap(_.userId) ::: entries.flatMap(_.userIds).toList
+              tWinners.map(_.userId) ::: entries.flatMap(_.userIds).toList
             }
             .mon(_.lobby segment "lightUsers") map { case (currentGame, _) =>
             Homepage(
