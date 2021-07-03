@@ -22,12 +22,14 @@ object PublicLine {
     { case BSONString(v) =>
       v split ':' match {
         case Array("t", id)     => Success(Source.Tournament(id))
+        case Array("w", gameId) => Success(Source.Watcher(gameId))
         case _                  => lila.db.BSON.handlerBadValue(s"Invalid PublicLine source $v")
       }
     },
     x =>
       BSONString(x match {
         case Source.Tournament(id)  => s"t:$id"
+        case Source.Watcher(gameId) => s"w:$gameId"
       })
   )
 
