@@ -19,7 +19,6 @@ final class PostApi(
     env: Env,
     indexer: lila.hub.actors.ForumSearch,
     maxPerPage: lila.common.config.MaxPerPage,
-    modLog: Any,
     spam: lila.security.Spam,
     promotion: lila.security.PromotionApi,
     timeline: lila.hub.actors.Timeline,
