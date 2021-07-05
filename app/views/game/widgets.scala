@@ -46,10 +46,7 @@ object widgets {
                     if (g.rated) trans.rated.txt() else trans.casual.txt()
                   )
               ),
-              g.pgnImport.flatMap(_.date).fold[Frag](momentFromNowWithPreload(g.createdAt))(frag(_)),
-              g.tournamentId.map { tourId =>
-                frag(separator, tournamentLink(tourId))
-              }
+              g.pgnImport.flatMap(_.date).fold[Frag](momentFromNowWithPreload(g.createdAt))(frag(_))
             )
           ),
           div(cls := "versus")(
@@ -135,9 +132,7 @@ object widgets {
       } getOrElse {
         player.aiLevel map { level =>
           frag(
-            span(aiName(level, withRating = false)),
-            br,
-            aiRating(level)
+            br
           )
         } getOrElse {
           (player.nameSplit.fold[Frag](anonSpan) { case (name, rating) =>

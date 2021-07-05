@@ -409,7 +409,6 @@ final class User(
         case Some(term) =>
           {
             (get("tour"), get("swiss")) match {
-              case (Some(tourId), _)  => env.tournament.playerRepo.searchPlayers(tourId, term, 10)
               case _ =>
                 ctx.me.ifTrue(getBool("friend")) match {
                   case Some(follower) =>

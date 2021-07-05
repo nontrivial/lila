@@ -2,16 +2,18 @@ package controllers
 
 import play.api.libs.json._
 import play.api.mvc._
+
 import scala.annotation.nowarn
 import scala.util.chaining._
+import scala.concurrent.Future
 import views.html
-
 import lila.api.AnnounceStore
 import lila.api.Context
 import lila.app._
+import lila.app.ui.ScalatagsTemplate
 import lila.common.HTTPRequest
 import lila.security.SecurityForm.Reopen
-import lila.user.{ User => UserModel, TotpSecret, Holder }
+import lila.user.{Holder, TotpSecret, User => UserModel}
 
 final class Account(
     env: Env,
@@ -279,7 +281,7 @@ final class Account(
     Auth { implicit ctx => me =>
       env.clas.api.student.isManaged(me) flatMap { managed =>
         env.security.forms closeAccount me map { form =>
-          Ok(html.account.close(me, form, managed))
+          Ok(html.account.close(me, form))
         }
       }
     }
@@ -290,7 +292,7 @@ final class Account(
         implicit val req = ctx.body
         env.security.forms closeAccount me flatMap { form =>
           FormFuResult(form) { err =>
-            fuccess(html.account.close(me, err, managed = false))
+            fuccess(html.account.close(me, err))
           } { _ =>
             env.closeAccount(me, Holder(me)) inject {
               Redirect(routes.User show me.username) withCookies env.lilaCookie.newSession
@@ -375,19 +377,6 @@ final class Account(
     Open { implicit ctx =>
       fuccess {
         Ok(html.account.reopen.sent)
-      }
-    }
-
-  def reopenLogin(token: String) =
-    Open { implicit ctx =>
-      env.security.reopen confirm token flatMap {
-        case None =>
-          lila.mon.user.auth.reopenConfirm("token_fail").increment()
-          notFound
-        case Some(user) =>
-          env.report.api.reopenReports(lila.report.Suspect(user)) >>
-            auth.authenticateUser(user) >>-
-            lila.mon.user.auth.reopenConfirm("success").increment().unit
       }
     }
 

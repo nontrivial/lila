@@ -65,12 +65,6 @@ object bits {
       )
     else
       perfType match {
-        case Some(Correspondence) =>
-          link(
-            href = s"${routes.Main.faq}#correspondence",
-            title = Correspondence.desc,
-            name = Correspondence.trans
-          )
         case Some(pt) => span(title := pt.desc)(pt.trans)
         case _        => variant.name.toUpperCase
       }

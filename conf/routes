@@ -15,10 +15,6 @@ POST  /timeline/unsub/:channel         controllers.Timeline.unsub(channel: Strin
 # Search
 GET   /games/search                    controllers.Search.index(page: Int ?= 1)
 
-# Game export
-POST  /games/export/_ids               controllers.Game.exportByIds
-GET   /games/export/:username          controllers.Game.exportByUser(username: String)
-
 # Bookmark
 POST  /bookmark/$gameId<\w{8}>         controllers.Game.bookmark(gameId: String)
 
@@ -32,11 +28,9 @@ GET   /@/:username/followers           controllers.Relation.followers(username: 
 GET   /rel/blocks                      controllers.Relation.blocks(page: Int ?= 1)
 
 # User
-GET   /api/stream/:username/mod        controllers.User.mod(username: String)
 POST  /@/:username/note                controllers.User.writeNote(username: String)
 POST  /note/delete/:id                 controllers.User.deleteNote(id: String)
 GET   /@/:username/mini                controllers.User.showMini(username: String)
-GET   /@/:username/tv                  controllers.User.tv(username: String)
 GET   /@/:username/perf/:perfKey       controllers.User.perfStat(username: String, perfKey: String)
 GET   /@/:username/all                 controllers.User.gamesAll(username: String, page: Int ?= 1)
 GET   /@/:username/download            controllers.User.download(username: String)
@@ -51,9 +45,6 @@ GET   /player/online                   controllers.User.online
 GET   /player/autocomplete             controllers.User.autocomplete
 
 # Round
-GET   /$gameId<\w{8}>                            controllers.Round.watcher(gameId: String, color: String = "white")
-GET   /$gameId<\w{8}>/$color<white|black>        controllers.Round.watcher(gameId: String, color: String)
-GET   /$fullId<\w{12}>                           controllers.Round.player(fullId: String)
 GET   /$gameId<\w{8}>/$color<white|black>/sides  controllers.Round.sides(gameId: String, color: String)
 GET   /$gameId<\w{8}>/continue/:mode             controllers.Round.continue(gameId: String, mode: String)
 GET   /$gameId<\w{8}>/note                       controllers.Round.readNote(gameId: String)
@@ -66,7 +57,6 @@ POST  /$fullId<\w{12}>/resign                    controllers.Round.resign(fullId
 
 POST  /$gameId<\w{8}>/delete                     controllers.Game.delete(gameId: String)
 
-GET   /round-next/$gameId<\w{8}>                 controllers.Round.next(gameId: String)
 GET   /whats-next/$fullId<\w{12}>                controllers.Round.whatsNext(fullId: String)
 
 # Pref
@@ -75,8 +65,6 @@ GET   /account/preferences/:categ             controllers.Pref.form(categ: Strin
 POST  /account/preferences                    controllers.Pref.formApply
 
 # Setup
-GET   /setup/ai                        controllers.Setup.aiForm
-POST  /setup/ai                        controllers.Setup.ai
 GET   /setup/friend                    controllers.Setup.friendForm(user: Option[String] ?= None)
 POST  /setup/friend                    controllers.Setup.friend(user: Option[String] ?= None)
 GET   /setup/hook                      controllers.Setup.hookForm
@@ -137,7 +125,6 @@ GET   /import/master/$id<\w{8}>/:color controllers.Importer.masterGame(id: Strin
 # Edit
 GET   /editor.json                     controllers.Editor.data
 GET   /editor/*urlFen                  controllers.Editor.load(urlFen: String)
-GET   /editor                          controllers.Editor.inde
 
 # Stats
 GET    /stat/rating/distribution/:perf controllers.Stat.ratingDistribution(perf: String)
@@ -155,8 +142,6 @@ GET   /account/profile                 controllers.Account.profile
 POST  /account/profile                 controllers.Account.profileApply
 GET   /account/username                controllers.Account.username
 POST  /account/username                controllers.Account.usernameApply
-GET   /account/kid                     controllers.Account.kid
-POST  /account/kid                     controllers.Account.kidPost
 GET   /account/twofactor               controllers.Account.twoFactor
 POST  /account/twofactor/setup         controllers.Account.setupTwoFactor
 POST  /account/twofactor/disable       controllers.Account.disableTwoFactor

@@ -38,7 +38,7 @@ object page {
       robots = u.count.game >= 10
     ) {
       main(cls := "page-menu", dataUsername := u.username)(
-        st.aside(cls := "page-menu__menu")(side(u, info.ranks, none)),
+        st.aside(cls := "page-menu__menu")(side(u, info.ranks, none))
       )
     }
 

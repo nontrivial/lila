@@ -38,35 +38,6 @@ final class ActivityWriteApi(
       .sequenceFu
       .void
 
-  def forumPost(post: lila.forum.Post): Funit =
-    post.userId.filter(User.lichessId !=) ?? { userId =>
-      getOrCreate(userId) flatMap { a =>
-        coll.update
-          .one(
-            $id(a.id),
-            $set(ActivityFields.posts -> (~a.posts + PostId(post.id))),
-            upsert = true
-          )
-          .void
-      }
-    }
-
-  def puzzle(res: lila.puzzle.Puzzle.UserResult): Funit =
-    getOrCreate(res.userId) flatMap { a =>
-      coll.update
-        .one(
-          $id(a.id),
-          $set(ActivityFields.puzzles -> {
-            ~a.puzzles + Score.make(
-              res = res.result.win.some,
-              rp = RatingProg(Rating(res.rating._1), Rating(res.rating._2)).some
-            )
-          }),
-          upsert = true
-        )
-        .void
-    }
-
   def storm(userId: User.ID, score: Int): Funit =
     getOrCreate(userId) flatMap { a =>
       coll.update
