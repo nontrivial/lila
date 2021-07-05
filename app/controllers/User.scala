@@ -114,7 +114,6 @@ final class User(
                 res <-
                   if (HTTPRequest isSynchronousHttp ctx.req) for {
                     info   <- env.userInfo(u, nbs, ctx)
-                    _      <- env.team.cached.nameCache preloadMany info.teamIds
                     social <- env.socialInfo(u, ctx)
                     searchForm =
                       (filters.current == GameFilter.Search) option
@@ -136,7 +135,6 @@ final class User(
       )
     else
       env.user.repo named username flatMap {
-        case None if isGranted(_.UserModView)                 => ctx.me.map(Holder) ?? { modC.searchTerm(_, username.trim) }
         case None                                             => notFound
         case Some(u) if u.enabled || isGranted(_.UserModView) => f(u)
         case Some(u) =>

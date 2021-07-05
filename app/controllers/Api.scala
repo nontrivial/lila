@@ -157,24 +157,6 @@ final class Api(
         env.tournament.apiJsonView.apply map Data.apply
     }
 
-  def tournament(id: String) =
-    ApiRequest { implicit req =>
-      env.tournament.tournamentRepo byId id flatMap {
-        _ ?? { tour =>
-          val page = (getInt("page", req) | 1) atLeast 1 atMost 200
-          env.tournament.jsonView(
-            tour = tour,
-            page = page.some,
-            me = none,
-            getUserTeamIds = _ => fuccess(Nil),
-            playerInfoExt = none,
-            socketVersion = none,
-            partial = false
-          )(reqLang) map some
-        }
-      } map toApiResult
-    }
-
   def tournamentResults(id: String) =
     Action.async { implicit req =>
       val csv = HTTPRequest.acceptsCsv(req) || get("as", req).has("csv")

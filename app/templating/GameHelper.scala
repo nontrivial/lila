@@ -129,7 +129,6 @@ trait GameHelper { self: I18nHelper with UserHelper with StringHelper with Chess
         val klass = cssClass.??(" " + _)
         span(cls := s"user-link$klass")(
           (player.aiLevel, player.name) match {
-            case (Some(level), _) => aiNameFrag(level, withRating)
             case (_, Some(name))  => name
             case _                => trans.anonymous.txt()
           },
