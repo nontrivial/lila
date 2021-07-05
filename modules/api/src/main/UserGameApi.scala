@@ -67,7 +67,4 @@ final class UserGameApi(
       .add("correspondence" -> g.daysPerTurn.map { d =>
         Json.obj("daysPerTurn" -> d)
       })
-      .add("tournament" -> g.tournamentId.map { tid =>
-        Json.obj("id" -> tid, "name" -> getTournamentName.get(tid))
-      })
 }

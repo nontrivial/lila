@@ -72,10 +72,10 @@ final private[api] class RoundApi(
           withFlags = WithFlags(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
-          bookmarkApi.exists(pov.game, ctx.me) map { case ((((json)), note), bookmarked) =>
+          bookmarkApi.exists(pov.game, ctx.me) map { case ((json, note), bookmarked) =>
             (
+              withBookmark(bookmarked) compose
                 withNote(note) compose
-                withBookmark(bookmarked) compose
                 withSteps(pov, initialFen)
             )(json)
           }
