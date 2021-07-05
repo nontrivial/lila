@@ -37,18 +37,6 @@ object bits {
             )
           )
         )
-      ),
-      div(cls := "lobby__winners lobby__box")(
-        div(cls := "lobby__box__top")(
-          h2(cls := "title text", dataIcon := "")(trans.tournamentWinners()),
-          a(cls := "more", href := routes.Tournament.leaderboard)(trans.more(), " »")
-        )
-      ),
-      div(cls := "lobby__tournaments lobby__box")(
-        a(cls := "lobby__box__top", href := routes.Tournament.home)(
-          h2(cls := "title text", dataIcon := "")(trans.openTournaments()),
-          span(cls := "more")(trans.more(), " »")
-        )
       )
     )
 

@@ -26,7 +26,6 @@ object bits {
       pov: Pov,
       initialFen: Option[chess.format.FEN],
       cross: Option[lila.game.Crosstable.WithMatchup],
-      userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context) =
     div(

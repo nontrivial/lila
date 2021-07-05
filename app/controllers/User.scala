@@ -33,20 +33,6 @@ final class User(
   private def relationApi    = env.relation.api
   private def userGameSearch = env.gameSearch.userGameSearch
 
-  def tv(username: String) =
-    Open { implicit ctx =>
-      OptionFuResult(env.user.repo named username) { user =>
-        currentlyPlaying(user) orElse lastPlayed(user) flatMap {
-          _.fold(fuccess(Redirect(routes.User.show(username)))) { pov =>
-            ctx.me ifFalse pov.game.bothPlayersHaveMoved flatMap { Pov(pov.game, _) } match {
-              case Some(mine) => Redirect(routes.Round.player(mine.fullId)).fuccess
-              case _          => roundC.watch(pov, userTv = user.some)
-            }
-          }
-        }
-      }
-    }
-
   private def apiGames(u: UserModel, filter: String, page: Int)(implicit ctx: BodyContext[_]) = {
     userGames(u, filter, page) flatMap env.api.userGameApi.jsPaginator map { res =>
       Ok(res ++ Json.obj("filter" -> GameFilter.All.name))

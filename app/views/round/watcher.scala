@@ -15,7 +15,6 @@ object watcher {
       pov: Pov,
       data: JsObject,
       cross: Option[lila.game.Crosstable.WithMatchup],
-      userTv: Option[lila.user.User] = None,
       chatOption: Option[lila.chat.UserChat.Mine],
       bookmarked: Boolean
   )(implicit ctx: Context) = {
@@ -51,7 +50,7 @@ object watcher {
     )(
       main(cls := "round")(
         st.aside(cls := "round__side")(
-          bits.side(pov, data, tour, userTv, bookmarked),
+          bits.side(pov, data, bookmarked),
           chatOption.map(_ => chat.frag)
         ),
         bits.roundAppPreload(pov, controls = false),
@@ -73,7 +72,7 @@ object watcher {
       frag(
         main(cls := "round")(
           st.aside(cls := "round__side")(
-            game.side(pov, initialFen, none, userTv = none, bookmarked = false),
+            game.side(pov, initialFen, none, bookmarked = false),
             div(cls := "for-crawler")(
               h1(titleGame(pov.game)),
               p(describePov(pov)),

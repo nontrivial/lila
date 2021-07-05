@@ -44,13 +44,6 @@ object header {
           a(cls := "nm-item", href := routes.Relation.followers(u.username))(
             splitNumber(trans.nbFollowers.pluralSame(info.nbFollowers))
           ),
-          u.noBot option a(
-            href := routes.UserTournament.path(u.username, "recent"),
-            cls := "nm-item tournament_stats",
-            dataToints := u.toints
-          )(
-            splitNumber(trans.nbTournamentPoints.pluralSame(u.toints))
-          ),
           (ctx.isAuth && ctx.noKid && !ctx.is(u)) option
             a(cls := "nm-item note-zone-toggle")(splitNumber(s"${social.notes.size} Notes"))
         ),

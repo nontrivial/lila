@@ -45,17 +45,6 @@ final class GameApiV2(
       )
     }
 
-  def filename(tour: Tournament, format: String): String =
-    fileR.replaceAllIn(
-      "lichess_tournament_%s_%s_%s.%s".format(
-        Tag.UTCDate.format.print(tour.startsAt),
-        tour.id,
-        lila.common.String.slugify(tour.name),
-        format
-      ),
-      "_"
-    )
-
   private val upgradeOngoingGame =
     Flow[Game].mapAsync(4)(gameProxy.upgradeIfPresent)
 

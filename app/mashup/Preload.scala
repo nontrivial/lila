@@ -30,26 +30,22 @@ final class Preload(
       events.mon(_.lobby segment "events") zip
       (ctx.userId ?? timelineApi.userEntries).mon(_.lobby segment "timeline") zip
       userCached.topWeek.mon(_.lobby segment "userTopWeek") zip
-      tourWinners.all.dmap(_.top).mon(_.lobby segment "tourWinners") zip
       (ctx.userId ?? playbanApi.currentBan).mon(_.lobby segment "playban") zip
       (ctx.blind ?? ctx.me ?? roundProxy.urgentGames) flatMap {
         // format: off
-        case (((((((((((((data, povs)), tours))), feat), entries), lead), tWinners))), playban), _) =>
+        case (((((((((((((data)), povs))), feat), entries), lead)))), playban), _) =>
         // format: on
         (ctx.me ?? currentGameMyTurn(povs, lightUserApi.sync))
           .mon(_.lobby segment "currentGame") zip
           lightUserApi
             .preloadMany {
-              tWinners.map(_.userId) ::: entries.flatMap(_.userIds).toList
             }
             .mon(_.lobby segment "lightUsers") map { case (currentGame, _) =>
             Homepage(
               data,
               entries,
-              tours,
               feat,
               lead,
-              tWinners,
               playban,
               currentGame,
               lobbySocket.counters
@@ -81,10 +77,8 @@ object Preload {
   case class Homepage(
       data: JsObject,
       userTimeline: Vector[Entry],
-      tours: List[Tournament],
       featured: Option[Game],
       leaderboard: List[User.LightPerf],
-      tournamentWinners: List[Winner],
       playban: Option[TempBan],
       currentGame: Option[Preload.CurrentGame],
       counters: lila.lobby.LobbyCounters

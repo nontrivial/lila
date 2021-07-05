@@ -102,7 +102,6 @@ object bits {
   private[round] def side(
       pov: Pov,
       data: play.api.libs.json.JsObject,
-      userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context) =
     views.html.game.side(

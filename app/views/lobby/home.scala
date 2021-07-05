@@ -127,7 +127,7 @@ object home {
             views.html.game.mini(Pov naturalOrientation g, tv = true)
           )
         },
-        ctx.noBot option bits.underboards(tours, leaderboard, tournamentWinners),
+        ctx.noBot option bits.underboards(leaderboard),
       )
     }
   }
