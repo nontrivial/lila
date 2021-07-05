@@ -117,7 +117,6 @@ final class LilaComponents(ctx: ApplicationLoader.Context) extends BuiltInCompon
   lazy val search: Search                 = wire[Search]
   lazy val setup: Setup                   = wire[Setup]
   lazy val stat: Stat                     = wire[Stat]
-  lazy val study: Study                   = wire[Study]
   lazy val timeline: Timeline             = wire[Timeline]
   lazy val tournament: Tournament         = wire[Tournament]
   lazy val tournamentCrud: TournamentCrud = wire[TournamentCrud]

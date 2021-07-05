@@ -19,17 +19,12 @@ case class ActivityView(
     storm: Option[Storm] = None,
     racer: Option[Racer] = None,
     streak: Option[Streak] = None,
-    practice: Option[Map[PracticeStudy, Int]] = None,
-    simuls: Option[List[Simul]] = None,
     patron: Option[Patron] = None,
-    posts: Option[Map[lila.forum.Topic, List[lila.forum.Post]]] = None,
     corresMoves: Option[(Int, List[LightPov])] = None,
     corresEnds: Option[(Score, List[LightPov])] = None,
     follows: Option[Follows] = None,
-    studies: Option[List[Study.IdName]] = None,
     teams: Option[Teams] = None,
     tours: Option[ActivityView.Tours] = None,
-    swisses: Option[List[(Swiss.IdName, Int)]] = None,
     stream: Boolean = false,
     signup: Boolean = false
 )
