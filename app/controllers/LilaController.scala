@@ -543,7 +543,6 @@ abstract private[controllers] class LilaController(val env: Env)
           }
       } map { case (pref, (((teamNbRequests, nbChallenges), nbNotifications), inquiry)) =>
         PageData(
-          teamNbRequests,
           nbChallenges,
           nbNotifications,
           pref,
@@ -610,8 +609,9 @@ abstract private[controllers] class LilaController(val env: Env)
     else if (HTTPRequest isCrawler ctx.req) fuccess(NotFound)
     else result
 
-  protected def NotManaged(result: => Fu[Result])(implicit ctx: Context) {
+  protected def NotManaged(result: => Fu[Result])(implicit ctx: Context) = {
     result
+    ()
   }
 
   private val jsonGlobalErrorRenamer = {

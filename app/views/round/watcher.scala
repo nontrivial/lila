@@ -45,7 +45,6 @@ object watcher {
           )
         )})""")
       ),
-      openGraph = povOpenGraph(pov).some,
       chessground = false
     )(
       main(cls := "round")(
@@ -66,7 +65,6 @@ object watcher {
     bits.layout(
       variant = pov.game.variant,
       title = gameVsText(pov.game, withRatings = true),
-      openGraph = povOpenGraph(pov).some,
       chessground = false
     )(
       frag(

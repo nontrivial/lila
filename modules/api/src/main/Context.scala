@@ -8,7 +8,6 @@ import lila.pref.Pref
 import lila.user.{ BodyUserContext, HeaderUserContext, UserContext }
 
 case class PageData(
-    teamNbRequests: Int,
     nbChallenges: Int,
     nbNotifications: Int,
     pref: Pref,
@@ -22,7 +21,6 @@ object PageData {
 
   def anon(req: RequestHeader, nonce: Option[Nonce], blindMode: Boolean = false) =
     PageData(
-      teamNbRequests = 0,
       nbChallenges = 0,
       nbNotifications = 0,
       lila.pref.RequestPref fromRequest req,
@@ -41,7 +39,6 @@ sealed trait Context extends lila.user.UserContextWrapper {
 
   def lang = userContext.lang
 
-  def teamNbRequests  = pageData.teamNbRequests
   def nbChallenges    = pageData.nbChallenges
   def nbNotifications = pageData.nbNotifications
   def pref            = pageData.pref

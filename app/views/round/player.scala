@@ -57,13 +57,12 @@ object player {
             )
         )})""")
       ),
-      openGraph = povOpenGraph(pov).some,
       chessground = false,
       playing = true
     )(
       main(cls := "round")(
         st.aside(cls := "round__side")(
-          bits.side(pov, data, tour.map(_.tourAndTeamVs), bookmarked = bookmarked),
+          bits.side(pov, data, bookmarked = bookmarked),
           chatOption.map(_ => chat.frag)
         ),
         bits.roundAppPreload(pov, controls = true),

@@ -55,38 +55,6 @@ object forms {
       )
     }
 
-  def ai(form: Form[_], ratings: Map[Int, Int], validFen: Option[lila.setup.ValidFen])(implicit
-      ctx: Context
-  ) =
-    layout("ai", trans.playWithTheMachine(), routes.Setup.ai) {
-      frag(
-        renderVariant(form, translatedAiVariantChoices),
-        fenInput(form("fen"), strict = true, validFen),
-        renderTimeMode(form, allowAnon = true),
-        if (ctx.blind)
-          frag(
-            renderLabel(form("level"), trans.strength()),
-            renderSelect(form("level"), lila.setup.AiConfig.levelChoices),
-            blindSideChoice(form)
-          )
-        else
-          frag(
-            br,
-            trans.strength(),
-            div(cls := "level buttons")(
-              div(id := "config_level")(
-                renderRadios(form("level"), lila.setup.AiConfig.levelChoices)
-              ),
-              div(cls := "ai_info")(
-                ratings.toList.map { case (level, _) =>
-                  div(cls := s"${prefix}level_$level")(trans.aiNameLevelAiLevel("Stockfish 13", level))
-                }
-              )
-            )
-          )
-      )
-    }
-
   def friend(
       form: Form[_],
       user: Option[User],

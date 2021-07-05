@@ -76,14 +76,6 @@ object home {
                 "disabled"                          -> currentGame.isDefined
               ),
               trans.playWithAFriend()
-            ),
-            a(
-              href := routes.Setup.aiForm,
-              cls := List(
-                "button button-metal config_ai" -> true,
-                "disabled"                      -> currentGame.isDefined
-              ),
-              trans.playWithTheMachine()
             )
           ),
           div(cls := "lobby__counters")(
