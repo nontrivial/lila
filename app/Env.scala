@@ -49,7 +49,6 @@ final class Env(
     val irc: lila.irc.Env,
     val challenge: lila.challenge.Env,
     val explorer: lila.explorer.Env,
-    val plan: lila.plan.Env,
     val event: lila.event.Env,
     val pool: lila.pool.Env,
     val oAuth: lila.oauth.Env,
@@ -113,7 +112,6 @@ final class Env(
       _       <- user.rankingApi.remove(u.id)
       _       <- challenge.api.removeByUserId(u.id)
       _       <- tournament.api.withdrawAll(u)
-      _       <- plan.api.cancel(u).nevermind
       _       <- lobby.seekApi.removeByUser(u)
       _       <- security.store.closeAllSessionsOf(u.id)
       _       <- push.webSubscriptionApi.unsubscribeByUser(u)
@@ -193,7 +191,6 @@ final class EnvBoot(
   lazy val irc: lila.irc.Env                 = wire[lila.irc.Env]
   lazy val challenge: lila.challenge.Env     = wire[lila.challenge.Env]
   lazy val explorer: lila.explorer.Env       = wire[lila.explorer.Env]
-  lazy val plan: lila.plan.Env               = wire[lila.plan.Env]
   lazy val event: lila.event.Env             = wire[lila.event.Env]
   lazy val pool: lila.pool.Env               = wire[lila.pool.Env]
   lazy val oAuth: lila.oauth.Env             = wire[lila.oauth.Env]
