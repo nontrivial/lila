@@ -43,7 +43,7 @@ final private[api] class RoundApi(
           bookmarkApi.exists(pov.game, ctx.me) map {
             case (((((json)), note), forecast), bookmarked) =>
               (
-                  withSteps(pov, initialFen) compose
+                  withSteps(pov, initialFen) _ compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
                   withForecastCount(forecast.map(_.steps.size))
@@ -74,7 +74,7 @@ final private[api] class RoundApi(
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
           bookmarkApi.exists(pov.game, ctx.me) map { case ((json, note), bookmarked) =>
             (
-              withBookmark(bookmarked) compose
+              withBookmark(bookmarked) _ compose
                 withNote(note) compose
                 withSteps(pov, initialFen)
             )(json)
@@ -110,7 +110,7 @@ final private[api] class RoundApi(
           bookmarkApi.exists(pov.game, ctx.me) map {
             case ((((((json))), note), fco), bookmarked) =>
               (
-                  withNote(note) compose
+                  withNote(note) _ compose
                   withBookmark(bookmarked) compose
                   withForecast(pov, owner, fco)
               )(json)
