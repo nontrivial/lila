@@ -32,7 +32,7 @@ lazy val modules = Seq(
   msg, notifyModule, i18n, game, bookmark, search,
   gameSearch, timeline,
   round, pool, lobby, setup,
-  importer, tournament, relation, pref,
+  importer, relation, pref,
   chat, coordinate,
   history, shutup, push, mailer,
   playban, perfStat, irc, quote, challenge,
@@ -59,7 +59,7 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails coordinates contact patron broadcast tfa settings preferences perfStat search tourname lag challenge".split(' ').toList,
+      dbs = "site arena emails coordinates contact patron broadcast tfa settings preferences perfStat search lag challenge".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
@@ -171,11 +171,6 @@ lazy val setup = module("setup",
 lazy val importer = module("importer",
   Seq(common, game, round),
   reactivemongo.bundle
-)
-
-lazy val tournament = module("tournament",
-  Seq(common, hub, socket, game, round, security, chat, memo, quote, history, notifyModule, i18n, room),
-  Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
 )
 
 lazy val oauth = smallModule("oauth",

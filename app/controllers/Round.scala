@@ -17,7 +17,6 @@ final class Round(
     env: Env,
     gameC: => Game,
     challengeC: => Challenge,
-    tournamentC: => Tournament,
     userC: => User
 ) extends LilaController(env)
     with TheftPrevention {

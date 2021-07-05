@@ -81,13 +81,7 @@ object otherTrophies {
             ariaTitle(trophy.kind.name)
           )(raw(iconChar))
         }
-      },
-      info.isCoach option
-        a(
-          href := routes.Coach.show(info.user.username),
-          cls := "trophy award icon3d coach",
-          ariaTitle(trans.coach.lichessCoach.txt())
-        )("")
+      }
     )
 
   private def awardCls(t: Trophy) = cls := s"trophy award ${t.kind._id} ${~t.kind.klass}"

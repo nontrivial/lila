@@ -24,7 +24,6 @@ object header {
       div(cls := "box__top user-show__header")(
         if (u.isPatron)
           h1(cls := s"user-link ${if (isOnline(u.id)) "online" else "offline"}")(
-            a(href := routes.Plan.index)(patronIcon),
             userSpan(u, withPowerTip = false, withOnline = false)
           )
         else
@@ -36,13 +35,7 @@ object header {
           )
         )(
           views.html.user.bits.perfTrophies(u, info.ranks),
-          otherTrophies(info),
-          u.plan.active option
-            a(
-              href := routes.Plan.index,
-              cls := "trophy award patron icon3d",
-              ariaTitle(s"Patron since ${showDate(u.plan.sinceDate)}")
-            )(patronIconChar)
+          otherTrophies(info)
         ),
         u.disabled option span(cls := "closed")("CLOSED")
       ),
@@ -101,12 +94,6 @@ object header {
             href := routes.User.download(u.username),
             titleOrText(trans.exportGames.txt()),
             dataIcon := ""
-          ),
-          (ctx.isAuth && ctx.noKid && !ctx.is(u)) option a(
-            titleOrText(trans.reportXToModerators.txt(u.username)),
-            cls := "btn-rack__btn",
-            href := s"${routes.Report.form}?username=${u.username}",
-            dataIcon := ""
           )
         )
       ),
