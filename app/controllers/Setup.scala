@@ -33,24 +33,6 @@ final class Setup(
     log = false
   )
 
-  def aiForm =
-    Open { implicit ctx =>
-      if (HTTPRequest isXhr ctx.req) {
-        fuccess(forms aiFilled get("fen").map(FEN.clean)) map { form =>
-          html.setup.forms.ai(
-            form,
-            env.fishnet.aiPerfApi.intRatings,
-            form("fen").value map FEN.clean flatMap ValidFen(getBool("strict"))
-          )
-        }
-      } else Redirect(s"${routes.Lobby.home}#ai").fuccess
-    }
-
-  def ai =
-    process(_ => forms.ai) { config => implicit ctx =>
-      processor ai config
-    }
-
   def friendForm(userId: Option[String]) =
     Open { implicit ctx =>
       if (HTTPRequest isXhr ctx.req)

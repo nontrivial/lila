@@ -130,12 +130,6 @@ Allow: /
       } withHeaders (CACHE_CONTROL -> "max-age=1209600")
     }
 
-  def getFishnet =
-    Open { implicit ctx =>
-      pageHit
-      Ok(html.site.bits.getFishnet()).fuccess
-    }
-
   def costs =
     Action { req =>
       pageHit(req)

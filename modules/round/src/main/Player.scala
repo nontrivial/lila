@@ -11,7 +11,6 @@ import lila.game.Game.PlayerId
 import cats.data.Validated
 
 final private class Player(
-    fishnetPlayer: lila.fishnet.FishnetPlayer,
     finisher: Finisher,
     scheduleExpiration: ScheduleExpiration,
     uciMemo: UciMemo
@@ -109,12 +108,6 @@ final private class Player(
           s"Not AI turn move: $uci id: ${game.id} playable: ${game.playable} player: ${game.player}"
         )
       )
-
-  private[round] def requestFishnet(game: Game, round: RoundDuct): Funit =
-    game.playableByAi ?? {
-      if (game.turns <= fishnetPlayer.maxPlies) fishnetPlayer(game)
-      else fuccess(round ! actorApi.round.ResignAi)
-    }
 
   private val fishnetLag = MoveMetrics(clientLag = Centis(5).some)
   private val botLag     = MoveMetrics(clientLag = Centis(10).some)

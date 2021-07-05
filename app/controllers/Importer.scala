@@ -41,18 +41,6 @@ final class Importer(env: Env) extends LilaController(env) {
           data =>
             ImportRateLimitPerIP(HTTPRequest ipAddress req, cost = 1) {
               doImport(data, req, ctx.me) flatMap {
-                case Some(game) =>
-                  ctx.me.ifTrue(data.analyse.isDefined && game.analysable) ?? { me =>
-                    env.fishnet.analyser(
-                      game,
-                      lila.fishnet.Work.Sender(
-                        userId = me.id,
-                        ip = HTTPRequest.ipAddress(ctx.req).some,
-                        mod = isGranted(_.Hunter) || isGranted(_.Relay),
-                        system = false
-                      )
-                    )
-                  } inject Redirect(routes.Round.watcher(game.id, "white"))
                 case None => Redirect(routes.Importer.importGame).fuccess
               }
             }(rateLimitedFu)

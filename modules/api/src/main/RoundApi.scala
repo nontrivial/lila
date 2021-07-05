@@ -91,7 +91,6 @@ final private[api] class RoundApi(
       pov: Pov,
       apiVersion: ApiVersion,
       tv: Option[lila.round.OnTv] = None,
-      analysis: Option[Analysis] = None,
       initialFenO: Option[Option[FEN]] = None,
       withFlags: WithFlags,
       owner: Boolean = false
@@ -120,74 +119,11 @@ final private[api] class RoundApi(
                 withTournament(pov, tour) _ compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
-                  withTree(pov, analysis, initialFen, withFlags) compose
-                  withAnalysis(pov.game, analysis) compose
                   withForecast(pov, owner, fco)
               )(json)
           }
       }
       .mon(_.round.api.watcher)
-
-  def embed(
-      pov: Pov,
-      apiVersion: ApiVersion,
-      analysis: Option[Analysis] = None,
-      initialFenO: Option[Option[FEN]] = None,
-      withFlags: WithFlags
-  ): Fu[JsObject] =
-    initialFenO
-      .fold(gameRepo initialFen pov.game)(fuccess)
-      .flatMap { initialFen =>
-        jsonView.watcherJson(
-          pov,
-          Pref.default,
-          apiVersion,
-          none,
-          none,
-          initialFen = initialFen,
-          withFlags = withFlags
-        ) map { json =>
-          (
-            withTree(pov, analysis, initialFen, withFlags) _ compose
-              withAnalysis(pov.game, analysis)
-          )(json)
-        }
-      }
-      .mon(_.round.api.embed)
-
-  def userAnalysisJson(
-      pov: Pov,
-      pref: Pref,
-      initialFen: Option[FEN],
-      orientation: chess.Color,
-      owner: Boolean,
-      me: Option[User]
-  ) =
-    owner.??(forecastApi loadForDisplay pov).map { fco =>
-      withForecast(pov, owner, fco) {
-        withTree(pov, analysis = none, initialFen, WithFlags(opening = true)) {
-          jsonView.userAnalysisJson(pov, pref, initialFen, orientation, owner = owner, me = me)
-        }
-      }
-    }
-
-  def freeStudyJson(
-      pov: Pov,
-      pref: Pref,
-      initialFen: Option[FEN],
-      orientation: chess.Color,
-      me: Option[User]
-  ) =
-    withTree(pov, analysis = none, initialFen, WithFlags(opening = true))(
-      jsonView.userAnalysisJson(pov, pref, initialFen, orientation, owner = false, me = me)
-    )
-
-  private def withTree(pov: Pov, analysis: Option[Analysis], initialFen: Option[FEN], withFlags: WithFlags)(
-      obj: JsObject
-  ) =
-    obj + ("treeParts" -> partitionTreeJsonWriter.writes(
-      lila.round.TreeBuilder(pov.game, analysis, initialFen | pov.game.variant.initialFen, withFlags)
-    ))
 
   private def withSteps(pov: Pov, initialFen: Option[FEN])(obj: JsObject) =
     obj + ("steps" -> lila.round.StepBuilder(
@@ -220,14 +156,6 @@ final private[api] class RoundApi(
         }
       )
     else json
-
-  private def withAnalysis(g: Game, o: Option[Analysis])(json: JsObject) =
-    json.add(
-      "analysis",
-      o.map { a =>
-        analysisJson.bothPlayers(g, a)
-      }
-    )
 
   def withTournament(pov: Pov, viewO: Option[TourView])(json: JsObject)(implicit lang: Lang) =
     json.add("tournament" -> viewO.map { v =>

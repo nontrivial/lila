@@ -22,15 +22,12 @@ final class Round(
 ) extends LilaController(env)
     with TheftPrevention {
 
-  private def analyser = env.analyse.analyser
-
   private def renderPlayer(pov: Pov)(implicit ctx: Context): Fu[Result] =
     negotiate(
       html =
         if (!pov.game.started) notFound
         else
           PreventTheft(pov) {
-            pov.game.playableByAi ?? env.fishnet.player(pov.game)
             env.tournament.api.gameView.player(pov) flatMap { tour =>
               gameC.preloadUsers(pov.game) zip
                 getPlayerChat(pov.game, tour.map(_.tour)) zip
@@ -58,7 +55,6 @@ final class Round(
         if (isTheft(pov)) fuccess(theftResponse)
         else
           env.tournament.api.gameView.mobile(pov.game) flatMap { tour =>
-            pov.game.playableByAi ?? env.fishnet.player(pov.game)
             gameC.preloadUsers(pov.game) zip
               env.api.roundApi.player(pov, tour, apiVersion) zip
               getPlayerChat(pov.game, none) map { case ((_, data), chat) =>
@@ -186,19 +182,16 @@ final class Round(
             else
               for { // web crawlers don't need the full thing
                 initialFen <- env.game.gameRepo.initialFen(pov.gameId)
-                pgn        <- env.api.pgnDump(pov.game, initialFen, none, PgnDump.WithFlags(clocks = false))
-              } yield Ok(html.round.watcher.crawler(pov, initialFen, pgn))
+              } yield Ok()
           },
           api = apiVersion =>
             for {
               tour     <- env.tournament.api.gameView.watcher(pov.game)
               data     <- env.api.roundApi.watcher(pov, tour, apiVersion, tv = none)
-              analysis <- analyser get pov.game
               chat     <- getWatcherChat(pov.game)
             } yield Ok {
               data
                 .add("chat" -> chat.map(c => lila.chat.JsonView(c.chat)))
-                .add("analysis" -> analysis.map(a => lila.analyse.JsonView.mobile(pov.game, a)))
             }
         ) map { NoCache(_) }
     }
