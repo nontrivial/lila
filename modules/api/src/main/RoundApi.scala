@@ -36,7 +36,7 @@ final private[api] class RoundApi(
           ctx.me,
           withFlags = WithFlags(blurs = ctx.me ?? Granter(_.ViewBlurs)),
           initialFen = initialFen,
-          nvui = ctx.blind
+          nvui = false
         ) zip
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
           forecastApi.loadForDisplay(pov) zip
