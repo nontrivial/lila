@@ -45,6 +45,9 @@ GET   /player/online                   controllers.User.online
 GET   /player/autocomplete             controllers.User.autocomplete
 
 # Round
+GET   /$gameId<\w{8}>                            controllers.Round.watcher(gameId: String, color: String = "white")
+GET   /$gameId<\w{8}>/$color<white|black>        controllers.Round.watcher(gameId: String, color: String)
+GET   /$fullId<\w{12}>                           controllers.Round.player(fullId: String)
 GET   /$gameId<\w{8}>/$color<white|black>/sides  controllers.Round.sides(gameId: String, color: String)
 GET   /$gameId<\w{8}>/continue/:mode             controllers.Round.continue(gameId: String, mode: String)
 GET   /$gameId<\w{8}>/note                       controllers.Round.readNote(gameId: String)
@@ -148,7 +151,6 @@ POST  /account/twofactor/disable       controllers.Account.disableTwoFactor
 GET   /account/reopen                  controllers.Account.reopen
 POST  /account/reopen/send             controllers.Account.reopenApply
 GET   /account/reopen/sent/:email      controllers.Account.reopenSent(email: String)
-GET   /account/reopen/login/:token     controllers.Account.reopenLogin(token: String)
 GET   /account/personal-data           controllers.Account.data
 # App BC
 GET   /account/security                controllers.Account.security

@@ -55,7 +55,6 @@ final private[api] class RoundApi(
   def watcher(
       pov: Pov,
       apiVersion: ApiVersion,
-      tv: Option[lila.round.OnTv],
       initialFenO: Option[Option[FEN]] = None
   )(implicit ctx: Context): Fu[JsObject] =
     initialFenO
@@ -67,7 +66,6 @@ final private[api] class RoundApi(
           ctx.pref,
           apiVersion,
           ctx.me,
-          tv,
           initialFen = initialFen,
           withFlags = WithFlags(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip
@@ -99,7 +97,6 @@ final private[api] class RoundApi(
           ctx.pref,
           apiVersion,
           ctx.me,
-          tv,
           initialFen = initialFen,
           withFlags = withFlags.copy(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip

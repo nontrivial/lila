@@ -541,7 +541,7 @@ abstract private[controllers] class LilaController(val env: Env)
           fuccess {
             (((0, 0), 0), none)
           }
-      } map { case (pref, (((teamNbRequests, nbChallenges), nbNotifications), inquiry)) =>
+      } map { case (pref, (((nbChallenges), nbNotifications), inquiry)) =>
         PageData(
           nbChallenges,
           nbNotifications,

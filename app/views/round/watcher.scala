@@ -70,7 +70,7 @@ object watcher {
       frag(
         main(cls := "round")(
           st.aside(cls := "round__side")(
-            game.side(pov, initialFen, none, bookmarked = false),
+            game.side(pov, initialFen, bookmarked = false),
             div(cls := "for-crawler")(
               h1(titleGame(pov.game)),
               p(describePov(pov)),

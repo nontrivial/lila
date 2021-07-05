@@ -144,7 +144,6 @@ final class JsonView(
       pref: Pref,
       apiVersion: ApiVersion,
       me: Option[User],
-      tv: Option[OnTv],
       initialFen: Option[FEN] = None,
       withFlags: WithFlags
   ) =
@@ -190,13 +189,6 @@ final class JsonView(
               .add("rookCastle" -> (pref.rookCastle == Pref.RookCastle.YES))
               .add("showCaptured" -> pref.captured)
           )
-          .add("tv" -> tv.collect { case OnLichessTv(channel, flip) =>
-            Json.obj("channel" -> channel, "flip" -> flip)
-          })
-          .add("userTv" -> tv.collect { case OnUserTv(userId) =>
-            Json.obj("id" -> userId)
-          })
-
       }
 
   def userAnalysisJson(
