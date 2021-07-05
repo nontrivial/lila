@@ -11,7 +11,6 @@ case class PageData(
     nbChallenges: Int,
     nbNotifications: Int,
     pref: Pref,
-    blindMode: Boolean,
     hasFingerprint: Boolean,
     nonce: Option[Nonce],
     error: Boolean = false
@@ -19,12 +18,11 @@ case class PageData(
 
 object PageData {
 
-  def anon(req: RequestHeader, nonce: Option[Nonce], blindMode: Boolean = false) =
+  def anon(req: RequestHeader, nonce: Option[Nonce]) =
     PageData(
       nbChallenges = 0,
       nbNotifications = 0,
       lila.pref.RequestPref fromRequest req,
-      blindMode = blindMode,
       hasFingerprint = false,
       nonce = nonce
     )
@@ -42,8 +40,6 @@ sealed trait Context extends lila.user.UserContextWrapper {
   def nbChallenges    = pageData.nbChallenges
   def nbNotifications = pageData.nbNotifications
   def pref            = pageData.pref
-  def blind           = pageData.blindMode
-  def noBlind         = !blind
   def nonce           = pageData.nonce
 
   def currentTheme = lila.pref.Theme(pref.theme)

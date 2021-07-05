@@ -59,7 +59,10 @@ final class User(
           html.user.show.page.activity(u, info, social)
         }
       }
-    }
+    } else
+      env.activity.read.recent(u) map { as =>
+        status(html.activity(u, as))
+      }
 
   def download(username: String) = OpenBody { implicit ctx =>
     OptionOk(env.user.repo named username) { user =>
@@ -293,13 +296,6 @@ final class User(
             Ok(Json toJson users.map(env.user.jsonView.lightPerfIsOnline))
           }
       )
-    }
-
-  private def modZoneSegment(fu: Fu[Frag], name: String, user: UserModel): Source[Frag, _] =
-    Source futureSource {
-      fu.monSuccess(_.mod zoneSegment name)
-        .logFailure(lila.log("modZoneSegment").branch(s"$name ${user.id}"))
-        .map(Source.single)
     }
 
   protected[controllers] def loginsTableData(user: UserModel, userLogins: UserLogins, max: Int)(implicit

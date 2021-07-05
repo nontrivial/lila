@@ -530,7 +530,7 @@ abstract private[controllers] class LilaController(val env: Env)
   private def pageDataBuilder(ctx: UserContext, hasFingerPrint: Boolean): Fu[PageData] = {
     val isPage = HTTPRequest isSynchronousHttp ctx.req
     val nonce  = isPage option Nonce.random
-    ctx.me.fold(fuccess(PageData.anon(ctx.req, nonce, blindMode(ctx)))) { me =>
+    ctx.me.fold(fuccess(PageData.anon(ctx.req, nonce))) { me =>
       env.pref.api.getPref(me, ctx.req) zip {
         if (isPage) {
           env.user.lightUserApi preloadUser me
@@ -546,7 +546,6 @@ abstract private[controllers] class LilaController(val env: Env)
           nbChallenges,
           nbNotifications,
           pref,
-          blindMode = blindMode(ctx),
           hasFingerprint = hasFingerPrint,
           nonce = nonce
         )
