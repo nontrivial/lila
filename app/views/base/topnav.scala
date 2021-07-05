@@ -24,17 +24,12 @@ object topnav {
         div(role := "group")(
           if (ctx.noBot) a(href := "/?any#hook")(trans.createAGame())
           else a(href := "/?any#friend")(trans.playWithAFriend()),
-          ctx.noBot option frag(
-            a(href := routes.Tournament.home)(trans.arena.arenaTournaments()),
-            ctx.pref.hasDgt option a(href := routes.DgtCtrl.index)("DGT board")
-          )
         )
       ),
       st.section(
         linkTitle(routes.User.list.path, trans.community()),
         div(role := "group")(
-          a(href := routes.User.list)(trans.players()),
-          ctx.me.exists(!_.kid) option a(href := routes.Plan.index)(trans.patron.donate())
+          a(href := routes.User.list)(trans.players())
         )
       )
     )

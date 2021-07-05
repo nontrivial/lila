@@ -24,20 +24,6 @@ object otherTrophies {
           }
         )
       },
-      info.shields.map { shield =>
-        a(
-          cls := "shield-trophy combo-trophy",
-          ariaTitle(s"${shield.categ.name} Shield"),
-          href := routes.Tournament.shields
-        )(shield.categ.iconChar.toString)
-      },
-      info.revolutions.map { revol =>
-        a(
-          cls := "revol_trophy combo-trophy",
-          ariaTitle(s"${revol.variant.name} Revolution"),
-          href := routes.Tournament.show(revol.tourId)
-        )(revol.iconChar.toString)
-      },
       info.trophies.find(_.kind._id == TrophyKind.zugMiracle).map { t =>
         frag(
           styleTag("""

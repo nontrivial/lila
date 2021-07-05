@@ -36,7 +36,6 @@ object newPlayer {
         li(a(href := s"${routes.Lobby.home}#ai")("Play the artificial intelligence")),
         li(a(href := s"${routes.Lobby.home}#hook")("Play opponents from around the world")),
         li(a(href := routes.User.list)("Follow your friends on Lichess")),
-        li(a(href := routes.Tournament.home)("Play in tournaments")),
         li(a(href := routes.Pref.form("game-display"))("Configure Lichess to your liking")),
         li("Explore the site and have fun :)")
       )

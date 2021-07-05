@@ -95,14 +95,6 @@ object home {
               trans.nbPlayers(
                 strong(dataCount := homepage.counters.members)(homepage.counters.members.localize)
               )
-            ),
-            a(
-              id := "nb_games_in_play",
-              href := ctx.noBlind.option(routes.Tv.games.url)
-            )(
-              trans.nbGamesInPlay(
-                strong(dataCount := homepage.counters.rounds)(homepage.counters.rounds.localize)
-              )
             )
           )
         ),

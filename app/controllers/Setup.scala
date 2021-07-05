@@ -259,7 +259,7 @@ final class Setup(
                 negotiate(
                   html = fuccess(redirectPov(pov)),
                   api = apiVersion =>
-                    env.api.roundApi.player(pov, none, apiVersion) map { data =>
+                    env.api.roundApi.player(pov, apiVersion) map { data =>
                       Created(data) as JSON
                     }
                 )

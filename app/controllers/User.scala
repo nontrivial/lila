@@ -90,10 +90,6 @@ final class User(
                   me = ctx.me,
                   page = page
                 )(ctx.body, formBinding)
-                _ <- env.user.lightUserApi preloadMany pag.currentPageResults.flatMap(_.userIds)
-                _ <- env.tournament.cached.nameCache preloadMany {
-                  pag.currentPageResults.flatMap(_.tournamentId).map(_ -> ctxLang)
-                }
                 notes <- ctx.me ?? { me =>
                   env.round.noteApi.byGameIds(pag.currentPageResults.map(_.id), me.id)
                 }
@@ -226,9 +222,6 @@ final class User(
           page = page
         )(ctx.body, formBinding)
         pag <- pagFromDb.mapFutureResults(env.round.proxyRepo.upgradeIfPresent)
-        _ <- env.tournament.cached.nameCache preloadMany {
-          pag.currentPageResults.flatMap(_.tournamentId).map(_ -> ctxLang)
-        }
         _ <- env.user.lightUserApi preloadMany pag.currentPageResults.flatMap(_.userIds)
       } yield pag
     }(fuccess(Paginator.empty[GameModel]))
@@ -241,12 +234,9 @@ final class User(
           html =
             for {
               nbAllTime      <- env.user.cached.top10NbGame.get {}
-              tourneyWinners <- env.tournament.winners.all.map(_.top)
               topOnline      <- env.user.cached.getTop50Online
-              _              <- env.user.lightUserApi preloadMany tourneyWinners.map(_.userId)
             } yield Ok(
               html.user.list(
-                tourneyWinners = tourneyWinners,
                 online = topOnline,
                 leaderboards = leaderboards,
                 nbAllTime = nbAllTime

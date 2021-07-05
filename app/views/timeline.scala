@@ -56,11 +56,6 @@ object timeline {
           trans.xPostedInForumY(
             userLink(userId),
           )
-        case TourJoin(userId, tourId, tourName) =>
-          trans.xCompetesInY(
-            userLink(userId),
-            a(href := routes.Tournament.show(tourId))(tourName)
-          )
         case GameEnd(playerId, opponent, win, perfKey) =>
           for {
             opponentId <- opponent
@@ -81,15 +76,6 @@ object timeline {
             }),
             userLink(opponentId),
             perf.trans
-          )
-        case PlanStart(userId) =>
-          a(href := routes.Plan.index)(
-            trans.patron.xBecamePatron(userLink(userId))
-          )
-        case PlanRenew(userId, months) =>
-          a(href := routes.Plan.index)(
-            trans.patron.xIsPatronForNbMonths
-              .plural(months, userLink(userId), months)
           )
       },
       " ",

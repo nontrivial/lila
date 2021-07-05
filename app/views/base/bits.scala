@@ -41,9 +41,6 @@ z-index: 99;
     "This is an empty Lichess preview website, go to lichess.org instead"
   )
 
-  def fenAnalysisLink(fen: FEN)(implicit lang: Lang) =
-    a(href := routes.UserAnalysis.parseArg(fen.value.replace(" ", "_")))(trans.analysis())
-
   def paginationByQuery(route: Call, pager: Paginator[_], showPost: Boolean): Option[Frag] =
     pagination(page => s"$route?page=$page", pager, showPost)
 

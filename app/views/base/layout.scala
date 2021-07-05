@@ -305,16 +305,6 @@ object layout {
 <label for="tn-tg" class="hbg"><span class="hbg__in"></span></label>"""
     )
 
-    private def teamRequests(implicit ctx: Context) =
-      ctx.teamNbRequests > 0 option
-        a(
-          cls := "link data-count link-center",
-          href := routes.Team.requests,
-          dataCount := ctx.teamNbRequests,
-          dataIcon := "",
-          title := trans.team.teams.txt()
-        )
-
     def apply(playing: Boolean)(implicit ctx: Context) =
       header(id := "top")(
         div(cls := "site-title-nav")(
@@ -332,7 +322,6 @@ object layout {
         ),
         div(cls := "site-buttons")(
           !ctx.isAppealUser option clinput,
-          teamRequests,
           if (ctx.isAppealUser)
             postForm(action := routes.Auth.logout)(
               submitButton(cls := "button button-red link")(trans.logOut())

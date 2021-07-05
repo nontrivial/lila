@@ -29,10 +29,6 @@ object side {
           "empty"  -> perf.isEmpty,
           "active" -> active.has(perfType)
         ),
-        href := {
-          if (isPuzzle) ctx.is(u) option routes.Puzzle.dashboard(30, "home").url
-          else routes.User.perfStat(u.username, perfType.key).url.some
-        },
         span(
           h3(perfType.trans),
           if (isPuzzle && u.perfs.dubiousPuzzle && !ctx.is(u)) st.rating("?")
@@ -78,32 +74,9 @@ object side {
         showNonEmptyPerf(u.perfs.antichess, PerfType.Antichess),
         showNonEmptyPerf(u.perfs.atomic, PerfType.Atomic),
         showNonEmptyPerf(u.perfs.horde, PerfType.Horde),
-        showNonEmptyPerf(u.perfs.racingKings, PerfType.RacingKings),
-        u.noBot option frag(
-          hr,
-          showStreak(u.perfs.streak, u)
-        )
+        showNonEmptyPerf(u.perfs.racingKings, PerfType.RacingKings)
       )
     )
   }
 
-  private def showStreak(streak: lila.rating.Perf.Streak, user: User)(implicit lang: Lang) =
-    a(
-      dataIcon := '',
-      cls := List(
-        "empty" -> !streak.nonEmpty
-      ),
-      href := routes.Puzzle.streak,
-      span(
-        h3("Puzzle Streak"),
-        st.rating(
-          strong(streak.score),
-          streak.nonEmpty option frag(
-            " ",
-            span(trans.storm.xRuns.plural(streak.runs, streak.runs.localize))
-          )
-        )
-      ),
-      iconTag("")
-    )
 }

@@ -55,9 +55,6 @@ object index {
             a(href := "https://github.com/lichess-org/api/tree/master/example/oauth-app")(
               "Lichess OAuth app example"
             ),
-            ", and the ",
-            a(href := routes.Api.index)("API documentation"),
-            ".",
             br,
             br,
             made.nonEmpty option {

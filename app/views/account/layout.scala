@@ -51,13 +51,10 @@ object layout {
             trans.security()
           ),
           div(cls := "sep"),
-          a(href := routes.Plan.index)(trans.patron.lichessPatron()),
-          div(cls := "sep"),
           a(activeCls("oauth.token"), href := routes.OAuthToken.index)(
             "API access tokens"
           ),
           ctx.noBot option a(activeCls("oauth.app"), href := routes.OAuthApp.index)("OAuth Apps"),
-          ctx.noBot option a(href := routes.DgtCtrl.index)("DGT board"),
           div(cls := "sep"),
           a(activeCls("close"), href := routes.Account.close)(
             trans.settings.closeAccount()

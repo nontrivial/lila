@@ -22,9 +22,6 @@ object index {
         ),
         standardFlash(cls := "box__pad"),
         p(cls := "box__pad")(
-          "You can make OAuth requests without going through the ",
-          a(href := s"${routes.Api.index}#section/Authentication")("authorization code flow"),
-          ".",
           br,
           br,
           "Instead, ",
@@ -40,10 +37,7 @@ object index {
           "Here's a ",
           a(href := "https://github.com/lichess-org/api/tree/master/example/oauth-personal-token")(
             "personal token app example"
-          ),
-          " and the ",
-          a(href := routes.Api.index)("API documentation"),
-          "."
+          )
         ),
         tokens.headOption.filter(_.isBrandNew).map { token =>
           div(cls := "box__pad brand")(

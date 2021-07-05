@@ -222,8 +222,6 @@ trait GameHelper { self: I18nHelper with UserHelper with StringHelper with Chess
       tv: Boolean = false
   )(implicit ctx: Context): String = {
     val owner = ownerLink ?? ctx.me.flatMap(game.player)
-    if (tv) routes.Tv.index
-    else
       owner.fold(routes.Round.watcher(game.id, color.name)) { o =>
         routes.Round.player(game fullIdOf o.color)
       }
