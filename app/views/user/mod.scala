@@ -6,9 +6,6 @@ import play.api.i18n.Lang
 import lila.api.Context
 import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
-import lila.evaluation.Display
-import lila.mod.IpRender.RenderIp
-import lila.mod.ModPresets
 import lila.playban.RageSit
 import lila.security.Granter
 import lila.security.{ Permission, UserLogins }
@@ -28,7 +25,7 @@ object mod {
       a(href := "#identification_screen")("Identification")
     )
 
-  def actions(u: User, emails: User.Emails, erased: User.Erased, pmPresets: ModPresets)(implicit
+  def actions(u: User, emails: User.Emails, erased: User.Erased)(implicit
       ctx: Context
   ): Frag =
     mzSection("actions")(
@@ -182,15 +179,6 @@ object mod {
           )
         }
       ),
-      isGranted(_.ModMessage) option
-        postForm(action := routes.Mod.warn(u.username, ""), cls := "pm-preset")(
-          st.select(
-            option(value := "")("Send PM"),
-            pmPresets.value.map { preset =>
-              option(st.value := preset.name, title := preset.text)(preset.name)
-            }
-          )
-        ),
       isGranted(_.SetTitle) option {
         postForm(cls := "fide-title", action := routes.Mod.setTitle(u.username))(
           form3.select(
@@ -248,234 +236,6 @@ object mod {
       strong(cls := "fat")(rageSit.counterView)
     )
 
-  def plan(u: User)(charges: List[lila.plan.Charge])(implicit ctx: Context): Option[Frag] =
-    charges.nonEmpty option
-      mzSection("plan")(
-        strong(cls := "text inline", dataIcon := patronIconChar)(
-          "Patron payments",
-          isGranted(_.PayPal) option {
-            charges.find(_.giftTo.isEmpty).flatMap(_.payPal).flatMap(_.subId).map { subId =>
-              frag(
-                " - ",
-                a(
-                  href := s"https://www.paypal.com/fr/cgi-bin/webscr?cmd=_profile-recurring-payments&encrypted_profile_id=$subId"
-                )("[PayPal sub]")
-              )
-            }
-          }
-        ),
-        ul(
-          charges.map { c =>
-            li(
-              c.giftTo match {
-                case Some(giftedId) if u is giftedId => frag("Gift from", userIdLink(c.userId), " ")
-                case Some(giftedId)                  => frag("Gift to", userIdLink(giftedId.some), " ")
-                case _                               => emptyFrag
-              },
-              c.money.display,
-              " with ",
-              c.serviceName,
-              " on ",
-              showDateTimeUTC(c.date),
-              " UTC"
-            )
-          }
-        ),
-        br
-      )
-
-  def student(managed: lila.clas.Student.ManagedInfo)(implicit ctx: Context): Frag =
-    mzSection("student")(
-      "Created by ",
-      userLink(managed.createdBy),
-      " for class ",
-      a(href := routes.Clas.show(managed.clas.id.value))(managed.clas.name)
-    )
-
-  def reportLog(u: User)(reports: lila.report.Report.ByAndAbout)(implicit lang: Lang): Frag =
-    mzSection("reports")(
-      div(cls := "mz_reports mz_reports--out")(
-        strong(cls := "text", dataIcon := "")(
-          s"Reports sent by ${u.username}",
-          reports.by.isEmpty option ": nothing to show."
-        ),
-        reports.by.map { r =>
-          r.atomBy(lila.report.ReporterId(u.id)).map { atom =>
-            postForm(action := routes.Report.inquiry(r.id))(
-              submitButton(reportScore(r.score), " ", strong(r.reason.name)),
-              " ",
-              userIdLink(r.user.some),
-              " ",
-              momentFromNowServer(atom.at),
-              ": ",
-              shorten(atom.text, 200)
-            )
-          }
-        }
-      ),
-      div(cls := "mz_reports mz_reports--in")(
-        strong(cls := "text", dataIcon := "")(
-          s"Reports concerning ${u.username}",
-          reports.about.isEmpty option ": nothing to show."
-        ),
-        reports.about.map { r =>
-          postForm(action := routes.Report.inquiry(r.id))(
-            submitButton(reportScore(r.score), " ", strong(r.reason.name)),
-            div(cls := "atoms")(
-              r.bestAtoms(3).map { atom =>
-                div(cls := "atom")(
-                  "By ",
-                  userIdLink(atom.by.value.some),
-                  " ",
-                  momentFromNowServer(atom.at),
-                  ": ",
-                  shorten(atom.text, 200)
-                )
-              },
-              (r.atoms.size > 3) option s"(and ${r.atoms.size - 3} more)"
-            )
-          )
-        }
-      )
-    )
-
-  def assessments(u: User, pag: lila.evaluation.PlayerAggregateAssessment.WithGames)(implicit
-      ctx: Context
-  ): Frag =
-    mzSection("assessments")(
-      pag.pag.sfAvgBlurs.map { blursYes =>
-        p(cls := "text", dataIcon := "")(
-          "ACPL in games with blurs is ",
-          strong(blursYes._1),
-          " [",
-          blursYes._2,
-          " , ",
-          blursYes._3,
-          "]",
-          pag.pag.sfAvgNoBlurs ?? { blursNo =>
-            frag(
-              " against ",
-              strong(blursNo._1),
-              " [",
-              blursNo._2,
-              ", ",
-              blursNo._3,
-              "] in games without blurs."
-            )
-          }
-        )
-      },
-      pag.pag.sfAvgLowVar.map { lowVar =>
-        p(cls := "text", dataIcon := "")(
-          "ACPL in games with consistent move times is ",
-          strong(lowVar._1),
-          " [",
-          lowVar._2,
-          ", ",
-          lowVar._3,
-          "]",
-          pag.pag.sfAvgHighVar ?? { highVar =>
-            frag(
-              " against ",
-              strong(highVar._1),
-              " [",
-              highVar._2,
-              ", ",
-              highVar._3,
-              "] in games with random move times."
-            )
-          }
-        )
-      },
-      pag.pag.sfAvgHold.map { holdYes =>
-        p(cls := "text", dataIcon := "")(
-          "ACPL in games with bot signature ",
-          strong(holdYes._1),
-          " [",
-          holdYes._2,
-          ", ",
-          holdYes._3,
-          "]",
-          pag.pag.sfAvgNoHold ?? { holdNo =>
-            frag(
-              " against ",
-              strong(holdNo._1),
-              " [",
-              holdNo._2,
-              ", ",
-              holdNo._3,
-              "]  in games without bot signature."
-            )
-          }
-        )
-      },
-      table(cls := "slist")(
-        thead(
-          tr(
-            th(a(href := routes.GameMod.index(u.username))("Games view")),
-            th("Game"),
-            th("Centi-Pawn", br, "(Avg ± SD)"),
-            th("Move Times", br, "(Avg ± SD)"),
-            th(span(title := "The frequency of which the user leaves the game page.")("Blurs")),
-            th(span(title := "Bot detection using grid click analysis.")("Bot")),
-            th(span(title := "Aggregate match")(raw("&Sigma;")))
-          )
-        ),
-        tbody(
-          pag.pag.playerAssessments
-            .sortBy(-_.assessment.id)
-            .take(15)
-            .map { result =>
-              tr(
-                td(
-                  a(href := routes.Round.watcher(result.gameId, result.color.name))(
-                    pag.pov(result).fold[Frag](result.gameId) { p =>
-                      playerUsername(p.opponent)
-                    }
-                  )
-                ),
-                td(
-                  pag.pov(result).map { p =>
-                    a(href := routes.Round.watcher(p.gameId, p.color.name))(
-                      p.game.isTournament option iconTag(""),
-                      p.game.perfType.map { pt =>
-                        iconTag(pt.iconChar)(cls := "text")
-                      },
-                      shortClockName(p.game.clock.map(_.config))
-                    )
-                  }
-                ),
-                td(
-                  span(cls := s"sig sig_${Display.stockfishSig(result)}", dataIcon := ""),
-                  s" ${result.analysis}"
-                ),
-                td(
-                  span(cls := s"sig sig_${Display.moveTimeSig(result)}", dataIcon := ""),
-                  s" ${result.basics.moveTimes / 10}",
-                  result.basics.mtStreak ?? frag(br, "streak")
-                ),
-                td(
-                  span(cls := s"sig sig_${Display.blurSig(result)}", dataIcon := ""),
-                  s" ${result.basics.blurs}%",
-                  result.basics.blurStreak.filter(8.<=) map { s =>
-                    frag(br, s"streak $s/12")
-                  }
-                ),
-                td(
-                  span(cls := s"sig sig_${Display.holdSig(result)}", dataIcon := ""),
-                  if (result.basics.hold) "Yes" else "No"
-                ),
-                td(
-                  div(cls := "aggregate")(
-                    span(cls := s"sig sig_${result.assessment.id}")(result.assessment.emoticon)
-                  )
-                )
-              )
-            }
-        )
-      )
-    )
-
   private val sortNumberTh    = th(attr("data-sort-method") := "number")
   private val dataSort        = attr("data-sort")
   private val dataTags        = attr("data-tags")
@@ -493,8 +253,7 @@ object mod {
     else td
 
   def otherUsers(mod: Holder, u: User, data: UserLogins.TableData)(implicit
-      ctx: Context,
-      renderIp: RenderIp
+      ctx: Context
   ): Tag = {
     import data._
     mzSection("others")(
@@ -529,7 +288,6 @@ object mod {
             val userNotes =
               notes.filter(n => n.to == o.id && (ctx.me.exists(n.isFrom) || isGranted(_.Admin)))
             tr(
-              dataTags := s"${other.ips.map(renderIp).mkString(" ")} ${other.fps.mkString(" ")}",
               cls := (o == u) option "same"
             )(
               if (o == u || Granter.canViewAltUsername(mod, o))
@@ -581,8 +339,7 @@ object mod {
   }
 
   def identification(mod: Holder, user: User, logins: UserLogins)(implicit
-      ctx: Context,
-      renderIp: RenderIp
+      ctx: Context
   ): Frag = {
     val canIpBan  = isGranted(_.IpBan)
     val canFpBan  = isGranted(_.PrintBan)
@@ -653,27 +410,6 @@ object mod {
               sortNumberTh("Date"),
               canIpBan option sortNumberTh
             )
-          ),
-          tbody(
-            logins.ips.sortBy(ip => (-ip.alts.score, -ip.ip.seconds)).map { ip =>
-              val renderedIp = renderIp(ip.ip.value)
-              tr(cls := ip.blocked option "blocked")(
-                td(a(href := routes.Mod.singleIp(renderedIp))(renderedIp)),
-                td(dataSort := ip.alts.score)(altMarks(ip.alts)),
-                td(ip.proxy option span(cls := "proxy")("PROXY")),
-                td(ip.clients.toList.map(_.toString).sorted mkString ", "),
-                td(dataSort := ip.ip.date.getMillis)(momentFromNowServer(ip.ip.date)),
-                canIpBan option td(dataSort := (9999 - ip.alts.cleans))(
-                  button(
-                    cls := List(
-                      "button button-empty" -> true,
-                      "button-discouraging" -> (ip.alts.cleans > 0)
-                    ),
-                    href := routes.Mod.singleIpBan(!ip.blocked, ip.ip.value.value)
-                  )("BAN")
-                )
-              )
-            }
           )
         )
       ),
