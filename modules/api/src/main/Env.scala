@@ -62,8 +62,6 @@ final class Env(
 
   lazy val lobbyApi = wire[LobbyApi]
 
-  lazy val eventStream = wire[EventStream]
-
   lazy val personalDataExport = wire[PersonalDataExport]
 
   lazy val referrerRedirect = wire[ReferrerRedirect]
