@@ -114,13 +114,6 @@ final class Auth(
                         result =>
                           result.toOption match {
                             case None => InternalServerError("Authentication error").fuccess
-                            case Some(u) if u.disabled =>
-                              negotiate(
-                                html = env.mod.logApi.closedByMod(u) flatMap {
-                                  case _    => redirectTo(routes.Account.reopen.url).fuccess
-                                },
-                                api = _ => Unauthorized(jsonError("This account is closed.")).fuccess
-                              )
                             case Some(u) =>
                               env.user.repo.email(u.id) foreach {
                                 _ foreach { garbageCollect(u, _) }

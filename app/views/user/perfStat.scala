@@ -216,10 +216,10 @@ object perfStat {
 
   private def fromTo(s: lila.perfStat.Streak)(implicit lang: Lang): Frag =
     s.from match {
-      case Some(from) =>
+      case Some(_) =>
         fromXToY(
           s.to match {
-            case Some(to) => now()
+            case Some(_) => now()
             case None => now()
           }
         )

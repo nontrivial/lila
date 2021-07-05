@@ -166,8 +166,7 @@ object layout {
           depsTag,
           jsModule("site")
         ),
-      moreJs,
-      ctx.pageData.inquiry.isDefined option jsTag("inquiry.js")
+      moreJs
     )
 
   private val spaceRegex              = """\s{2,}+""".r
@@ -214,7 +213,6 @@ object layout {
           },
           cssTag("site"),
           ctx.pref.is3d option cssTag("board-3d"),
-          ctx.pageData.inquiry.isDefined option cssTagNoTheme("mod.inquiry"),
           ctx.userContext.impersonatedBy.isDefined option cssTagNoTheme("mod.impersonate"),
           ctx.blind option cssTagNoTheme("blind"),
           moreCss,

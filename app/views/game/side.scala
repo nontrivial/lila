@@ -38,17 +38,13 @@ object side {
                   views.html.bookmark.toggle(game, bookmarked),
                   if (game.imported)
                     div(
-                      a(href := routes.Importer.importGame, title := trans.importGame.txt())("IMPORT"),
-                      separator,
-                      bits.variantLink(game.variant, initialFen = initialFen, shortName = true)
+                      a(href := routes.Importer.importGame, title := trans.importGame.txt())("IMPORT")
                     )
                   else
                     frag(
                       widgets showClock game,
                       separator,
                       (if (game.rated) trans.rated else trans.casual).txt(),
-                      separator,
-                      bits.variantLink(game.variant, game.perfType, initialFen, shortName = true)
                     )
                 ),
                 game.pgnImport.flatMap(_.date).map(frag(_)) getOrElse {

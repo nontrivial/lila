@@ -16,7 +16,6 @@ case class UserInfo(
     ratingChart: Option[String],
     nbs: UserInfo.NbGames,
     nbFollowers: Int,
-    nbPosts: Int,
     trophies: Trophies,
     completionRate: Option[Double]
 ) {

@@ -33,9 +33,7 @@ object widgets {
                     span("IMPORT"),
                     g.pgnImport.flatMap(_.user).map { user =>
                       frag(" ", trans.by(userIdLink(user.some, None, withOnline = false)))
-                    },
-                    separator,
-                    bits.variantLink(g.variant)
+                    }
                   )
                 else
                   frag(

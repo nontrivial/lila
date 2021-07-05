@@ -31,8 +31,6 @@ object bits {
     div(cls := "details")(
       div(cls := "variant", dataIcon := (if (c.initialFen.isDefined) '' else c.perfType.iconChar))(
         div(
-          views.html.game.bits.variantLink(c.variant, c.perfType.some),
-          br,
           span(cls := "clock")(
             c.daysPerTurn map { days =>
               if (days == 1) trans.oneDay()

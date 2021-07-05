@@ -44,9 +44,6 @@ final class Account(
             profile.links
               .exists(env.security.spam.detect)
               .option("profile.links" -> ~profile.links)
-          }
-          .?? { case (resource, text) =>
-            env.report.api.autoCommFlag(lila.report.Suspect(me).id, resource, text)
           } >> env.user.repo.setProfile(me.id, profile) inject Redirect(routes.Account.profile).flashSuccess
       }
     }
