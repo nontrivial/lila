@@ -75,7 +75,6 @@ final private class Player(
     notifyMove(moveOrDrop, progress.game)
     if (progress.game.finished) moveFinish(progress.game) dmap { progress.events ::: _ }
     else {
-      if (progress.game.playableByAi) requestFishnet(progress.game, round)
       if (pov.opponent.isOfferingDraw) round ! DrawNo(PlayerId(pov.player.id))
       if (pov.player.isProposingTakeback) round ! TakebackNo(PlayerId(pov.player.id))
       if (progress.game.forecastable) moveOrDrop.left.toOption.foreach { move =>

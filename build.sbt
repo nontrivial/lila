@@ -36,8 +36,8 @@ lazy val modules = Seq(
   chat, coordinate,
   history, shutup, push, mailer,
   playban, perfStat, irc, quote, challenge,
-  explorer, learn, plan,
-  event, evalCache
+  explorer, plan,
+  event
 )
 
 lazy val moduleRefs = modules map projectToRef
@@ -59,7 +59,7 @@ lazy val i18n = smallModule("i18n",
     MessageCompiler(
       sourceDir = new File("translation/source"),
       destDir = new File("translation/dest"),
-      dbs = "site arena emails learn coordinates contact patron broadcast tfa settings preferences perfStat search tourname lag challenge".split(' ').toList,
+      dbs = "site arena emails coordinates contact patron broadcast tfa settings preferences perfStat search tourname lag challenge".split(' ').toList,
       compileTo = (Compile / sourceManaged).value
     )
   }.taskValue
@@ -196,16 +196,6 @@ lazy val shutup = module("shutup",
 lazy val challenge = module("challenge",
   Seq(common, db, hub, setup, game, relation, pref, socket, room, msg),
   Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val learn = smallModule("learn",
-  Seq(common, db, user),
-  Seq(autoconfig) ++ reactivemongo.bundle
-)
-
-lazy val evalCache = module("evalCache",
-  Seq(common, db, user, security, socket, tree),
-  reactivemongo.bundle
 )
 
 lazy val playban = module("playban",
