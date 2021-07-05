@@ -7,20 +7,6 @@ import controllers.routes
 
 object bits {
 
-  def getFishnet()(implicit ctx: Context) =
-    views.html.base.layout(
-      title = "fishnet API key request",
-      csp = defaultCsp.withGoogleForm.some
-    ) {
-      main(
-        iframe(
-          src := "https://docs.google.com/forms/d/e/1FAIpQLSeGgDHgWGP0uobQknF92eCMXqebyNBTyzJoJqbeGjRezlbWOw/viewform?embedded=true",
-          style := "width:100%;height:1400px",
-          st.frameborder := 0
-        )(spinner)
-      )
-    }
-
   def api =
     raw(
       """<!DOCTYPE html>

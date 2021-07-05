@@ -11,25 +11,8 @@ final private[setup] class Processor(
     gameCache: lila.game.Cached,
     gameRepo: lila.game.GameRepo,
     maxPlaying: Max,
-    fishnetPlayer: lila.fishnet.FishnetPlayer,
     onStart: lila.round.OnStart
 )(implicit ec: scala.concurrent.ExecutionContext) {
-
-  def ai(config: AiConfig)(implicit ctx: UserContext): Fu[Pov] = {
-    val pov = config pov ctx.me
-    (gameRepo insertDenormalized pov.game) >>-
-      onStart(pov.gameId) >> {
-        pov.game.player.isAi ?? fishnetPlayer(pov.game)
-      } inject pov
-  }
-
-  def apiAi(config: ApiAiConfig, me: User): Fu[Pov] = {
-    val pov = config pov me.some
-    (gameRepo insertDenormalized pov.game) >>-
-      onStart(pov.gameId) >> {
-        pov.game.player.isAi ?? fishnetPlayer(pov.game)
-      } inject pov
-  }
 
   def hook(
       configBase: HookConfig,

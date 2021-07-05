@@ -20,7 +20,7 @@ object HTTPRequest {
   def isRedirectable(req: RequestHeader) = isSynchronousHttp(req) && isSafe(req)
 
   def isProgrammatic(req: RequestHeader) =
-    !isSynchronousHttp(req) || isFishnet(req) || isApi(req) || req.headers
+    !isSynchronousHttp(req) || isApi(req) || req.headers
       .get(HeaderNames.ACCEPT)
       .exists(_ startsWith "application/vnd.lichess.v")
 
@@ -69,9 +69,7 @@ object HTTPRequest {
     def apply(req: RequestHeader): Boolean = userAgent(req) ?? regex.find
   }
 
-  def isFishnet(req: RequestHeader) = req.path startsWith "/fishnet/"
-
-  def isHuman(req: RequestHeader) = !isCrawler(req) && !isFishnet(req)
+  def isHuman(req: RequestHeader) = !isCrawler(req)
 
   def isFacebookOrTwitterBot(req: RequestHeader) =
     userAgent(req) ?? { ua =>

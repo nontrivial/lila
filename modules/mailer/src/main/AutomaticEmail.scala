@@ -83,23 +83,6 @@ $regards
 """
     )
 
-  def onFishnetKey(userId: User.ID, key: String): Funit =
-    sendAsPrivateMessageAndEmail(userId)(
-      subject = _ => "Your private fishnet key",
-      body = _ => s"""Hello,
-
-This message contains your private fishnet key. Please treat it like a password. You can use the same key on multiple machines (even at the same time), but you should not share it with anyone.
-
-Thank you very much for your help! Thanks to you, chess lovers all around the world will enjoy swift and powerful analysis for their games.
-
-Your key is:
-
-$key
-
-$regards
-"""
-    )
-
   def onAppealReply(user: User): Funit =
     sendAsPrivateMessageAndEmail(user)(
       subject = _ => "Appeal response on lichess.org",

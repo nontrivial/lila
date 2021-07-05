@@ -11,7 +11,7 @@ import lila.game.{ Game, Namer, Player, Pov }
 import lila.i18n.{ I18nKeys => trans, defaultLang }
 import lila.user.Title
 
-trait GameHelper { self: I18nHelper with UserHelper with AiHelper with StringHelper with ChessgroundHelper =>
+trait GameHelper { self: I18nHelper with UserHelper with StringHelper with ChessgroundHelper =>
 
   def netBaseUrl: String
   def cdnUrl(path: String): String

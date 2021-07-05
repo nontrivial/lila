@@ -4,7 +4,6 @@ MONGO_PORT=27017
 REDIS_PORT=6379
 LILA_PORT=9663
 LILA_WS_PORT=9664
-LILA_FISHNET_PORT=9665
 
 SEPARATOR="\n\n=========================================\n\n"
 
@@ -40,13 +39,6 @@ if [ "$LILA_WS_STATUS" -ne "403" ]; then
 fi
 
 echo -e $SEPARATOR
-
-LILA_FISHNET_STATUS=$(curl -sL -w "%{http_code}" -I "127.0.0.1:$LILA_FISHNET_PORT" -o /dev/null)
-echo "Reaching lila-fishnet..."
-echo "lila-fishnet: $LILA_FISHNET_STATUS"
-if [ "$LILA_FISHNET_STATUS" -ne "404" ]; then
-  echo "NOT STARTED"
-fi
 
 echo -e $SEPARATOR
 

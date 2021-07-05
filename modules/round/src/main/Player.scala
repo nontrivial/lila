@@ -85,30 +85,6 @@ final private class Player(
     }
   }
 
-  private[round] def fishnet(game: Game, ply: Int, uci: Uci)(implicit proxy: GameProxy): Fu[Events] =
-    if (game.playable && game.player.isAi && game.playedTurns == ply) {
-      applyUci(game, uci, blur = false, metrics = fishnetLag)
-        .fold(errs => fufail(ClientError(errs)), fuccess)
-        .flatMap {
-          case Flagged => finisher.outOfTime(game)
-          case MoveApplied(progress, moveOrDrop) =>
-            proxy.save(progress) >>-
-              uciMemo.add(progress.game, moveOrDrop) >>-
-              lila.mon.fishnet.move(~game.aiLevel).increment().unit >>-
-              notifyMove(moveOrDrop, progress.game) >> {
-                if (progress.game.finished) moveFinish(progress.game) dmap { progress.events ::: _ }
-                else
-                  fuccess(progress.events)
-              }
-        }
-    } else
-      fufail(
-        FishnetError(
-          s"Not AI turn move: $uci id: ${game.id} playable: ${game.playable} player: ${game.player}"
-        )
-      )
-
-  private val fishnetLag = MoveMetrics(clientLag = Centis(5).some)
   private val botLag     = MoveMetrics(clientLag = Centis(10).some)
 
   private def applyUci(

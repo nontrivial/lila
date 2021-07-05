@@ -211,19 +211,6 @@ package team {
   case class TeamIdsJoinedBy(userId: String, promise: Promise[List[LightTeam.TeamID]])
 }
 
-package fishnet {
-  case class AutoAnalyse(gameId: String)
-  case class NewKey(userId: String, key: String)
-  case class StudyChapterRequest(
-      studyId: String,
-      chapterId: String,
-      initialFen: Option[chess.format.FEN],
-      variant: chess.variant.Variant,
-      moves: List[Uci],
-      userId: String,
-      unlimited: Boolean
-  )
-}
 
 package user {
   case class Note(from: String, to: String, text: String, mod: Boolean)
@@ -256,8 +243,6 @@ package round {
   case class IsOnGame(color: chess.Color, promise: Promise[Boolean])
   case class TourStandingOld(data: JsArray)
   case class TourStanding(tourId: String, data: JsArray)
-  case class FishnetPlay(uci: Uci, ply: Int)
-  case object FishnetStart
   case class BotPlay(playerId: String, uci: Uci, promise: Option[scala.concurrent.Promise[Unit]] = None)
   case class RematchOffer(gameId: String)
   case class RematchYes(playerId: String)

@@ -20,7 +20,6 @@ final class JsonView(
     takebacker: Takebacker,
     moretimer: Moretimer,
     divider: lila.game.Divider,
-    evalCache: lila.evalCache.EvalCacheApi,
     isOfferingRematch: Pov => Boolean
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
@@ -189,10 +188,8 @@ final class JsonView(
               .add("highlight" -> pref.highlight)
               .add("destination" -> (pref.destination && !pref.isBlindfold))
               .add("rookCastle" -> (pref.rookCastle == Pref.RookCastle.YES))
-              .add("showCaptured" -> pref.captured),
-            "evalPut" -> JsBoolean(me.??(evalCache.shouldPut))
+              .add("showCaptured" -> pref.captured)
           )
-          .add("evalPut" -> me.??(evalCache.shouldPut))
           .add("tv" -> tv.collect { case OnLichessTv(channel, flip) =>
             Json.obj("channel" -> channel, "flip" -> flip)
           })
@@ -250,7 +247,6 @@ final class JsonView(
         "path"         -> pov.game.turns,
         "userAnalysis" -> true
       )
-      .add("evalPut" -> me.??(evalCache.shouldPut))
   }
 
   private def blurs(game: Game, player: lila.game.Player) =

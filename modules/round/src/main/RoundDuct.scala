@@ -14,8 +14,6 @@ import lila.game.{ Game, GameRepo, Pov, Event, Progress, Player => GamePlayer }
 import lila.hub.actorApi.round.{
   Abort,
   BotPlay,
-  FishnetPlay,
-  FishnetStart,
   IsOnGame,
   RematchNo,
   RematchYes,
@@ -404,11 +402,6 @@ final private[round] class RoundDuct(
         }
       }
 
-    case FishnetStart =>
-      proxy.withGame { g =>
-        g.playableByAi ?? player.requestFishnet(g, this)
-      }
-
     case Tick =>
       proxy.withGameOptionSync { g =>
         (g.forceResignable && g.bothPlayersHaveMoved) ?? fuccess {
@@ -502,9 +495,6 @@ final private[round] class RoundDuct(
     case e: ClientError =>
       logger.info(s"Round client error $name: ${e.getMessage}")
       lila.mon.round.error.client.increment().unit
-    case e: FishnetError =>
-      logger.info(s"Round fishnet error $name: ${e.getMessage}")
-      lila.mon.round.error.fishnet.increment().unit
     case e: Exception =>
       logger.warn(s"$name: ${e.getMessage}")
       lila.mon.round.error.other.increment().unit

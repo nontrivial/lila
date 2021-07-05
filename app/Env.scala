@@ -31,7 +31,6 @@ final class Env(
     val search: lila.search.Env,
     val gameSearch: lila.gameSearch.Env,
     val timeline: lila.timeline.Env,
-    val analyse: lila.analyse.Env,
     val notifyM: lila.notify.Env,
     val round: lila.round.Env,
     val lobby: lila.lobby.Env,
@@ -51,13 +50,10 @@ final class Env(
     val irc: lila.irc.Env,
     val challenge: lila.challenge.Env,
     val explorer: lila.explorer.Env,
-    val fishnet: lila.fishnet.Env,
-    val learn: lila.learn.Env,
     val plan: lila.plan.Env,
     val event: lila.event.Env,
     val pool: lila.pool.Env,
     val oAuth: lila.oauth.Env,
-    val evalCache: lila.evalCache.Env,
     val rating: lila.rating.Env,
     val lilaCookie: lila.common.LilaCookie,
     val net: NetConfig,
@@ -182,7 +178,6 @@ final class EnvBoot(
   lazy val search: lila.search.Env           = wire[lila.search.Env]
   lazy val gameSearch: lila.gameSearch.Env   = wire[lila.gameSearch.Env]
   lazy val timeline: lila.timeline.Env       = wire[lila.timeline.Env]
-  lazy val analyse: lila.analyse.Env         = wire[lila.analyse.Env]
   lazy val notifyM: lila.notify.Env          = wire[lila.notify.Env]
   lazy val round: lila.round.Env             = wire[lila.round.Env]
   lazy val lobby: lila.lobby.Env             = wire[lila.lobby.Env]
@@ -202,13 +197,10 @@ final class EnvBoot(
   lazy val irc: lila.irc.Env                 = wire[lila.irc.Env]
   lazy val challenge: lila.challenge.Env     = wire[lila.challenge.Env]
   lazy val explorer: lila.explorer.Env       = wire[lila.explorer.Env]
-  lazy val fishnet: lila.fishnet.Env         = wire[lila.fishnet.Env]
-  lazy val learn: lila.learn.Env             = wire[lila.learn.Env]
   lazy val plan: lila.plan.Env               = wire[lila.plan.Env]
   lazy val event: lila.event.Env             = wire[lila.event.Env]
   lazy val pool: lila.pool.Env               = wire[lila.pool.Env]
   lazy val oAuth: lila.oauth.Env             = wire[lila.oauth.Env]
-  lazy val evalCache: lila.evalCache.Env     = wire[lila.evalCache.Env]
   lazy val rating: lila.rating.Env           = wire[lila.rating.Env]
   lazy val api: lila.api.Env                 = wire[lila.api.Env]
   lazy val lilaCookie                        = wire[lila.common.LilaCookie]

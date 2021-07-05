@@ -13,7 +13,6 @@ object actors {
   case class GameSearch(actor: ActorSelection)    extends Actor
   case class ForumSearch(actor: ActorSelection)   extends Actor
   case class TeamSearch(actor: ActorSelection)    extends Actor
-  case class Fishnet(actor: ActorSelection)       extends Actor
   case class TournamentApi(actor: ActorSelection) extends Actor
   case class Bookmark(actor: ActorSelection)      extends Actor
   case class Shutup(actor: ActorSelection)        extends Actor
@@ -39,7 +38,6 @@ final class Env(
   val captcher      = Captcher(select("actor.captcher"))
   val forumSearch   = ForumSearch(select("actor.forum.search"))
   val teamSearch    = TeamSearch(select("actor.team.search"))
-  val fishnet       = Fishnet(select("actor.fishnet"))
   val tournamentApi = TournamentApi(select("actor.tournament.api"))
   val timeline      = Timeline(select("actor.timeline.user"))
   val bookmark      = Bookmark(select("actor.bookmark"))
