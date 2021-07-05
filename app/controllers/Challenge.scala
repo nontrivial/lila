@@ -108,11 +108,7 @@ final class Challenge(
         _ ?? { api.accept(_, me.some, none) }
       } flatMap { res =>
         if (res.isDefined) jsonOkResult.fuccess
-        else
-          env.bot.player.rematchAccept(id, me) flatMap {
-            case true => jsonOkResult.fuccess
-            case _    => notFoundJson()
-          }
+        else notFoundJson()
       }
     }
 
@@ -151,11 +147,6 @@ final class Challenge(
     ScopedBody(_.Challenge.Write, _.Bot.Play, _.Board.Play) { implicit req => me =>
       implicit val lang = reqLang
       api.activeByIdFor(id, me) flatMap {
-        case None =>
-          env.bot.player.rematchDecline(id, me) flatMap {
-            case true => jsonOkResult.fuccess
-            case _    => notFoundJson()
-          }
         case Some(c) =>
           env.challenge.forms.decline
             .bindFromRequest()

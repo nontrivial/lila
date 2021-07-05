@@ -20,7 +20,6 @@ case class UserInfo(
     trophies: Trophies,
     shields: List[lila.tournament.TournamentShield.Award],
     revolutions: List[lila.tournament.Revolution.Award],
-    insightVisible: Boolean,
     completionRate: Option[Double]
 ) {
 
@@ -111,7 +110,6 @@ object UserInfo {
       revolutionApi: lila.tournament.RevolutionApi,
       ratingChartApi: lila.history.RatingChartApi,
       userCached: lila.user.Cached,
-      insightShare: lila.insight.Share,
       playbanApi: lila.playban.PlaybanApi
   )(implicit ec: scala.concurrent.ExecutionContext) {
     def apply(user: User, nbs: NbGames, ctx: Context): Fu[UserInfo] =
@@ -121,11 +119,10 @@ object UserInfo {
         trophyApi.findByUser(user).mon(_.user segment "trophy") zip
         shieldApi.active(user).mon(_.user segment "shields") zip
         revolutionApi.active(user).mon(_.user segment "revolutions") zip
-        (user.count.rated >= 10).??(insightShare.grant(user, ctx.me)) zip
         playbanApi.completionRate(user.id).mon(_.user segment "completion") zip
         userCached.rankingsOf(user.id) map {
           // format: off
-          case (((((((((((((ratingChart, nbFollowers))), trophies), shields), revols)))), insightVisible), completionRate)), ranks) =>
+          case (((((((((((((ratingChart, nbFollowers))), trophies), shields), revols))))), completionRate)), ranks) =>
           // format: on
           new UserInfo(
             user = user,
@@ -141,7 +138,6 @@ object UserInfo {
             ),
             shields = shields,
             revolutions = revols,
-            insightVisible = insightVisible,
             completionRate = completionRate
           )
         }

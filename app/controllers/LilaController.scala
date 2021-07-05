@@ -576,12 +576,7 @@ abstract private[controllers] class LilaController(val env: Env)
       case _              => none
     } flatMap {
       case None => fuccess(None -> None)
-      case Some(d) =>
-        env.mod.impersonate.impersonating(d.user) map {
-          _.fold[RestoredUser](d.some -> None) { impersonated =>
-            FingerPrintedUser(impersonated, hasFingerPrint = true).some -> d.user.some
-          }
-        }
+      case Some(d) => fuccess(None -> None)
     }
 
   protected val csrfCheck           = env.security.csrfRequestHandler.check _
@@ -615,11 +610,9 @@ abstract private[controllers] class LilaController(val env: Env)
     else if (HTTPRequest isCrawler ctx.req) fuccess(NotFound)
     else result
 
-  protected def NotManaged(result: => Fu[Result])(implicit ctx: Context) =
-    ctx.me.??(env.clas.api.student.isManaged) flatMap {
-      case true => notFound
-      case _    => result
-    }
+  protected def NotManaged(result: => Fu[Result])(implicit ctx: Context) {
+    result
+  }
 
   private val jsonGlobalErrorRenamer = {
     import play.api.libs.json._

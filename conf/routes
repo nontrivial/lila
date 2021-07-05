@@ -128,12 +128,6 @@ GET   /setup/validate-fen              controllers.Setup.validateFen
 # Notify
 GET /notify                            controllers.Notify.recent(page: Int ?= 1)
 
-# Video
-GET   /video                           controllers.Video.index
-GET   /video/tags                      controllers.Video.tags
-GET   /video/author/:author            controllers.Video.author(author: String)
-GET   /video/:id                       controllers.Video.show(id: String)
-
 # I18n
 POST  /translation/select              controllers.I18n.select
 

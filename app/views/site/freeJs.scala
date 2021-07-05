@@ -16,7 +16,6 @@ object freeJs {
     "chat",
     "dasher",
     "editor",
-    "insight",
     "learn",
     "lobby",
     "notify",

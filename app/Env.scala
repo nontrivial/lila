@@ -44,7 +44,6 @@ final class Env(
     val history: lila.history.Env,
     val playban: lila.playban.Env,
     val shutup: lila.shutup.Env,
-    val insight: lila.insight.Env,
     val push: lila.push.Env,
     val perfStat: lila.perfStat.Env,
     val irc: lila.irc.Env,
@@ -137,8 +136,6 @@ final class Env(
         closeAccount(user, lichess)
       }
     }
-
-  system.actorOf(Props(new actor.Renderer), name = config.get[String]("app.renderer.name"))
 }
 
 final class EnvBoot(
@@ -191,7 +188,6 @@ final class EnvBoot(
   lazy val history: lila.history.Env         = wire[lila.history.Env]
   lazy val playban: lila.playban.Env         = wire[lila.playban.Env]
   lazy val shutup: lila.shutup.Env           = wire[lila.shutup.Env]
-  lazy val insight: lila.insight.Env         = wire[lila.insight.Env]
   lazy val push: lila.push.Env               = wire[lila.push.Env]
   lazy val perfStat: lila.perfStat.Env       = wire[lila.perfStat.Env]
   lazy val irc: lila.irc.Env                 = wire[lila.irc.Env]

@@ -231,21 +231,9 @@ object header {
                     profile.actualLinks.map { link =>
                       a(href := link.url, targetBlank, noFollow)(link.site.name)
                     }
-                  ),
-                  div(cls := "teams col2")(
-                    info.teamIds.sorted.map { t =>
-                      teamLink(t, withIcon = false)
-                    }
                   )
                 )
-              ),
-              info.insightVisible option
-                a(cls := "insight", href := routes.Insight.index(u.username), dataIcon := "")(
-                  span(
-                    strong("Chess Insights"),
-                    em("Analytics from ", if (ctx.is(u)) "your" else s"${u.username}'s", " games")
-                  )
-                )
+              )
             )
           )
       },

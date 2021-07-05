@@ -40,9 +40,6 @@ object form {
                 div(form3.input(f, klass = "user-autocomplete")(dataTag := "span", autofocus))
               }
           },
-          form3.group(form("reason"), trans.reason()) { f =>
-            form3.select(f, translatedReasonChoices, trans.whatIsIheMatter.txt().some)
-          },
           form3.group(form("text"), trans.description(), help = trans.reportDescriptionHelp().some)(
             form3.textarea(_)(rows := 8)
           ),

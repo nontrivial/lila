@@ -94,8 +94,7 @@ final class PrefApi(
       (p: Pref) =>
         p.copy(
           takeback = Pref.Takeback.NEVER,
-          moretime = Pref.Moretime.NEVER,
-          insightShare = Pref.InsightShare.EVERYBODY
+          moretime = Pref.Moretime.NEVER
         )
     )
 

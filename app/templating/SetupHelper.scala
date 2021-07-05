@@ -77,15 +77,6 @@ trait SetupHelper { self: I18nHelper =>
       (TimeMode.Unlimited.id.toString, trans.unlimited.txt(), none)
     )
 
-  def translatedReasonChoices(implicit lang: Lang) =
-    List(
-      (Reason.Cheat.key, trans.cheat.txt()),
-      (Reason.Comm.key, trans.insult.txt()),
-      (Reason.Boost.key, trans.ratingManipulation.txt()),
-      (Reason.Comm.key, trans.troll.txt()),
-      (Reason.Other.key, trans.other.txt())
-    )
-
   def translatedModeChoices(implicit lang: Lang) =
     List(
       (Mode.Casual.id.toString, trans.casual.txt(), none),

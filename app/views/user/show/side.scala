@@ -81,54 +81,11 @@ object side {
         showNonEmptyPerf(u.perfs.racingKings, PerfType.RacingKings),
         u.noBot option frag(
           hr,
-          showPerf(u.perfs.puzzle, PerfType.Puzzle),
-          showStorm(u.perfs.storm, u),
-          showRacer(u.perfs.racer, u),
           showStreak(u.perfs.streak, u)
         )
       )
     )
   }
-
-  private def showStorm(storm: lila.rating.Perf.Storm, user: User)(implicit lang: Lang) =
-    a(
-      dataIcon := '',
-      cls := List(
-        "empty" -> !storm.nonEmpty
-      ),
-      href := routes.Storm.dashboardOf(user.username),
-      span(
-        h3("Puzzle Storm"),
-        st.rating(
-          strong(storm.score),
-          storm.nonEmpty option frag(
-            " ",
-            span(trans.storm.xRuns.plural(storm.runs, storm.runs.localize))
-          )
-        )
-      ),
-      iconTag("")
-    )
-
-  private def showRacer(racer: lila.rating.Perf.Racer, user: User)(implicit lang: Lang) =
-    a(
-      dataIcon := '',
-      cls := List(
-        "empty" -> !racer.nonEmpty
-      ),
-      href := routes.Racer.home,
-      span(
-        h3("Puzzle Racer"),
-        st.rating(
-          strong(racer.score),
-          racer.nonEmpty option frag(
-            " ",
-            span(trans.storm.xRuns.plural(racer.runs, racer.runs.localize))
-          )
-        )
-      ),
-      iconTag("")
-    )
 
   private def showStreak(streak: lila.rating.Perf.Streak, user: User)(implicit lang: Lang) =
     a(
