@@ -76,14 +76,6 @@ object mini {
           }
         )
       },
-      isGranted(_.UserModView) option div(cls := "upt__mod")(
-        span(
-          trans.nbGames.plural(u.count.game, u.count.game.localize),
-          " ",
-          momentFromNowOnce(u.createdAt)
-        ),
-        (u.lameOrTroll || u.disabled) option span(cls := "upt__mod__marks")(mod.userMarks(u, None))
-      ),
       playing.ifFalse(ctx.pref.isBlindfold).map {
         views.html.game.mini(_)
       }

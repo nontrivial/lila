@@ -52,7 +52,7 @@ object timeline {
             userLink(u1),
             userLink(u2)
           )
-        case ForumPost(userId, _, topicName, postId) =>
+        case ForumPost(userId, _, _, _) =>
           trans.xPostedInForumY(
             userLink(userId),
           )

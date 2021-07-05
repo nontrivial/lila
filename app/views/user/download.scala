@@ -28,30 +28,7 @@ object download {
             analysis,
             perfToggles(user),
             includeToggles,
-            amount,
-            tr(cls := "output")(
-              th(label(`for` := "dl-api-url")("API URL")),
-              td(
-                input(
-                  id := "dl-api-url",
-                  cls := "copyable autoselect",
-                  tpe := "text",
-                  readonly,
-                  spellcheck := "false",
-                  attr("data-api-path") := routes.Game.apiExportByUser(user.username)
-                )
-              )
-            ),
-            tr(
-              td(cls := "action", colspan := "2")(
-                a(
-                  id := "dl-button",
-                  cls := "button",
-                  href := routes.Game.exportByUser(user.username),
-                  downloadAttr
-                )(trans.download())
-              )
-            )
+            amount
           )
         )
       )
