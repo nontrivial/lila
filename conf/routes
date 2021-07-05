@@ -31,9 +31,6 @@ GET   /@/:username/following           controllers.Relation.following(username: 
 GET   /@/:username/followers           controllers.Relation.followers(username: String, page: Int ?= 1)
 GET   /rel/blocks                      controllers.Relation.blocks(page: Int ?= 1)
 
-# User subpages
-GET   /@/:username/tournaments/:path   controllers.UserTournament.path(username: String, path: String, page: Int ?= 1)
-
 # User
 GET   /api/stream/:username/mod        controllers.User.mod(username: String)
 POST  /@/:username/note                controllers.User.writeNote(username: String)

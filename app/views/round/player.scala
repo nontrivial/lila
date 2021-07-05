@@ -14,7 +14,6 @@ object player {
   def apply(
       pov: Pov,
       data: play.api.libs.json.JsObject,
-      tour: Option[lila.tournament.GameView],
       cross: Option[lila.game.Crosstable.WithMatchup],
       playing: List[Pov],
       chatOption: Option[lila.chat.Chat.GameOrEvent],

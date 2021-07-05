@@ -14,7 +14,6 @@ import controllers.routes
 object list {
 
   def apply(
-      tourneyWinners: List[lila.tournament.Winner],
       online: List[User],
       leaderboards: lila.user.Perfs.Leaderboards,
       nbAllTime: List[User.LightCount]
@@ -53,7 +52,6 @@ object list {
               userTopPerf(leaderboards.classical, PerfType.Classical),
               userTopPerf(leaderboards.ultraBullet, PerfType.UltraBullet),
               userTopActive(nbAllTime, trans.activePlayers(), icon = ''.some),
-              tournamentWinners(tourneyWinners),
               userTopPerf(leaderboards.crazyhouse, PerfType.Crazyhouse),
               userTopPerf(leaderboards.chess960, PerfType.Chess960),
               userTopPerf(leaderboards.antichess, PerfType.Antichess),
@@ -67,21 +65,6 @@ object list {
         )
       )
     }
-
-  private def tournamentWinners(winners: List[lila.tournament.Winner])(implicit ctx: Context) =
-    st.section(cls := "user-top")(
-      h2(cls := "text", dataIcon := "")(
-        a(href := routes.Tournament.leaderboard)(trans.tournament())
-      ),
-      ol(winners take 10 map { w =>
-        li(
-          userIdLink(w.userId.some),
-          a(title := w.tourName, href := routes.Tournament.show(w.tourId))(
-            scheduledTournamentNameShortHtml(w.tourName)
-          )
-        )
-      })
-    )
 
   private def userTopPerf(users: List[User.LightPerf], perfType: PerfType)(implicit lang: Lang) =
     st.section(cls := "user-top")(

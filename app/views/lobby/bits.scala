@@ -14,9 +14,7 @@ object bits {
   )
 
   def underboards(
-      tours: List[lila.tournament.Tournament],
-      leaderboard: List[lila.user.User.LightPerf],
-      tournamentWinners: List[lila.tournament.Winner]
+      leaderboard: List[lila.user.User.LightPerf]
   )(implicit ctx: Context) =
     frag(
       div(cls := "lobby__leaderboard lobby__box")(
@@ -44,31 +42,12 @@ object bits {
         div(cls := "lobby__box__top")(
           h2(cls := "title text", dataIcon := "")(trans.tournamentWinners()),
           a(cls := "more", href := routes.Tournament.leaderboard)(trans.more(), " »")
-        ),
-        div(cls := "lobby__box__content")(
-          table(
-            tbody(
-              tournamentWinners take 10 map { w =>
-                tr(
-                  td(userIdLink(w.userId.some)),
-                  td(
-                    a(title := w.tourName, href := routes.Tournament.show(w.tourId))(
-                      scheduledTournamentNameShortHtml(w.tourName)
-                    )
-                  )
-                )
-              }
-            )
-          )
         )
       ),
       div(cls := "lobby__tournaments lobby__box")(
         a(cls := "lobby__box__top", href := routes.Tournament.home)(
           h2(cls := "title text", dataIcon := "")(trans.openTournaments()),
           span(cls := "more")(trans.more(), " »")
-        ),
-        div(cls := "enterable_list lobby__box__content")(
-          views.html.tournament.bits.enterable(tours)
         )
       )
     )

@@ -14,15 +14,11 @@ import lila.db.dsl._
 import lila.game.JsonView._
 import lila.game.PgnDump.WithFlags
 import lila.game.{ Game, PerfPicker, Query }
-import lila.tournament.Tournament
 import lila.user.User
 import lila.round.GameProxyRepo
 
 final class GameApiV2(
     gameRepo: lila.game.GameRepo,
-    tournamentRepo: lila.tournament.TournamentRepo,
-    pairingRepo: lila.tournament.PairingRepo,
-    playerRepo: lila.tournament.PlayerRepo,
     getLightUser: LightUser.Getter,
     realPlayerApi: RealPlayerApi,
     gameProxy: GameProxyRepo
@@ -48,9 +44,6 @@ final class GameApiV2(
         "_"
       )
     }
-
-  def filename(tour: Tournament, format: Format): String =
-    filename(tour, format.toString.toLowerCase)
 
   def filename(tour: Tournament, format: String): String =
     fileR.replaceAllIn(
@@ -188,7 +181,6 @@ object GameApiV2 {
   ) extends Config
 
   case class ByTournamentConfig(
-      tournamentId: Tournament.ID,
       format: Format,
       flags: WithFlags,
       perSecond: MaxPerSecond

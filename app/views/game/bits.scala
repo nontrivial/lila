@@ -25,13 +25,12 @@ object bits {
   def sides(
       pov: Pov,
       initialFen: Option[chess.format.FEN],
-      tour: Option[lila.tournament.TourAndTeamVs],
       cross: Option[lila.game.Crosstable.WithMatchup],
       userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context) =
     div(
-      side.meta(pov, initialFen, tour, userTv, bookmarked = bookmarked),
+      side.meta(pov, initialFen, userTv, bookmarked = bookmarked),
       cross.map { c =>
         div(cls := "crosstable")(crosstable(ctx.userId.fold(c)(c.fromPov), pov.gameId.some))
       }

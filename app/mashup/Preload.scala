@@ -6,7 +6,6 @@ import lila.event.Event
 import lila.game.{ Game, Pov }
 import lila.playban.TempBan
 import lila.timeline.Entry
-import lila.tournament.{ Tournament, Winner }
 import lila.user.LightUserApi
 import lila.user.User
 import play.api.libs.json._
@@ -14,7 +13,6 @@ import play.api.libs.json._
 final class Preload(
     gameRepo: lila.game.GameRepo,
     userCached: lila.user.Cached,
-    tourWinners: lila.tournament.WinnersApi,
     timelineApi: lila.timeline.EntryApi,
     lobbyApi: lila.api.LobbyApi,
     lobbySocket: lila.lobby.LobbySocket,
@@ -26,11 +24,9 @@ final class Preload(
   import Preload._
 
   def apply(
-      tours: Fu[List[Tournament]],
       events: Fu[List[Event]]
   )(implicit ctx: Context): Fu[Homepage] =
     lobbyApi(ctx).mon(_.lobby segment "lobbyApi") zip
-      tours.mon(_.lobby segment "tours") zip
       events.mon(_.lobby segment "events") zip
       (ctx.userId ?? timelineApi.userEntries).mon(_.lobby segment "timeline") zip
       userCached.topWeek.mon(_.lobby segment "userTopWeek") zip

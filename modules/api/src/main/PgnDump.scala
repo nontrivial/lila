@@ -7,7 +7,6 @@ import lila.game.PgnDump.WithFlags
 
 final class PgnDump(
     val dumper: lila.game.PgnDump,
-    getTournamentName: lila.tournament.GetTourName
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
   implicit private val lang = lila.i18n.defaultLang

@@ -117,9 +117,7 @@ final class LilaComponents(ctx: ApplicationLoader.Context) extends BuiltInCompon
   lazy val setup: Setup                   = wire[Setup]
   lazy val stat: Stat                     = wire[Stat]
   lazy val timeline: Timeline             = wire[Timeline]
-  lazy val tournamentCrud: TournamentCrud = wire[TournamentCrud]
   lazy val user: User                     = wire[User]
-  lazy val userTournament: UserTournament = wire[UserTournament]
   lazy val bulkPairing: BulkPairing       = wire[BulkPairing]
 
   // eagerly wire up all controllers

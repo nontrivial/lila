@@ -9,16 +9,12 @@ import lila.common.Json._
 import lila.game.JsonView.colorWrites
 import lila.game.LightPov
 import lila.rating.PerfType
-import lila.simul.Simul
-import lila.study.JsonView.studyIdNameWrites
-import lila.tournament.LeaderboardApi.{ Entry => TourEntry, Ratio => TourRatio }
 import lila.user.User
 
 import activities._
 import model._
 
 final class JsonView(
-    getTourName: lila.tournament.GetTourName
 ) {
 
   private object Writers {
@@ -39,32 +35,11 @@ final class JsonView(
     implicit val variantWrites: Writes[chess.variant.Variant] = Writes { v =>
       JsString(v.key)
     }
-    // writes as percentage
-    implicit val tourRatioWrites = Writes[TourRatio] { r =>
-      JsNumber((r.value * 100).toInt atLeast 1)
-    }
-    implicit def tourEntryWrites(implicit lang: Lang) =
-      OWrites[TourEntry] { e =>
-        Json.obj(
-          "tournament" -> Json.obj(
-            "id"   -> e.tourId,
-            "name" -> ~getTourName.get(e.tourId)
-          ),
-          "nbGames"     -> e.nbGames,
-          "score"       -> e.score,
-          "rank"        -> e.rank,
-          "rankPercent" -> e.rankRatio
-        )
-      }
-    implicit def toursWrites(implicit lang: Lang) = Json.writes[ActivityView.Tours]
-    implicit val puzzlesWrites                    = Json.writes[Puzzles]
-    implicit val stormWrites                      = Json.writes[Storm]
-    implicit val racerWrites                      = Json.writes[Racer]
+
     implicit val streakWrites                     = Json.writes[Streak]
     implicit val playerWrites = OWrites[lila.game.Player] { p =>
       Json
         .obj()
-        .add("aiLevel" -> p.aiLevel)
         .add("user" -> p.userId)
         .add("rating" -> p.rating)
     }
@@ -87,17 +62,6 @@ final class JsonView(
       Json
         .obj("interval" -> a.interval)
         .add("games", a.games)
-        .add("tournaments", a.tours)
-        .add(
-          "practice",
-          a.practice.map(_.toList.sortBy(-_._2) map { case (study, nb) =>
-            Json.obj(
-              "url"         -> s"/practice/-/${study.slug}/${study.id}",
-              "name"        -> study.name,
-              "nbPositions" -> nb
-            )
-          })
-        )
         .add(
           "correspondenceMoves",
           a.corresMoves.map { case (nb, povs) =>
@@ -111,19 +75,5 @@ final class JsonView(
           }
         )
         .add("follows" -> a.follows)
-        .add("posts" -> a.posts.map(_ map { case (topic, posts) =>
-          Json.obj(
-            "topicUrl"  -> s"/forum/${topic.categId}/${topic.slug}",
-            "topicName" -> topic.name,
-            "posts" -> posts.map { p =>
-              Json.obj(
-                "url"  -> s"/forum/redirect/post/${p.id}",
-                "text" -> p.text.take(500)
-              )
-            }
-          )
-        }))
-        .add("patron" -> a.patron)
-        .add("stream" -> a.stream)
     }
 }

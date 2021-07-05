@@ -36,7 +36,6 @@ final class Env(
     val lobby: lila.lobby.Env,
     val setup: lila.setup.Env,
     val importer: lila.importer.Env,
-    val tournament: lila.tournament.Env,
     val relation: lila.relation.Env,
     val pref: lila.pref.Env,
     val chat: lila.chat.Env,
@@ -178,7 +177,6 @@ final class EnvBoot(
   lazy val lobby: lila.lobby.Env             = wire[lila.lobby.Env]
   lazy val setup: lila.setup.Env             = wire[lila.setup.Env]
   lazy val importer: lila.importer.Env       = wire[lila.importer.Env]
-  lazy val tournament: lila.tournament.Env   = wire[lila.tournament.Env]
   lazy val relation: lila.relation.Env       = wire[lila.relation.Env]
   lazy val pref: lila.pref.Env               = wire[lila.pref.Env]
   lazy val chat: lila.chat.Env               = wire[lila.chat.Env]

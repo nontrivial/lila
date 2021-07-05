@@ -10,7 +10,6 @@ import lila.pref.Pref
 import lila.round.JsonView.WithFlags
 import lila.round.{ Forecast, JsonView }
 import lila.security.Granter
-import lila.tournament.{ GameView => TourView }
 import lila.tree.Node.partitionTreeJsonWriter
 import lila.user.User
 
@@ -20,11 +19,10 @@ final private[api] class RoundApi(
     forecastApi: lila.round.ForecastApi,
     bookmarkApi: lila.bookmark.BookmarkApi,
     gameRepo: lila.game.GameRepo,
-    tourApi: lila.tournament.TournamentApi,
     getLightUser: lila.common.LightUser.GetterSync
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
-  def player(pov: Pov, tour: Option[TourView], apiVersion: ApiVersion)(implicit
+  def player(pov: Pov, apiVersion: ApiVersion)(implicit
       ctx: Context
   ): Fu[JsObject] =
     gameRepo
@@ -45,7 +43,6 @@ final private[api] class RoundApi(
           bookmarkApi.exists(pov.game, ctx.me) map {
             case (((((json)), note), forecast), bookmarked) =>
               (
-                withTournament(pov, tour) _ compose
                   withSteps(pov, initialFen) compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
@@ -57,7 +54,6 @@ final private[api] class RoundApi(
 
   def watcher(
       pov: Pov,
-      tour: Option[TourView],
       apiVersion: ApiVersion,
       tv: Option[lila.round.OnTv],
       initialFenO: Option[Option[FEN]] = None
@@ -78,7 +74,6 @@ final private[api] class RoundApi(
           (ctx.me.ifTrue(ctx.isMobileApi) ?? (me => noteApi.get(pov.gameId, me.id))) zip
           bookmarkApi.exists(pov.game, ctx.me) map { case ((((json)), note), bookmarked) =>
             (
-              withTournament(pov, tour) _ compose
                 withNote(note) compose
                 withBookmark(bookmarked) compose
                 withSteps(pov, initialFen)
@@ -108,15 +103,13 @@ final private[api] class RoundApi(
           initialFen = initialFen,
           withFlags = withFlags.copy(blurs = ctx.me ?? Granter(_.ViewBlurs))
         ) zip
-          tourApi.gameView.analysis(pov.game) zip
           ctx.userId.ifTrue(ctx.isMobileApi).?? {
             noteApi.get(pov.gameId, _)
           } zip
           (owner.??(forecastApi loadForDisplay pov)) zip
           bookmarkApi.exists(pov.game, ctx.me) map {
-            case ((((((json, tour))), note), fco), bookmarked) =>
+            case ((((((json))), note), fco), bookmarked) =>
               (
-                withTournament(pov, tour) _ compose
                   withNote(note) compose
                   withBookmark(bookmarked) compose
                   withForecast(pov, owner, fco)
@@ -156,33 +149,5 @@ final private[api] class RoundApi(
         }
       )
     else json
-
-  def withTournament(pov: Pov, viewO: Option[TourView])(json: JsObject)(implicit lang: Lang) =
-    json.add("tournament" -> viewO.map { v =>
-      Json
-        .obj(
-          "id"      -> v.tour.id,
-          "name"    -> v.tour.name(full = false),
-          "running" -> v.tour.isStarted
-        )
-        .add("secondsToFinish" -> v.tour.isStarted.option(v.tour.secondsToFinish))
-        .add("berserkable" -> v.tour.isStarted.option(v.tour.berserkable))
-        // mobile app API BC / should use game.expiration instead
-        .add("nbSecondsForFirstMove" -> v.tour.isStarted.option {
-          pov.game.timeForFirstMove.toSeconds
-        })
-        .add("ranks" -> v.ranks.map { r =>
-          Json.obj(
-            "white" -> r.whiteRank,
-            "black" -> r.blackRank
-          )
-        })
-        .add(
-          "top",
-          v.top.map {
-            lila.tournament.JsonView.top(_, getLightUser)
-          }
-        )
-    })
 
 }

@@ -16,19 +16,15 @@ object side {
   def apply(
       pov: lila.game.Pov,
       initialFen: Option[chess.format.FEN],
-      tour: Option[lila.tournament.TourAndTeamVs],
-      userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context): Option[Frag] =
     ctx.noBlind option frag(
-      meta(pov, initialFen, tour, userTv, bookmarked)
+      meta(pov, initialFen, bookmarked)
     )
 
   def meta(
       pov: lila.game.Pov,
       initialFen: Option[chess.format.FEN],
-      tour: Option[lila.tournament.TourAndTeamVs],
-      userTv: Option[lila.user.User] = None,
       bookmarked: Boolean
   )(implicit ctx: Context): Option[Frag] =
     ctx.noBlind option {
@@ -75,10 +71,7 @@ object side {
               frag(
                 div(cls := s"player color-icon is ${p.color.name} text")(
                   playerLink(p, withOnline = false, withDiff = true, withBerserk = true)
-                ),
-                tour.flatMap(_.teamVs).map(_.teams(p.color)) map {
-                  teamLink(_, withIcon = false)(cls := "team")
-                }
+                )
               )
             }
           )
@@ -102,20 +95,7 @@ object side {
                 "Chess960 start position: ",
                 strong(number)
               )
-            },
-        userTv.map { u =>
-          st.section(cls := "game__tv")(
-            h2(cls := "top user-tv text", dataUserTv := u.id, dataIcon := "")(u.titleUsername)
-          )
-        },
-        tour.map { t =>
-          st.section(cls := "game__tournament")(
-            a(cls := "text", dataIcon := "", href := routes.Tournament.show(t.tour.id))(t.tour.name()),
-            div(cls := "clock", dataTime := t.tour.secondsToFinish)(t.tour.clockStatus)
-          )
-        } orElse game.tournamentId.map { tourId =>
-          st.section(cls := "game__tournament-link")(tournamentLink(tourId))
-        }
+            }
       )
     }
 }

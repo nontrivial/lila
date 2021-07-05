@@ -18,7 +18,6 @@ object Environment
     with UserHelper
     with I18nHelper
     with SecurityHelper
-    with TournamentHelper
     with FlashHelper
     with ChessgroundHelper {
 

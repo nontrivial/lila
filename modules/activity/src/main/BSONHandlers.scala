@@ -7,10 +7,6 @@ import lila.common.{ Day, Iso }
 import lila.db.dsl._
 import lila.rating.BSONHandlers.perfTypeKeyIso
 import lila.rating.PerfType
-import lila.study.BSONHandlers.StudyIdBSONHandler
-import lila.study.Study
-import lila.swiss.BsonHandlers.swissIdHandler
-import lila.swiss.Swiss
 import lila.user.User
 
 private object BSONHandlers {

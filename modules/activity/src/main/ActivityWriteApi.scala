@@ -2,12 +2,10 @@ package lila.activity
 
 import lila.db.dsl._
 import lila.game.Game
-import lila.study.Study
 import lila.user.User
 
 final class ActivityWriteApi(
-    coll: Coll,
-    studyApi: lila.study.StudyApi
+    coll: Coll
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
   import Activity._

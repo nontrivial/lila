@@ -7,12 +7,10 @@ import lila.common.Heapsort
 import lila.db.dsl._
 import lila.game.LightPov
 import lila.user.User
-import lila.tournament.LeaderboardApi
 
 final class ActivityReadApi(
     coll: Coll,
     gameRepo: lila.game.GameRepo,
-    tourLeaderApi: lila.tournament.LeaderboardApi,
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
   import BSONHandlers._

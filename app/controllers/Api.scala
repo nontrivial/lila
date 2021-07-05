@@ -150,61 +150,6 @@ final class Api(
       }(fuccess(Limited))
     }
 
-  def currentTournaments =
-    ApiRequest { implicit req =>
-      implicit val lang = reqLang
-      env.tournament.api.fetchVisibleTournaments flatMap
-        env.tournament.apiJsonView.apply map Data.apply
-    }
-
-  def tournamentResults(id: String) =
-    Action.async { implicit req =>
-      val csv = HTTPRequest.acceptsCsv(req) || get("as", req).has("csv")
-      env.tournament.tournamentRepo byId id map {
-        _ ?? { tour =>
-          import lila.tournament.JsonView.playerResultWrites
-          val source =
-            env.tournament.api
-              .resultStream(tour, MaxPerSecond(40), getInt("nb", req) | Int.MaxValue)
-          val result =
-            if (csv) csvStream(lila.tournament.TournamentCsv(source))
-            else jsonStream(source.map(lila.tournament.JsonView.playerResultWrites.writes))
-          result.pipe(asAttachment(env.api.gameApiV2.filename(tour, if (csv) "csv" else "ndjson")))
-        }
-      }
-    }
-
-  def tournamentTeams(id: String) =
-    Action.async {
-      env.tournament.tournamentRepo byId id flatMap {
-        _ ?? { tour =>
-          env.tournament.jsonView.apiTeamStanding(tour) map { arr =>
-            JsonOk(
-              Json.obj(
-                "id"    -> tour.id,
-                "teams" -> arr
-              )
-            )
-          }
-        }
-      }
-    }
-
-  def tournamentsByOwner(name: String) =
-    Action.async { implicit req =>
-      implicit val lang = reqLang
-      (name != "lichess") ?? env.user.repo.named(name) flatMap {
-        _ ?? { user =>
-          val nb = getInt("nb", req) | Int.MaxValue
-          jsonStream {
-            env.tournament.api
-              .byOwnerStream(user, MaxPerSecond(20), nb)
-              .mapAsync(1)(env.tournament.apiJsonView.fullJson)
-          }.fuccess
-        }
-      }
-    }
-
   def gamesByUsersStream =
     AnonOrScopedBody(parse.tolerantText)()(
       anon = gamesByUsers(300),

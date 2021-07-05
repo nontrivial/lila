@@ -10,7 +10,6 @@ import lila.app._
 import lila.chat.Chat
 import lila.common.HTTPRequest
 import lila.game.{ Pov, Game => GameModel, PgnDump }
-import lila.tournament.{ Tournament => Tour }
 import lila.user.{ User => UserModel }
 
 final class Round(

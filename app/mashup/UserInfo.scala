@@ -18,8 +18,6 @@ case class UserInfo(
     nbFollowers: Int,
     nbPosts: Int,
     trophies: Trophies,
-    shields: List[lila.tournament.TournamentShield.Award],
-    revolutions: List[lila.tournament.Revolution.Award],
     completionRate: Option[Double]
 ) {
 
@@ -106,8 +104,6 @@ object UserInfo {
   final class UserInfoApi(
       relationApi: RelationApi,
       trophyApi: TrophyApi,
-      shieldApi: lila.tournament.TournamentShieldApi,
-      revolutionApi: lila.tournament.RevolutionApi,
       ratingChartApi: lila.history.RatingChartApi,
       userCached: lila.user.Cached,
       playbanApi: lila.playban.PlaybanApi
@@ -117,12 +113,10 @@ object UserInfo {
         relationApi.countFollowers(user.id).mon(_.user segment "nbFollowers") zip
         !(user.is(User.lichessId) || user.isBot) ??
         trophyApi.findByUser(user).mon(_.user segment "trophy") zip
-        shieldApi.active(user).mon(_.user segment "shields") zip
-        revolutionApi.active(user).mon(_.user segment "revolutions") zip
         playbanApi.completionRate(user.id).mon(_.user segment "completion") zip
         userCached.rankingsOf(user.id) map {
           // format: off
-          case (((((((((((((ratingChart, nbFollowers))), trophies), shields), revols))))), completionRate)), ranks) =>
+          case (((((((((((((ratingChart, nbFollowers))), trophies))))))), completionRate)), ranks) =>
           // format: on
           new UserInfo(
             user = user,
@@ -136,8 +130,6 @@ object UserInfo {
               Granter(_.Developer)(user),
               Granter(_.Verified)(user)
             ),
-            shields = shields,
-            revolutions = revols,
             completionRate = completionRate
           )
         }

@@ -28,7 +28,6 @@ final class Env(
     userEnv: lila.user.Env,
     relationEnv: lila.relation.Env,
     lobbyEnv: lila.lobby.Env,
-    tourEnv: lila.tournament.Env,
     challengeEnv: lila.challenge.Env,
     socketEnv: lila.socket.Env,
     msgEnv: lila.msg.Env,

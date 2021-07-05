@@ -47,17 +47,6 @@ object message {
   def blacklistedMessage(implicit ctx: Context) =
     s"Sorry, your IP address ${HTTPRequest ipAddress ctx.req} has been used to violate the ToS, and is now blacklisted."
 
-  def privateStudy(study: lila.study.Study)(implicit ctx: Context) =
-    apply(
-      title = s"${usernameOrId(study.ownerId)}'s study",
-      back = routes.Study.allDefault(1).url.some
-    )(
-      "Sorry! This study is private, you cannot access it.",
-      isGranted(_.StudyAdmin) option postForm(action := routes.Study.admin(study.id.value))(
-        submitButton("View as admin")(cls := "button button-red")
-      )
-    )
-
   def streamingMod(implicit ctx: Context) =
     apply("Disabled while streaming") {
       frag(
