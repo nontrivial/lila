@@ -1,6 +1,7 @@
 package lila.security
 
 import play.api.i18n.Lang
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scalatags.Text.all._
 
@@ -42,7 +43,7 @@ final class Reopen(
               case Some(prevEmail) if !email.similarTo(prevEmail) =>
                 fuccess(Left("differentEmail" -> "That account has a different email address."))
               case _ =>
-                Left("nope" -> "Sorry, that account can no longer be reopened.")
+                Future(Left("nope" -> "Sorry, that account can no longer be reopened."))
             }
         }
     }
