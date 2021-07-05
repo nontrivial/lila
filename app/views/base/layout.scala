@@ -72,17 +72,6 @@ object layout {
         )}" sizes="32x32">"""
       )
   }
-  private def blindModeForm(implicit ctx: Context) =
-    raw(s"""<form id="blind-mode" action="${routes.Main.toggleBlindMode}" method="POST"><input type="hidden" name="enable" value="${if (
-      ctx.blind
-    )
-      0
-    else
-      1}"><input type="hidden" name="redirect" value="${ctx.req.path}"><button type="submit">Accessibility: ${if (
-      ctx.blind
-    )
-      "Disable"
-    else "Enable"} blind mode</button></form>""")
 
   private def zenToggle(implicit ctx: Context) =
     spaceless(s"""
@@ -263,7 +252,6 @@ object layout {
           dataAnnounce := AnnounceStore.get.map(a => safeJsonValue(a.json)),
           style := zoomable option s"--zoom:${ctx.zoom}"
         )(
-          blindModeForm,
           netConfig.stageBanner option views.html.base.bits.stage,
           lila.security.EmailConfirm.cookie
             .get(ctx.req)

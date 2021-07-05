@@ -38,7 +38,6 @@ object bits {
   )(implicit ctx: Context) =
     Json.obj(
       "fen"     -> fen.value.split(" ").take(4).mkString(" "),
-      "baseUrl" -> s"$netBaseUrl${routes.Editor.load("")}",
       "color"   -> sit.color.letter.toString,
       "castles" -> Json.obj(
         "K" -> (sit canCastle chess.White on chess.KingSide),

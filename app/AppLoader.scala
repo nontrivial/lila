@@ -95,7 +95,6 @@ final class LilaComponents(ctx: ApplicationLoader.Context) extends BuiltInCompon
   lazy val auth: Auth                     = wire[Auth]
   lazy val challenge: Challenge           = wire[Challenge]
   lazy val coordinate: Coordinate         = wire[Coordinate]
-  lazy val editor: Editor                 = wire[Editor]
   lazy val event: Event                   = wire[Event]
   lazy val export: Export                 = wire[Export]
   lazy val game: Game                     = wire[Game]

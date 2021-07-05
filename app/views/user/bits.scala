@@ -16,8 +16,7 @@ object bits {
       a(cls := active.active("leaderboard"), href := routes.User.list)(trans.leaderboard()),
       a(cls := active.active("ratings"), href := routes.Stat.ratingDistribution("blitz"))(
         trans.ratingStats()
-      ),
-      a(cls := active.active("bots"), href := routes.PlayApi.botOnline)("Online bots")
+      )
     )
 
   def miniClosed(u: User)(implicit ctx: Context) =

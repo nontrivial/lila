@@ -297,10 +297,7 @@ final class Auth(
         _ ?? { hash =>
           !me.lame ?? (for {
             otherIds <- api.recentUserIdsByFingerHash(hash).map(_.filter(me.id.!=))
-            _ <- (otherIds.sizeIs >= 2) ?? env.user.repo.countLameOrTroll(otherIds).flatMap {
-              case nb if nb >= 2 && nb >= otherIds.size / 2 => env.report.api.autoAltPrintReport(me.id)
-              case _                                        => funit
-            }
+            _ <- (otherIds.sizeIs >= 2) ?? env.user.repo.countLameOrTroll(otherIds).flatMap(_ => funit)
           } yield ())
         }
       } inject NoContent

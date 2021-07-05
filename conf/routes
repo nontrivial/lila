@@ -55,7 +55,6 @@ POST  /$gameId<\w{8}>/note                       controllers.Round.writeNote(gam
 GET   /$gameId<\w{8}>/mini                       controllers.Round.mini(gameId: String, color: String = "white")
 GET   /$gameId<\w{8}>/$color<white|black>/mini   controllers.Round.mini(gameId: String, color: String)
 GET   /$fullId<\w{12}>/mini                      controllers.Round.miniFullId(fullId: String)
-GET   /$gameId<\w{8}>/edit                       controllers.Editor.game(gameId: String)
 POST  /$fullId<\w{12}>/resign                    controllers.Round.resign(fullId: String)
 
 POST  /$gameId<\w{8}>/delete                     controllers.Game.delete(gameId: String)
@@ -125,10 +124,6 @@ GET   /paste                           controllers.Importer.importGame
 POST  /import                          controllers.Importer.sendGame
 GET   /import/master/$id<\w{8}>/:color controllers.Importer.masterGame(id: String, color: String)
 
-# Edit
-GET   /editor.json                     controllers.Editor.data
-GET   /editor/*urlFen                  controllers.Editor.load(urlFen: String)
-
 # Stats
 GET    /stat/rating/distribution/:perf controllers.Stat.ratingDistribution(perf: String)
 
@@ -182,6 +177,17 @@ POST  /event/manager/$id<\w{8}>        controllers.Event.update(id: String)
 GET   /event/manager/clone/$id<\w{8}>  controllers.Event.cloneE(id: String)
 GET   /event/manager/new               controllers.Event.form
 POST  /event/manager                   controllers.Event.create
+
+# Misc
+GET   /captcha/$id<\w{8}>              controllers.Main.captchaCheck(id: String)
+
+
+# Dev
+GET   /dev/cli                         controllers.Dev.cli
+POST  /dev/cli                         controllers.Dev.cliPost
+POST  /cli                             controllers.Dev.command
+GET   /dev/settings                    controllers.Dev.settings
+POST  /dev/settings/:id                controllers.Dev.settingsPost(id: String)
 
 # Push
 POST  /mobile/register/:platform/:deviceId controllers.Push.mobileRegister(platform: String, deviceId: String)

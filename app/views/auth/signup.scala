@@ -34,14 +34,7 @@ object signup {
           auth.bits.formFields(form("username"), form("password"), form("email").some, register = true),
           input(id := "signup-fp-input", name := "fp", tpe := "hidden"),
           div(cls := "form-group text", dataIcon := "")(
-            trans.computersAreNotAllowedToPlay(),
-            br,
-            small(
-              trans.byRegisteringYouAgreeToBeBoundByOur(a(href := routes.Page.tos)(trans.termsOfService())),
-              br,
-              trans.readAboutOur(a(href := routes.Page.menuBookmark("privacy"))(trans.privacyPolicy())),
-              br
-            )
+            trans.computersAreNotAllowedToPlay()
           ),
           agreement(form("agreement"), form.form.errors.exists(_.key startsWith "agreement.")),
           views.html.base.hcaptcha.tag(form),
