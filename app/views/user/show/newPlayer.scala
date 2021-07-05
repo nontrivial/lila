@@ -21,15 +21,6 @@ object newPlayer {
         )
       ),
       p(
-        if (u.kid) "Kid mode is enabled."
-        else
-          frag(
-            "Will a child use this account? You might want to enable ",
-            a(href := routes.Account.kid)("Kid mode"),
-            "."
-          )
-      ),
-      p(
         "What now? Here are a few suggestions:"
       ),
       ul(

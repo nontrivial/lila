@@ -27,9 +27,6 @@ object layout {
               bits.categName(categ)
             )
           },
-          a(activeCls("kid"), href := routes.Account.kid)(
-            trans.kidMode()
-          ),
           div(cls := "sep"),
           a(activeCls("editProfile"), href := routes.Account.profile)(
             trans.editProfile()

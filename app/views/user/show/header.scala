@@ -62,19 +62,6 @@ object header {
               dataIcon := ""
             )
           ),
-          isGranted(_.UserModView) option
-            a(
-              cls := "btn-rack__btn mod-zone-toggle",
-              href := routes.User.mod(u.username),
-              titleOrText("Mod zone (Hotkey: m)"),
-              dataIcon := ""
-            ),
-          a(
-            cls := "btn-rack__btn",
-            href := routes.User.tv(u.username),
-            titleOrText(trans.watchGames.txt()),
-            dataIcon := ""
-          ),
           (ctx.isAuth && !ctx.is(u)) option
             views.html.relation.actions(
               u.id,
