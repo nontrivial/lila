@@ -19,7 +19,6 @@ final class Env(
     securityEnv: lila.security.Env,
     mailerEnv: lila.mailer.Env,
     explorerEnv: lila.explorer.Env,
-    fishnetEnv: lila.fishnet.Env,
     evalCacheEnv: lila.evalCache.Env,
     planEnv: lila.plan.Env,
     gameEnv: lila.game.Env,
@@ -30,7 +29,6 @@ final class Env(
     playBanApi: lila.playban.PlaybanApi,
     userEnv: lila.user.Env,
     relationEnv: lila.relation.Env,
-    analyseEnv: lila.analyse.Env,
     lobbyEnv: lila.lobby.Env,
     tourEnv: lila.tournament.Env,
     challengeEnv: lila.challenge.Env,
@@ -78,14 +76,7 @@ final class Env(
   )
   if (mode == Mode.Prod) system.scheduler.scheduleOnce(5 seconds)(influxEvent.start())
 
-  private lazy val linkCheck = wire[LinkCheck]
-
   private lazy val pagerDuty = wire[PagerDuty]
-
-  Bus.subscribeFun("chatLinkCheck", "announce") {
-    case GetLinkCheck(line, source, promise)                   => promise completeWith linkCheck(line, source)
-    case Announce(msg, date, _) if msg contains "will restart" => pagerDuty.lilaRestart(date).unit
-  }
 
   system.scheduler.scheduleWithFixedDelay(1 minute, 1 minute) { () =>
     lila.mon.bus.classifiers.update(lila.common.Bus.size)

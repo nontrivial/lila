@@ -211,28 +211,6 @@ final class Api(
       } map toApiResult
     }
 
-  def tournamentGames(id: String) =
-    Action.async { req =>
-      env.tournament.tournamentRepo byId id flatMap {
-        _ ?? { tour =>
-          val config = GameApiV2.ByTournamentConfig(
-            tournamentId = tour.id,
-            format = GameApiV2.Format byRequest req,
-            flags = gameC.requestPgnFlags(req, extended = false),
-            perSecond = MaxPerSecond(20)
-          )
-          GlobalConcurrencyLimitPerIP(HTTPRequest ipAddress req)(
-            env.api.gameApiV2.exportByTournament(config)
-          ) { source =>
-            val filename = env.api.gameApiV2.filename(tour, config.format)
-            Ok.chunked(source)
-              .pipe(asAttachmentStream(env.api.gameApiV2.filename(tour, config.format)))
-              .as(gameC gameContentType config)
-          }.fuccess
-        }
-      }
-    }
-
   def tournamentResults(id: String) =
     Action.async { implicit req =>
       val csv = HTTPRequest.acceptsCsv(req) || get("as", req).has("csv")

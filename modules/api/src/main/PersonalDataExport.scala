@@ -17,7 +17,6 @@ import lila.user.User
 final class PersonalDataExport(
     securityEnv: lila.security.Env,
     msgEnv: lila.msg.Env,
-    forumEnv: lila.forum.Env,
     gameEnv: lila.game.Env,
     roundEnv: lila.round.Env,
     chatEnv: lila.chat.Env,
@@ -60,12 +59,6 @@ final class PersonalDataExport(
           Source(List(textTitle("Followed players")) ++ userIds)
         }
       }
-
-    val forumPosts =
-      Source(List(textTitle("Forum posts"))) concat
-        forumEnv.postApi.allByUser(user.id).documentSource().throttle(heavyPerSecond, 1 second).map { p =>
-          s"${textDate(p.createdAt)}\n${p.text}$bigSep"
-        }
 
     val privateMessages =
       Source(List(textTitle("Direct messages"))) concat
@@ -156,7 +149,6 @@ final class PersonalDataExport(
       intro,
       connections,
       followedUsers,
-      forumPosts,
       privateMessages,
       privateGameChats,
       spectatorGameChats,

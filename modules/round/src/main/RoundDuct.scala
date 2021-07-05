@@ -118,7 +118,6 @@ final private[round] class RoundDuct(
         mightBeSimul = game.isSimul
         whitePlayer.goneWeight = whiteGoneWeight
         blackPlayer.goneWeight = blackGoneWeight
-        if (game.playableByAi) player.requestFishnet(game, this)
       }
 
     // socket stuff
@@ -192,29 +191,6 @@ final private[round] class RoundDuct(
         } inject Nil
       }
 
-    case a: lila.analyse.actorApi.AnalysisProgress =>
-      fuccess {
-        socketSend(
-          RP.Out.tellRoom(
-            roomId,
-            makeMessage(
-              "analysisProgress",
-              Json.obj(
-                "analysis" -> lila.analyse.JsonView.bothPlayers(a.game, a.analysis),
-                "tree" -> lila.tree.Node.minimalNodeJsonWriter.writes {
-                  TreeBuilder(
-                    a.game,
-                    a.analysis.some,
-                    a.initialFen,
-                    JsonView.WithFlags()
-                  )
-                }
-              )
-            )
-          )
-        )
-      }
-
     // round stuff
 
     case p: HumanPlay =>
@@ -247,10 +223,6 @@ final private[round] class RoundDuct(
       p.promise.foreach(_ completeWith res)
       res
 
-    case FishnetPlay(uci, ply) =>
-      handle { game =>
-        player.fishnet(game, ply, uci)
-      }.mon(_.round.move.time)
 
     case Abort(playerId) =>
       handle(PlayerId(playerId)) { pov =>

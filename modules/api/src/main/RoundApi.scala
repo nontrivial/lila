@@ -4,14 +4,12 @@ import chess.format.FEN
 import play.api.i18n.Lang
 import play.api.libs.json._
 
-import lila.analyse.{ JsonView => analysisJson, Analysis }
 import lila.common.ApiVersion
 import lila.game.{ Game, Pov }
 import lila.pref.Pref
 import lila.round.JsonView.WithFlags
 import lila.round.{ Forecast, JsonView }
 import lila.security.Granter
-import lila.simul.Simul
 import lila.tournament.{ GameView => TourView }
 import lila.tree.Node.partitionTreeJsonWriter
 import lila.user.User

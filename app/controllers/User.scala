@@ -47,16 +47,6 @@ final class User(
       }
     }
 
-  def tvExport(username: String) =
-    Action.async { req =>
-      val userId = UserModel normalize username
-      env.game.cached.lastPlayedPlayingId(userId) orElse
-        env.game.gameRepo.quickLastPlayedId(userId) flatMap {
-          case None         => NotFound("No ongoing game").fuccess
-          case Some(gameId) => gameC.exportGame(gameId, req)
-        }
-    }
-
   private def apiGames(u: UserModel, filter: String, page: Int)(implicit ctx: BodyContext[_]) = {
     userGames(u, filter, page) flatMap env.api.userGameApi.jsPaginator map { res =>
       Ok(res ++ Json.obj("filter" -> GameFilter.All.name))

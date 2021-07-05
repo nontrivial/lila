@@ -33,10 +33,10 @@ lazy val modules = Seq(
   gameSearch, timeline,
   round, pool, lobby, setup,
   importer, tournament, relation, pref,
-  evaluation, chat, coordinate,
+  chat, coordinate,
   history, shutup, push, mailer,
   playban, perfStat, irc, quote, challenge,
-  fishnet, explorer, learn, plan,
+  explorer, learn, plan,
   event, evalCache
 )
 
@@ -73,11 +73,6 @@ lazy val quote = smallModule("quote",
 lazy val coordinate = smallModule("coordinate",
   Seq(common, db, user),
   Seq(autoconfig) ++ reactivemongo.bundle ++ macwire.bundle
-)
-
-lazy val evaluation = module("evaluation",
-  Seq(common, hub, db, user, game, analyse),
-  Seq(specs2) ++ reactivemongo.bundle
 )
 
 lazy val common = smallModule("common",
@@ -153,13 +148,8 @@ lazy val gameSearch = module("gameSearch",
   reactivemongo.bundle
 )
 
-lazy val analyse = module("analyse",
-  Seq(common, hub, game, user, notifyModule, evalCache),
-  reactivemongo.bundle
-)
-
 lazy val round = module("round",
-  Seq(common, db, memo, hub, socket, game, user, i18n, fishnet, pref, chat, history, playban, room, irc),
+  Seq(common, db, memo, hub, socket, game, user, i18n, pref, chat, history, playban, room, irc),
   Seq(scalatags, hasher, kamon.core, lettuce) ++ reactivemongo.bundle
 )
 
@@ -186,11 +176,6 @@ lazy val importer = module("importer",
 lazy val tournament = module("tournament",
   Seq(common, hub, socket, game, round, security, chat, memo, quote, history, notifyModule, i18n, room),
   Seq(scalatags, lettuce, specs2) ++ reactivemongo.bundle
-)
-
-lazy val fishnet = module("fishnet",
-  Seq(common, game, analyse, db, evalCache),
-  Seq(lettuce, specs2) ++ reactivemongo.bundle
 )
 
 lazy val oauth = smallModule("oauth",
