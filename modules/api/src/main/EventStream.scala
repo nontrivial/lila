@@ -15,7 +15,6 @@ import lila.user.{ User, UserRepo }
 final class EventStream(
     challengeJsonView: lila.challenge.JsonView,
     challengeMaker: lila.challenge.ChallengeMaker,
-    onlineApiUsers: lila.bot.OnlineApiUsers,
     userRepo: UserRepo
 )(implicit
     ec: scala.concurrent.ExecutionContext,

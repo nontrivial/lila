@@ -19,7 +19,6 @@ final class Env(
     securityEnv: lila.security.Env,
     mailerEnv: lila.mailer.Env,
     explorerEnv: lila.explorer.Env,
-    evalCacheEnv: lila.evalCache.Env,
     planEnv: lila.plan.Env,
     gameEnv: lila.game.Env,
     chatEnv: lila.chat.Env,

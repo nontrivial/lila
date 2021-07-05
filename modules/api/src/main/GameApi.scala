@@ -6,7 +6,6 @@ import play.api.libs.json._
 import reactivemongo.api.bson._
 import reactivemongo.api.ReadPreference
 
-import lila.analyse.{ JsonView => analysisJson, Analysis }
 import lila.common.config._
 import lila.common.Json.jodaWrites
 import lila.common.paginator.{ Paginator, PaginatorJson }
@@ -23,7 +22,6 @@ final private[api] class GameApi(
     apiToken: Secret,
     gameRepo: lila.game.GameRepo,
     gameCache: lila.game.Cached,
-    analysisRepo: lila.analyse.AnalysisRepo,
     crosstableApi: CrosstableApi
 )(implicit ec: scala.concurrent.ExecutionContext) {
 
@@ -179,12 +177,11 @@ final private[api] class GameApi(
 
   private def gamesJson(withFlags: WithFlags)(games: Seq[Game]): Fu[Seq[JsObject]] = {
     val allAnalysis =
-      if (withFlags.analysis) analysisRepo byIds games.map(_.id)
-      else fuccess(List.fill(games.size)(none[Analysis]))
+      fuccess(List.fill(games.size)(none[Analysis]))
     allAnalysis flatMap { analysisOptions =>
       (games map gameRepo.initialFen).sequenceFu map { initialFens =>
         games zip analysisOptions zip initialFens map { case ((g, analysisOption), initialFen) =>
-          gameToJson(g, analysisOption, initialFen, checkToken(withFlags))
+          gameToJson(g, initialFen, checkToken(withFlags))
         }
       }
     }
@@ -194,7 +191,6 @@ final private[api] class GameApi(
 
   private def gameToJson(
       g: Game,
-      analysisOption: Option[Analysis],
       initialFen: Option[FEN],
       withFlags: WithFlags
   ) =
@@ -230,9 +226,7 @@ final private[api] class GameApi(
             .add("provisional" -> p.provisional)
             .add("moveCentis" -> withFlags.moveTimes ?? g.moveTimes(p.color).map(_.map(_.centis)))
             .add("blurs" -> withFlags.blurs.option(p.blurs.nb))
-            .add("analysis" -> analysisOption.flatMap(analysisJson.player(g pov p.color)))
         }),
-        "analysis" -> analysisOption.ifTrue(withFlags.analysis).map(analysisJson.moves(_)),
         "moves"    -> withFlags.moves.option(g.pgnMoves mkString " "),
         "opening"  -> withFlags.opening.??(g.opening),
         "fens" -> (withFlags.fens && g.finished) ?? {
@@ -255,7 +249,6 @@ final private[api] class GameApi(
 object GameApi {
 
   case class WithFlags(
-      analysis: Boolean = false,
       moves: Boolean = false,
       fens: Boolean = false,
       opening: Boolean = false,
