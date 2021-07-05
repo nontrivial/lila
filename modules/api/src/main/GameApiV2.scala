@@ -38,7 +38,7 @@ final class GameApiV2(
   private val fileR = """[\s,]""".r
 
   def filename(game: Game, format: Format): Fu[String] =
-    gameLightUsers(game) map { case (wu, bu) =>
+    gameLightUsers(game) map { case (_, _) =>
       fileR.replaceAllIn(
         "lichess_pgn_%s_%s_vs_%s.%s.%s".format(
           Tag.UTCDate.format.print(game.createdAt),
