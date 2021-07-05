@@ -36,7 +36,7 @@ lazy val modules = Seq(
   chat, coordinate,
   history, shutup, push, mailer,
   playban, perfStat, irc, quote, challenge,
-  explorer, plan,
+  explorer,
   event
 )
 
@@ -216,11 +216,6 @@ lazy val irc = smallModule("irc",
 lazy val mailer = module("mailer",
   Seq(common, user),
   reactivemongo.bundle ++ Seq(scalatags, hasher, play.mailer)
-)
-
-lazy val plan = module("plan",
-  Seq(common, user),
-  Seq(specs2) ++ reactivemongo.bundle
 )
 
 lazy val relation = module("relation",
